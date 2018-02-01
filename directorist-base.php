@@ -168,7 +168,6 @@ final class Directorist_Base {
 
             self::$instance->includes();
             self::$instance->custom_post    = new ATBDP_Custom_Post; // create custom post
-            self::$instance->settings       = new ATBDP_Settings(new ATBDP_Settings_API); // create admin panel settings
             self::$instance->taxonomy       = new ATBDP_Custom_Taxonomy;
             self::$instance->enquirer       = new ATBDP_Enqueuer;
             self::$instance->metabox        = new ATBDP_Metabox;
@@ -179,7 +178,7 @@ final class Directorist_Base {
             self::$instance->user           = new ATBDP_User;
             self::$instance->roles           = new ATBDP_Roles;
 
-            // test new settings
+            // new settings
             new ATBDP_Settings_Manager();
 
             /*Extensions Link*/
