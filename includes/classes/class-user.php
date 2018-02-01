@@ -39,10 +39,7 @@ class ATBDP_User {
             add_action('init', array($this, 'allow_contributor_uploads'));
         }
 
-      /*var_dump( 'edit_others_'.ATBDP_POST_TYPE.'s',  current_user_can( 'edit_others_'.ATBDP_POST_TYPE.'s'));
-       var_dump( 'edit_at_biz_dirs', current_user_can( 'edit_at_biz_dirs'));
-       var_dump(  'edit_others_posts',current_user_can( 'edit_others_posts') );
-       var_dump(  'edit_others_acadp_listings', current_user_can( 'edit_others_acadp_listings') );*/
+
 
     }
 

@@ -26,22 +26,34 @@ class ATBDP_Settings_Manager {
 
 
         /*Create a list of fields array of extension on off and then use it through a filter so that we can hook in to this array from an extension plugin.*/
-        $ext_on_off_fields= array(
-                                        array(
-                                            'type' => 'toggle',
-                                            'name' => 'multiple_image_ext',
-                                            'label' => __('Multiple Image Upload', ATBDP_TEXTDOMAIN),
-                                            'description' => __('Allow users upload multiple images for a listing. NOTE: Multiple Image Extension is Required', ATBDP_TEXTDOMAIN),
-                                            'default' => 0,
-                                        ),
+        $ext_general_fields= array(
+            array(
+                'type' => 'toggle',
+                'name' => 'enable_review',
+                'label' => __('Enable Reviews & Rating', ATBDP_TEXTDOMAIN),
+                'description' => __('Choose whether you want to display reviews form on Single listing details page or not. Default is ON.', ATBDP_TEXTDOMAIN),
+                'default' => atbdp_yes_to_bool($e_review),
+            ),
 
-                                        array(
-                                            'type' => 'toggle',
-                                            'name' => 'business_hour',
-                                            'label' => __('Business Hour', ATBDP_TEXTDOMAIN),
-                                            'description' => __('Allow users display business hour for a listing. Note: Business Hour Extension is required.', ATBDP_TEXTDOMAIN),
-                                            'default' => 0, // we may set it to yes depending on settings if the payment module is set.
-                                        ),
+            array(
+                'type' => 'toggle',
+                'name' => 'enable_owner_review',
+                'label' => __('Enable Owner Review', ATBDP_TEXTDOMAIN),
+                'description' => __('Choose whether you want to allow a listing OWNER to post a review on his/her OWN listing on Single listing details page or not. Default is ON.', ATBDP_TEXTDOMAIN),
+                'default' => 1,
+            ),
+
+            array(
+                'type' => 'slider',
+                'name' => 'review_num',
+                'label' => __('Number of Reviews', ATBDP_TEXTDOMAIN),
+                'description' => __( 'Enter how many reviews you would like to show on your website. Eg. 5. Default is 5. It will work if Review option is enabled.', ATBDP_TEXTDOMAIN),
+                'min' => '1',
+                'max' => '20',
+                'step' => '1',
+                'default' => '5',
+                'validation' => 'numeric|minlength[1]',
+            ),
         );
 
 
@@ -50,22 +62,22 @@ class ATBDP_Settings_Manager {
          *
          * @since 4.9.0
          *
-         * @param boolean $ext_on_off_fields     Whether to replace the editor. Default false.
+         * @param array $ext_general_fields     The array of the list of settings fields under the general section of Extensions
          */
-        $ext_on_off_fields_array = apply_filters('atbdp_ext_switch_fields', $ext_on_off_fields);
+        $ext_general_fields_array = apply_filters('atbdp_settings_ext_general_fields', $ext_general_fields);
 
         /* Create a list of submenus and use it through a filter so that we can add new item from our extensions.*/
         $extensions_submenu_array = array(
             'submenu_1' => array(
-                'title' => __('ON/OFF', ATBDP_TEXTDOMAIN),
+                'title' => __('Extensions General', ATBDP_TEXTDOMAIN),
                 'name' => 'extensions_switch',
-                'icon' => 'font-awesome:fa-th-list',
+                'icon' => 'font-awesome:fa-home',
                 'controls' => array(
                     'extensions' => array(
                         'type' => 'section',
-                        'title' => __('Extensions on/off', ATBDP_TEXTDOMAIN),
+                        'title' => __('Extensions General Settings', ATBDP_TEXTDOMAIN),
                         'description' => __('You can Customize Extensions-related settings here. You can enable or disable any extensions here. Here, ON means Enabled, and OFF means disabled. After switching any option, Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
-                        'fields' => $ext_on_off_fields_array,
+                        'fields' => $ext_general_fields_array,
                     ),
                 ),
             ),
@@ -75,13 +87,13 @@ class ATBDP_Settings_Manager {
         /**
          * Allow modification of The list of extensions submenu array lists. An extension can add its settings arrays/fields to the submenu of the extension array.
          *
-         * @since 4.9.0
+         * @since 2.0.0
          *
-         * @param boolean $ext_on_off_fields     Whether to replace the editor. Default false.
+         * @param array $extensions_submenu_array  The array of submenus of extension menu
          */
         $extensions_submenu = apply_filters('atbdp_setting_ext_submenu', $extensions_submenu_array);
         $atbdp_options = array(
-            'is_dev_mode' => true,
+//            'is_dev_mode' => true,
             'option_key' => 'atbdp_option',
             'page_slug' => 'aazztech_settings',
             'menu_page' => 'edit.php?post_type=at_biz_dir',
@@ -179,6 +191,13 @@ class ATBDP_Settings_Manager {
                                         'label' => __('Tag slug', ATBDP_TEXTDOMAIN),
                                         'default' => ATBDP_TAGS,
                                         'validation' => 'required',
+                                    ),
+
+                                    array(
+                                        'type' => 'notebox',
+                                        'label' => __('Tips & Troubleshooting:', ATBDP_TEXTDOMAIN),
+                                        'description' => __('NOTE: If changing this option does not work, then do not worry. Just go to "WordPress Dashboard>Settings>Permalinks" and just click save. It should work fine now.', ATBDP_TEXTDOMAIN),
+                                        'status' => 'info',
                                     ),
 
                                 ),
@@ -337,25 +356,6 @@ class ATBDP_Settings_Manager {
                                         'validation' => 'numeric|minlength[1]',
                                     ),
 
-                                    array(
-                                        'type' => 'toggle',
-                                        'name' => 'enable_review',
-                                        'label' => __('Enable Reviews', ATBDP_TEXTDOMAIN),
-                                        'description' => __('Choose whether you want to display reviews on Single listing details page or not. Default is ON.', ATBDP_TEXTDOMAIN),
-                                        'default' => atbdp_yes_to_bool($e_review),
-                                    ),
-
-                                    array(
-                                        'type' => 'slider',
-                                        'name' => 'review_num',
-                                        'label' => __('Number of Reviews', ATBDP_TEXTDOMAIN),
-                                        'description' => __( 'Enter how many reviews you would like to show on your website. Eg. 5. Default is 5.', ATBDP_TEXTDOMAIN),
-                                        'min' => '1',
-                                        'max' => '20',
-                                        'step' => '1',
-                                        'default' => '5',
-                                        'validation' => 'numeric|minlength[1]',
-                                    ),
 
                                 ),
                             ), // ends 'search_settings' section

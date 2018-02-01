@@ -10,8 +10,7 @@ $u_phone= get_user_meta($uid, 'phone', true);
 $u_pro_pic= get_user_meta($uid, 'pro_pic', true);
 $u_address= get_user_meta($uid, 'address', true);
 
-var_dump(vp_option('atbdp_option.fix_js_conflict'));
-var_dump(get_directorist_option('fix_js_conflict'));
+
 
 
 ?>

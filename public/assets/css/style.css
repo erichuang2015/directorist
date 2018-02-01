@@ -713,8 +713,7 @@
 	border-radius: 50%;
 	text-align: center;
 }
-.opening_hours,
-.directory_contact_area,
+
 .review_form,
 .directory_user_area,
 .categorized_listings
@@ -1977,20 +1976,12 @@ span.remove_image {
 
 }
 /*Business hour extension widget fix*/
-.widget .directory_open_hours {
+/*.widget .directory_open_hours {
 	padding: 10px 30px;
 	background: #fff;
-}
+}*/
 
-/* business hour plugin extension */
-.business-hour-title {
-	margin-top: 15px;
-	margin-bottom: 30px;
-	border-bottom: 1px solid #ededed;
-}
-.business-hour-title p {
-	margin-top: 5px;
-}
+
 
 
 .single-at_biz_dir .entry-header{

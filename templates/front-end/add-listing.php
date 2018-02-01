@@ -102,12 +102,12 @@ $listing_tags = get_terms(ATBDP_TAGS, array('hide_empty' => 0));
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <label for="atbd_excerpt"><?php esc_html_e('Tag-line/Motto', ATBDP_TEXTDOMAIN) ?></label>
+                                <label for="atbd_excerpt"><?php esc_html_e('Tag-line/Motto', ATBDP_TEXTDOMAIN); ?></label>
                                 <input type="text" name="listing[tagline]" value="<?= !empty($tagline) ? esc_attr($tagline): ''; ?>" class="form-control directory_field" placeholder="<?= __('Your Organization\'s motto or tag-line', ATBDP_TEXTDOMAIN); ?>"/>
                             </div>
                             <div class="form-group">
                                 <label for="atbd_excerpt"><?php esc_html_e('Short Description/Excerpt:', ATBDP_TEXTDOMAIN) ?></label>
-                                <textarea name="listing[excerpt]" id="atbd_excerpt"  class="form-control directory_field" cols="30" rows="5" placeholder="<?= __('Short Description or Excerpt', ATBDP_TEXTDOMAIN); ?>"><?= !empty($excerpt) ?esc_textarea( stripslashes($excerpt)): ''; ?></textarea>
+                                <textarea name="listing[excerpt]" id="atbd_excerpt"  class="form-control directory_field" cols="30" rows="5" placeholder="<?= __('Short Description or Excerpt', ATBDP_TEXTDOMAIN); ?>"> <?= !empty($excerpt) ? esc_textarea( stripslashes($excerpt)) : ''; ?> </textarea>
                             </div>
 
                         </div>

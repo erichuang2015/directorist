@@ -1071,7 +1071,7 @@ if (!function_exists('is_business_hour_active')){
         $enable = get_directorist_option('enable_business_hour');
         include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); // though the is_plugin_active() should work fine in the admin area but it showed me error. I tried several times. So, I had to include the function manually so that it works fine on back and front end.
         $active = is_plugin_active('directorist-business-hour/bd-business-hour.php');
-        return (('yes'==$enable) && $active); // plugin is active and enabled
+        return ($enable && $active); // plugin is active and enabled
     }
 }
 

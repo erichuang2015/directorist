@@ -326,16 +326,12 @@ final class Directorist_Base {
 
         if ($popular_listings->have_posts()){ ?>
             <div class="categorized_listings">
-
-
                 <ul class="listings">
                     <?php foreach ($popular_listings->posts as $pop_post) {
-
                         /*RATING RELATED STUFF ENDS*/
                         $info = ATBDP()->metabox->get_listing_info($pop_post->ID); // get all post meta and extract it.
                         // get only one parent or high level term object
                         $single_parent = ATBDP()->taxonomy->get_one_high_level_term($pop_post->ID, ATBDP_CATEGORY);
-
                         ?>
                         <li>
                             <div class="left_img">
@@ -560,8 +556,8 @@ final class Directorist_Base {
 
     public function show_review_after_tagliine()
     {
-        $enable_review = get_directorist_option('enable_review', 'yes');
-        if ('yes' !== trim($enable_review) ) return; // vail if review is not enabled
+        $enable_review = get_directorist_option('enable_review', 1);
+        if (!$enable_review ) return; // vail if review is not enabled
         global $post;
         $average =ATBDP()->review->get_average($post->ID);
         $reviews_count =ATBDP()->review->db->count(array('post_id' => $post->ID)); // get total review count for this post
@@ -586,8 +582,8 @@ final class Directorist_Base {
     public function show_review($post)
     {
 
-        $enable_review = get_directorist_option('enable_review', 'yes');
-        if ('yes' !== trim($enable_review) ) return; // vail if review is not enabled
+        $enable_review = get_directorist_option('enable_review', 1);
+        if (!$enable_review ) return; // vail if review is not enabled
 
         $reviews = ATBDP()->_get_reviews($post, 3);
         $reviews_count = ATBDP()->review->db->count(array('post_id' => $post->ID)); // get total review count for this post
@@ -597,56 +593,63 @@ final class Directorist_Base {
         <!-- Review_area Section-->
         <div class="review_area">
 
-            <?php if (is_user_logged_in()) {
+            <?php
+
+            // check if the user is logged in and the current user is not the owner of this listing.
+            if (is_user_logged_in() ) {
                 global $wpdb;
-                // if user has a review then fetch it.
-                $cur_user_review = ATBDP()->review->db->get_user_review_for_post(get_current_user_id(), get_the_ID());
-                ?>
-                <div class="review_form">
-                    <div class="directory_are_title">
-                        <h4><span class="fa fa-star" aria-hidden="true"></span><?= !empty($cur_user_review)? __('Update Review', ATBDP_TEXTDOMAIN) : __('Leave a Review', ATBDP_TEXTDOMAIN);?></h4>
-                    </div>
+                // if the current user is NOT the owner of the listing print review form
+                // get the settings of the admin whether to display review form even if the user is the owner of the listing.
+                $enable_owner_review = get_directorist_option('enable_owner_review', 1);
+                if (get_current_user_id() != $post->post_author || $enable_owner_review){
+                    // if user has a review then fetch it.
+                    $cur_user_review = ATBDP()->review->db->get_user_review_for_post(get_current_user_id(), get_the_ID());
+                    ?>
+                    <div class="review_form">
+                        <div class="directory_are_title">
+                            <h4><span class="fa fa-star" aria-hidden="true"></span><?= !empty($cur_user_review)? __('Update Review', ATBDP_TEXTDOMAIN) : __('Leave a Review', ATBDP_TEXTDOMAIN);?></h4>
+                        </div>
 
-                    <form action="" id="atbdp_review_form" method="post">
-                        <?php wp_nonce_field( 'atbdp_review_action_form', 'atbdp_review_nonce_form' ); ?>
-                        <input type="hidden" name="post_id" value="<?php the_ID(); ?>">
-                        <!--<input type="email" name="email" class="directory_field" placeholder="Your email" required>-->
-                        <input type="hidden" name="name" class="btn btn-default" value="<?= wp_get_current_user()->display_name; ?>" placeholder="Your name" id="reviewer_name">
+                        <form action="" id="atbdp_review_form" method="post">
+                            <?php wp_nonce_field( 'atbdp_review_action_form', 'atbdp_review_nonce_form' ); ?>
+                            <input type="hidden" name="post_id" value="<?php the_ID(); ?>">
+                            <!--<input type="email" name="email" class="directory_field" placeholder="Your email" required>-->
+                            <input type="hidden" name="name" class="btn btn-default" value="<?= wp_get_current_user()->display_name; ?>" placeholder="Your name" id="reviewer_name">
 
-                        <div class="rating clearfix"> <!--It should be displayed on the left side -->
-                            <?php
-                            // color the stars if user has rating
-                            if (!empty($cur_user_review)){
+                            <div class="rating clearfix"> <!--It should be displayed on the left side -->
+                                <?php
+                                // color the stars if user has rating
+                                if (!empty($cur_user_review)){
 
-                                ?>
+                                    ?>
 
-                                <div class="pull-left">
-                                    <p class="rating_label"><?php _e('Current Rating:', ATBDP_TEXTDOMAIN); ?></p>
-                                    <div class="br-theme-css-stars-static">
-                                        <?= ATBDP()->review->print_static_rating($cur_user_review->rating); ?>
+                                    <div class="pull-left">
+                                        <p class="rating_label"><?php _e('Current Rating:', ATBDP_TEXTDOMAIN); ?></p>
+                                        <div class="br-theme-css-stars-static">
+                                            <?= ATBDP()->review->print_static_rating($cur_user_review->rating); ?>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+
+                                <div class="pull-right">
+                                    <p class="rating_label"><?= !empty($cur_user_review)? __('Give New Rating:', ATBDP_TEXTDOMAIN) : __('Your Rating:', ATBDP_TEXTDOMAIN);?></p>
+                                    <div class="br-theme-css-stars">
+                                        <select class="stars" name="rating" id="review_rating">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
                                     </div>
                                 </div>
-                            <?php } ?>
-
-                            <div class="pull-right">
-                                <p class="rating_label"><?= !empty($cur_user_review)? __('Give New Rating:', ATBDP_TEXTDOMAIN) : __('Your Rating:', ATBDP_TEXTDOMAIN);?></p>
-                                <div class="br-theme-css-stars">
-                                    <select class="stars" name="rating" id="review_rating">
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
-                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <textarea name="content" id="review_content" class="form-control" cols="20" rows="5" placeholder="<?= !empty($cur_user_review)? __('Update your review.....', ATBDP_TEXTDOMAIN): __('Write your review.....', ATBDP_TEXTDOMAIN);?>"><?= !empty($cur_user_review)? $cur_user_review->content:'';?></textarea>
-                        </div>
+                            <div class="form-group">
+                                <textarea name="content" id="review_content" class="form-control" cols="20" rows="5" placeholder="<?= !empty($cur_user_review)? __('Update your review.....', ATBDP_TEXTDOMAIN): __('Write your review.....', ATBDP_TEXTDOMAIN);?>"><?= !empty($cur_user_review)? $cur_user_review->content:'';?></textarea>
+                            </div>
 
 
-                        <!--If current user has a review then show him update and delete button-->
+                            <!--If current user has a review then show him update and delete button-->
                             <?php if (!empty($cur_user_review)){ ?>
                                 <button class="directory_btn btn btn-default" type="submit" id="atbdp_review_form_submit"><?php _e('Update', ATBDP_TEXTDOMAIN); ?></button> <!-- ends update  button -->
                                 <button class="directory_btn btn btn-danger" type="button" id="atbdp_review_remove" data-review_id="<?= $cur_user_review->id; ?>"><?php _e('Remove', ATBDP_TEXTDOMAIN); ?></button> <!-- ends delete button -->
@@ -655,9 +658,10 @@ final class Directorist_Base {
                             <?php } ?>
 
 
-                    </form>
-                </div> <!--ends .review_form-->
-            <?php }else{ ?>
+                        </form>
+                    </div> <!--ends .review_form-->
+                <?php };
+                 }else{ ?>
                 <p class="notice">
                     <span class="fa fa-info" aria-hidden="true"></span>
                     <?php
@@ -736,8 +740,8 @@ final class Directorist_Base {
      */
     public function show_static_rating($post)
     {
-        $enable_review = get_directorist_option('enable_review', 'atbdp_general', 'yes');
-        if ('yes' !== trim($enable_review) ) return; // vail if review is not enabled
+        $enable_review = get_directorist_option('enable_review', 1);
+        if (!$enable_review ) return; // vail if review is not enabled
         $average = ATBDP()->review->get_average($post->ID);
         ?>
         <div class="br-theme-css-stars-static">

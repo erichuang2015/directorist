@@ -134,7 +134,7 @@ $reviews_count = $ATBDP->review->db->count(array('post_id' => $post->ID)); // ge
                     </div>
                     <?php
 
-                    if (is_business_hour_active() && 'no' != $enable_bh_on_page && (!is_empty_array($business_hours) || !empty($enable247hour)) ) {
+                    if (is_business_hour_active() && $enable_bh_on_page && (!is_empty_array($business_hours) || !empty($enable247hour)) ) {
                     ?>
                     <div class="row">
                         <div class="col-md-5">
@@ -199,7 +199,7 @@ $reviews_count = $ATBDP->review->db->count(array('post_id' => $post->ID)); // ge
                                 <?php } ?>
                             </div>  <!--ends .directory_contact_area -->
                             <!--We need to close the row and col div when we have business hour enabled. We used negative checking so that they can show by default if the setting is not set by the user after adding the plugin.-->
-                            <?php if (is_business_hour_active() && 'no' != $enable_bh_on_page && (!is_empty_array($business_hours) || !empty($enable247hour)) ) {
+                            <?php if (is_business_hour_active() && $enable_bh_on_page && (!is_empty_array($business_hours) || !empty($enable247hour)) ) {
                             ?>
                         </div> <!--ends. .col-md-7 ddflkdsjflkdsjfl-->
                     </div> <!-- ends .row-->
@@ -285,7 +285,7 @@ $reviews_count = $ATBDP->review->db->count(array('post_id' => $post->ID)); // ge
 
 
             <?php
-            //include ATBDP_TEMPLATES_DIR.'sidebar-listing.php';
+            include ATBDP_TEMPLATES_DIR.'sidebar-listing.php';
             ?>
         </div>
 </section>
