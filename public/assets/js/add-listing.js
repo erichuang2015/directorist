@@ -119,7 +119,6 @@
 
 
     // Select2 js code
-    //@todo; Make all js static text translatable later
     // Location
     $('#at_biz_dir-location').select2({
         placeholder: atbdp_add_listing.i18n_text.location_selection,
@@ -164,7 +163,8 @@ jQuery(function($){
 
 
         /*if the multiple image extension is active then set the multiple image parameter to true*/
-        if('yes' === active_mi_ext){ multiple_image = true }
+        if(1 == active_mi_ext){ multiple_image = true }
+
 
     // ADD IMAGE LINK
     addImgLink.on( 'click', function( event ){
@@ -191,7 +191,7 @@ jQuery(function($){
         frame.on( 'select', function() {
             /*get the image collection array if the MI extension is active*/
             /*One little hints: a constant can not be defined inside the if block*/
-            if ('yes' === active_mi_ext){
+            if (multiple_image){
                  selection = frame.state().get( 'selection' ).toJSON();
             }else {
                  selection = frame.state().get( 'selection' ).first().toJSON();
@@ -231,7 +231,7 @@ jQuery(function($){
                     data += '<img style="width: 100%; height: 100%;" src="' + selection.url + '" alt="Listing Image" /> <span class="remove_image  dashicons dashicons-dismiss" title="Remove it"></span></div>';
                 }
             }
-
+            // If MI extension is active then append images to the listng, else only add one image replacing previus upload
             if(multiple_image){
                 imgContainer.append(data);
             }else {

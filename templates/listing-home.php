@@ -10,7 +10,7 @@ $search_title = get_directorist_option('search_title', '');
 $search_subtitle = get_directorist_option('search_subtitle', '');
 $search_placeholder = get_directorist_option('search_placeholder', __('What are you looking for?', ATBDP_TEXTDOMAIN));
 
-$show_popular_category = get_directorist_option('show_popular_category', 'yes');
+$show_popular_category = get_directorist_option('show_popular_category', 1);
 
 $popular_cat_title = get_directorist_option('popular_cat_title', __('Browse by popular categories', ATBDP_TEXTDOMAIN));
 $popular_cat_num = get_directorist_option('popular_cat_num', 10);
@@ -71,14 +71,14 @@ $popular_cat_num = get_directorist_option('popular_cat_num', 10);
                     </div><!-- end search area -->
 
 
-                    <?php if ('yes'== $show_popular_category){ ?>
+                    <?php if ( 1 == $show_popular_category){ ?>
                     <div class="directory_home_category_area">
 
                         <span><?php _e('Or', ATBDP_TEXTDOMAIN); ?></span>
                         <p><?php echo esc_html($popular_cat_title); ?></p>
 
                         <?php
-
+                        /*@todo; let user decide what the popular category should be counted based on, and how to sort them*/
                         $args = array(
                             'type' => ATBDP_POST_TYPE,
                             'parent' => 0,          // Gets only top level categories
@@ -86,7 +86,9 @@ $popular_cat_num = get_directorist_option('popular_cat_num', 10);
                             'order' => 'desc',
                             'hide_empty' => 1,      // Hides categories with no posts
                             'number' => (int) $popular_cat_num,         // No of categories to return
-                            'taxonomy' => ATBDP_CATEGORY
+                            'taxonomy' => ATBDP_CATEGORY,
+                            'no_found_rows' => true, // Skip SQL_CALC_FOUND_ROWS for performance (no pagination).
+
                         );
                         $top_categories = get_categories( $args );
 

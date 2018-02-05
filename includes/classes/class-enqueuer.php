@@ -12,7 +12,7 @@ class ATBDP_Enqueuer {
      * @access public
      * @var bool
      */
-    var $enable_multiple_image = false;
+    var $enable_multiple_image = 0;
 
     public function __construct() {
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
@@ -20,8 +20,10 @@ class ATBDP_Enqueuer {
         // 'Professional WordPress Plugin Development' by Brad Williams
         add_action( 'wp_enqueue_scripts', array( $this, 'front_end_enqueue_scripts' ), -10 );
 
-        $this->enable_multiple_image = is_multiple_images_active(); // is the MI Extension is installed???
-
+        $this->enable_multiple_image = is_multiple_images_active() ? 1 : 0; // is the MI Extension is installed???
+       // var_dump('from the enque');
+       // var_dump( is_multiple_images_active());
+        //var_dump(vp_option( "atbdp_option.enable_multiple_image"));
     }
 
 
@@ -110,15 +112,13 @@ class ATBDP_Enqueuer {
                 'choose_image' => __('Use this Image', ATBDP_TEXTDOMAIN),
             );
             // is MI extension enabled and active?
-            $active_mi_extension = ($this->enable_multiple_image) ? get_directorist_option('enable_multiple_image', 'no'): 'no'; // yes or no
-
             $data = array(
                 'nonce'             => wp_create_nonce('atbdp_nonce_action_js'),
                 'ajaxurl'           => admin_url('admin-ajax.php'),
                 'nonceName'         => 'atbdp_nonce_js',
                 'AdminAssetPath'    => ATBDP_ADMIN_ASSETS,
                 'i18n_text'         => $i18n_text,
-                'active_mi_ext'     => $active_mi_extension, // yes or no
+                'active_mi_ext'     => $this->enable_multiple_image, // 1 or 0
             );
             wp_localize_script( 'atbdp-admin-script', 'atbdp_admin_data', $data );
             wp_enqueue_media();
@@ -148,8 +148,8 @@ class ATBDP_Enqueuer {
 
 
 
-        // Scripts
-        if ( 'yes' !== get_directorist_option( 'fix_js_conflict' )) {
+        // Scripts, if fixing the conflict is not set, then load bootstrap js
+        if ( ! get_directorist_option( 'fix_js_conflict' )) {
             wp_register_script('atbdp-bootstrap-script', ATBDP_PUBLIC_ASSETS . 'js/bootstrap.min.js', array('jquery'), ATBDP_VERSION, true);
         }
 
@@ -269,16 +269,16 @@ class ATBDP_Enqueuer {
         );
 
         // is MI extension enabled and active?
-        $active_mi_extension = ($this->enable_multiple_image) ? get_directorist_option('enable_multiple_image', 'no'): 'no'; // yes or no
+        $active_mi_extension = $this->enable_multiple_image; // 1 or 0
         $data = array(
-            'nonce'       => wp_create_nonce('atbdp_nonce_action_js'),
-            'ajaxurl'       => admin_url('admin-ajax.php'),
-            'nonceName'       => 'atbdp_nonce_js',
+            'nonce'            => wp_create_nonce('atbdp_nonce_action_js'),
+            'ajaxurl'          => admin_url('admin-ajax.php'),
+            'nonceName'        => 'atbdp_nonce_js',
             'PublicAssetPath'  => ATBDP_PUBLIC_ASSETS,
             'i18n_text'        => $i18n_text,
-            'active_mi_ext'        => $active_mi_extension, // yes or no
-
+            'active_mi_ext'    => $active_mi_extension, // 1 or 0
         );
+
         wp_localize_script( 'atbdp_add_listing_js', 'atbdp_add_listing', $data );
 
         wp_enqueue_media();

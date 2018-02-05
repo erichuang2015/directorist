@@ -9,14 +9,12 @@ foreach ($attachment_ids as $id){
     $image_links[$id]= wp_get_attachment_image_src($id, 'full')[0]; // store the attachment id and url
 }
 
-//$first_image = (!empty($image_links)) ? array_shift($image_links) : '';
 
 
 extract($listing_info);
 /*Code for Business Hour Extensions*/
 /*@todo; Make business hour settings compatible to our new settings panel. It is good to prefix all settings of extensions with their prefix*/
-$enable_business_hour = get_directorist_option('enable_business_hour', 'no'); // yes or no
-$enable_bh_on_page = get_directorist_option('enable_bh_on_page', 'no' ); // yes or no
+$enable_bh_on_page = get_directorist_option('enable_bh_on_page', 0 ); // yes or no
 $text247 = get_directorist_option('text247',  __('Open 24/7', ATBDP_TEXTDOMAIN)); // text for 24/7 type listing
 $business_hour_title = get_directorist_option('business_hour_title',  __('Business Hour', ATBDP_TEXTDOMAIN)); // text Business Hour Title
 $business_hours = !empty($listing_info['bdbh']) ? atbdp_sanitize_array($listing_info['bdbh']) : array(); // arrays of days and times if exist
@@ -39,12 +37,6 @@ $info_content .= $image ; // add the image if available
 $info_content .= "<address> {$ad} </address>";
 $info_content .= "<a href='http://www.google.com/maps/place/{$manual_lat},{$manual_lng}' target='_blank'> ".__('View On Google Maps', ATBDP_TEXTDOMAIN)."</a></div>";
 
-
-/*Reviews*/
-$reviews = $ATBDP->review->db->get_reviews_by('post_id', $post->ID, 0, 3); // get only 3
-$recent_reviews = $ATBDP->review->db->get_all(5);// 5 recent reviews
-$average = $ATBDP->review->get_average($reviews);
-$reviews_count = $ATBDP->review->db->count(array('post_id' => $post->ID)); // get total review count for this post
 
 $map_zoom_level = get_directorist_option('map_zoom_level', 16);
 
@@ -118,6 +110,7 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
                             </div>
 
                             <div class="director_social_wrap">
+                                <!--@todo; add settings to Enable or disable listing sharing....-->
                                 <p><?php _e('Share this post',ATBDP_TEXTDOMAIN); ?></p>
                                 <ul>
 
@@ -135,14 +128,11 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
                         </div>
                     </div>
                     <?php
-
-                    if (is_business_hour_active() && $enable_bh_on_page && (!is_empty_array($business_hours) || !empty($enable247hour)) ) {
+                    // if business hour is active then add the following markup...
+                    if ( is_business_hour_active() && $enable_bh_on_page && (!is_empty_array($business_hours) || !empty($enable247hour)) ) {
                     ?>
                     <div class="row">
                         <div class="col-md-5">
-
-
-
                             <!-- Opening/Business hour Information section-->
                             <div class="opening_hours">
                                 <div class="directory_are_title">
@@ -201,7 +191,7 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
                                 <?php } ?>
                             </div>  <!--ends .directory_contact_area -->
                             <!--We need to close the row and col div when we have business hour enabled. We used negative checking so that they can show by default if the setting is not set by the user after adding the plugin.-->
-                            <?php if (is_business_hour_active() && $enable_bh_on_page && (!is_empty_array($business_hours) || !empty($enable247hour)) ) {
+                            <?php if ( is_business_hour_active() && $enable_bh_on_page && (!is_empty_array($business_hours) || !empty($enable247hour)) ) {
                             ?>
                         </div> <!--ends. .col-md-7 ddflkdsjflkdsjfl-->
                     </div> <!-- ends .row-->
@@ -254,14 +244,14 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
                         </div>
 
                         <div class="directory_user_area_form">
-                            <a href="<?= esc_url(ATBDP_Permalink::get_add_listing_page_link()); ?>" class="directory_btn btn btn-default"><?php _e('Submit New Listing', ATBDP_TEXTDOMAIN); ?></a>
+                            <a href="<?= esc_url(ATBDP_Permalink::get_add_listing_page_link()); ?>" class="<?= atbdp_directorist_button_classes(); ?>"><?php _e('Submit New Listing', ATBDP_TEXTDOMAIN); ?></a>
 
                             <?php
+                            atbdp_after_new_listing_button(); // fires an empty action to let dev extend by adding anything here
                             if (!is_user_logged_in()){
                                 wp_login_form();
                                 wp_register();
                             }
-
                             ?>
                         </div>
                     </div> <!--ends . directory_user_area-->

@@ -146,9 +146,7 @@ jQuery(function($){
         active_mi_ext = atbdp_admin_data.active_mi_ext;
 
     /*if the multiple image extension is active then set the multiple image parameter to true*/
-    if('yes' === active_mi_ext){ multiple_image = true }
-
-    console.log(active_mi_ext);
+    if(1 == active_mi_ext){ multiple_image = true }
 
     // ADD IMAGE LINK
     addImgLink.on( 'click', function( event ){
@@ -176,7 +174,7 @@ jQuery(function($){
         frame.on( 'select', function() {
             /*get the image collection array if the MI extension is active*/
             /*One little hints: a constant can not be defined inside the if block*/
-            if ('yes' === active_mi_ext){
+            if (multiple_image){
                 selection = frame.state().get( 'selection' ).toJSON();
             }else {
                 selection = frame.state().get( 'selection' ).first().toJSON();
@@ -191,7 +189,7 @@ jQuery(function($){
 
 
             //handle multiple image uploading.......
-            if ( 'yes'=== active_mi_ext ){
+            if ( multiple_image ){
                 $(selection).each(function () {
                     // here el === this
                     // append the selected element if it is an image
@@ -219,7 +217,12 @@ jQuery(function($){
             }
 
 
-            imgContainer.append(data);
+            // If MI extension is active then append images to the listng, else only add one image replacing previus upload
+            if(multiple_image){
+                imgContainer.append(data);
+            }else {
+                imgContainer.html(data);
+            }
 
             // Un-hide the remove image link
             delImgLink.removeClass( 'hidden' );

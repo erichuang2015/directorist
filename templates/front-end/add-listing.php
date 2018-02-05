@@ -403,7 +403,6 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
 
 
         function initMap() {
-            /*@todo; make the zoom level customizable by a user settings*/
             /* Create new map instance*/
             map = new google.maps.Map( document.getElementById( 'gmap' ), {
                 zoom: <?php echo !empty($map_zoom_level) ? intval($map_zoom_level) : 16; ?>,
@@ -411,7 +410,7 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
             });
             var marker = new google.maps.Marker({
                 map: map,
-                position:  saved_lat_lng
+                position:  saved_lat_lng,
                 draggable:true,
                 title: '<?php _e('You can drag the marker to your desired place to place a marker', ATBDP_TEXTDOMAIN); ?>'
             });
@@ -438,6 +437,12 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
                 $manual_lng.val(event.latLng.lng());
                 // add the marker to the given map.
                 addMarker(event.latLng, map);
+            });
+            // This event listener update the lat long field of the form so that we can add the lat long to the database when the MARKER is drag.
+            google.maps.event.addListener(marker, 'dragend', function(event) {
+                // set the value of input field to save them to the database
+                $manual_lat.val(event.latLng.lat());
+                $manual_lng.val(event.latLng.lng());
             });
         }
 

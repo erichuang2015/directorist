@@ -37,8 +37,8 @@ $u_address= get_user_meta($uid, 'address', true);
                         </ul>
 
                         <div class="nav_button">
-                            <a href="<?= esc_url(ATBDP_Permalink::get_add_listing_page_link()); ?>" class="directory_btn btn btn-default"><?php _e('Submit New Listing', ATBDP_TEXTDOMAIN); ?></a>
-                            <a href="<?= esc_url(wp_logout_url());?>" class="directory_btn btn btn-default"><?php _e('Log Out', ATBDP_TEXTDOMAIN); ?></a>
+                            <a href="<?= esc_url(ATBDP_Permalink::get_add_listing_page_link()); ?>" class="<?= atbdp_directorist_button_classes(); ?>"><?php _e('Submit New Listing', ATBDP_TEXTDOMAIN); ?></a>
+                            <a href="<?= esc_url(wp_logout_url());?>" class="<?= atbdp_directorist_button_classes(); ?>"><?php _e('Log Out', ATBDP_TEXTDOMAIN); ?></a>
                         </div>
                     </div> <!--ends dashboard_nav-->
 

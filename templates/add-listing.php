@@ -221,10 +221,6 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
         function fillInAddress() {
             // Get the place details from the autocomplete object.
             var place = autocomplete.getPlace();
-
-            //console.dir(place);
-            //console.log('place has changed and now we are ready to rock on');
-            //console.log(place);
             // set the value of input field to save them to the database
             $manual_lat.val(place.geometry.location.lat());
             $manual_lng.val(place.geometry.location.lng());
@@ -245,12 +241,7 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
         initAutocomplete(); // start google map place auto complete API call
 
 
-
-
-
-
         function initMap() {
-            /*@todo; make the zoom level customizable by a user settings*/
             /* Create new map instance*/
                 map = new google.maps.Map(document.getElementById('gmap'), {
                 zoom: <?php echo !empty($map_zoom_level) ? intval($map_zoom_level) : 16; ?>,
@@ -286,6 +277,13 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
                 $manual_lng.val(event.latLng.lng());
                 // add the marker to the given map.
                 addMarker(event.latLng, map);
+            });
+
+            // This event listener update the lat long field of the form so that we can add the lat long to the database when the MARKER is drag.
+            google.maps.event.addListener(marker, 'dragend', function(event) {
+                // set the value of input field to save them to the database
+                $manual_lat.val(event.latLng.lat());
+                $manual_lng.val(event.latLng.lng());
             });
         }
 

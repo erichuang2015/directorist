@@ -277,13 +277,15 @@ final class Directorist_Base {
      * @return void
      */
     private function includes() {
+        require_once ATBDP_LIB_DIR . 'vafpress/bootstrap.php'; // load option framework.
         require_once ATBDP_INC_DIR . 'helper-functions.php';
         require_once ATBDP_INC_DIR . 'login-register.php';
-        require_once ATBDP_LIB_DIR . 'vafpress/bootstrap.php'; // load option framework.
         load_dependencies('all', ATBDP_CLASS_DIR); // load all php files from ATBDP_CLASS_DIR
         load_dependencies('all', ATBDP_LIB_DIR); // load all php files from ATBDP_LIB_DIR
         /*LOAD Rating and Review functionality*/
         load_dependencies('all', ATBDP_INC_DIR . 'review-rating/');
+        require_once ATBDP_INC_DIR . 'custom-actions.php';
+        require_once ATBDP_INC_DIR . 'custom-filters.php';
     }
 
     public function load_textdomain()
@@ -319,8 +321,8 @@ final class Directorist_Base {
     public function show_popular_listing($count=0)
     {
 
-        $enable_pop_listing = get_directorist_option('enable_pop_listing', 'yes');
-        if ('yes' !== trim($enable_pop_listing) ) return; // vail if popular listing is not enabled
+        $enable_pop_listing = get_directorist_option('enable_pop_listing', 1);
+        if (1 != $enable_pop_listing ) return; // vail if popular listing is not enabled
         $popular_listings = $this->get_popular_listings($count);
 
         if ($popular_listings->have_posts()){ ?>
@@ -409,8 +411,8 @@ final class Directorist_Base {
     public function show_related_listing($post)
     {
 
-        $enable_rel_listing = get_directorist_option('enable_rel_listing', 'yes');
-        if ('yes' !== trim($enable_rel_listing) ) return; // vail if related listing is not enabled
+        $enable_rel_listing = get_directorist_option('enable_rel_listing', 1);
+        if (1 != $enable_rel_listing ) return; // vail if related listing is not enabled
         $related_listings = $this->get_related_listings($post);
 
 
@@ -650,7 +652,7 @@ final class Directorist_Base {
 
                             <!--If current user has a review then show him update and delete button-->
                             <?php if (!empty($cur_user_review)){ ?>
-                                <button class="directory_btn btn btn-default" type="submit" id="atbdp_review_form_submit"><?php _e('Update', ATBDP_TEXTDOMAIN); ?></button> <!-- ends update  button -->
+                                <button class="<?= atbdp_directorist_button_classes(); ?>" type="submit" id="atbdp_review_form_submit"><?php _e('Update', ATBDP_TEXTDOMAIN); ?></button> <!-- ends update  button -->
                                 <button class="directory_btn btn btn-danger" type="button" id="atbdp_review_remove" data-review_id="<?= $cur_user_review->id; ?>"><?php _e('Remove', ATBDP_TEXTDOMAIN); ?></button> <!-- ends delete button -->
                             <?php }else{ ?>
                                 <button class="directory_btn btn btn-primary" type="submit" id="atbdp_review_form_submit"><?php _e('Submit Review', ATBDP_TEXTDOMAIN); ?></button> <!-- submit button -->

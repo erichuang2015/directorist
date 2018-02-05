@@ -120,8 +120,8 @@ $wp_query   = $listings;
 
                                                         <span class="fa <?= esc_attr(get_cat_icon(@$single_parent->term_id)); ?>" aria-hidden="true"></span>
                                                         <span> <?php if (is_object($single_parent)) { ?>
-                                                                <a href="<?= ATBDP_Permalink::get_category_archive($single_parent); ?>">
-                                                                <?= $single_parent->name; ?>
+                                                                <a href="<?= esc_url(ATBDP_Permalink::get_category_archive($single_parent)); ?>">
+                                                                <?= esc_html($single_parent->name); ?>
                                                                 </a>
                                                             <?php } else {
                                                                _e('Others', ATBDP_TEXTDOMAIN);
@@ -138,7 +138,7 @@ $wp_query   = $listings;
                                         </div>
 
                                         <div class="read_more_area">
-                                            <a class="btn btn-default" href="<?= get_post_permalink(get_the_ID()); ?>"><?php _e('Read More', ATBDP_TEXTDOMAIN); ?></a>
+                                            <a class="btn btn-default" href="<?= esc_url(get_post_permalink(get_the_ID())); ?>"><?php _e('Read More', ATBDP_TEXTDOMAIN); ?></a>
                                         </div>
                                     </div>
                                 </article>

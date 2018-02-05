@@ -49,8 +49,7 @@ class ATBDP_User {
         /*@todo; this is the temporary solution to let user upload image and listing. After the releasing the plugin, we need to work with custom rules and permission.*/
         $contributor = get_role('contributor');
         $subscriber = get_role('subscriber');
-        //var_dump($subscriber);
-        //var_dump($subscriber);
+
         $contributor->add_cap('upload_files');
         $subscriber->add_cap('upload_files');
     }

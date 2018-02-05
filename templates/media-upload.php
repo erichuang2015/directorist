@@ -5,7 +5,9 @@ foreach ($attachment_ids as $id){
     $image_links[$id]= wp_get_attachment_image_src($id)[0]; // store the attachment id and url
 }
 // is multiple image upload extension is active  ?
-$active_mi_ext = get_directorist_option('enable_multiple_image',  'no'); // default is no
+$active_mi_ext = is_multiple_images_active(); // default is no
+//var_dump($active_mi_ext);
+
 ?>
     <div class="directorist">
         <div class="row">
@@ -36,7 +38,7 @@ $active_mi_ext = get_directorist_option('enable_multiple_image',  'no'); // defa
                                     <span class="dashicons dashicons-format-image"></span>
                                     <?php _e('Upload Image', ATBDP_TEXTDOMAIN); ?>
                                 </a>
-                                <a id="delete-custom-img" class="btn btn-default <?= (!empty($image_links)) ? '': 'hidden' ?>" href="#"> <?php echo ('yes' === $active_mi_ext) ? esc_html__('Remove Images') : esc_html__('Remove Image'); ?></a>
+                                <a id="delete-custom-img" class="btn btn-default <?= (!empty($image_links)) ? '': 'hidden' ?>" href="#"> <?php echo ( 1 == $active_mi_ext ) ? esc_html__('Remove Images') : esc_html__('Remove Image'); ?></a>
                             </p>
 
                         </div>
