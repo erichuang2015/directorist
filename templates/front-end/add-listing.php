@@ -41,7 +41,8 @@ $categories = get_terms(ATBDP_CATEGORY, array('hide_empty' => 0));
 $locations = get_terms(ATBDP_LOCATION, array('hide_empty' => 0));
 $listing_tags = get_terms(ATBDP_TAGS, array('hide_empty' => 0));
 
-// see whats is coming through the post data.
+// get the map zoom level from the user settings
+$map_zoom_level = get_directorist_option('map_zoom_level', 16);
 
 ?>
 
@@ -402,14 +403,17 @@ $listing_tags = get_terms(ATBDP_TAGS, array('hide_empty' => 0));
 
 
         function initMap() {
+            /*@todo; make the zoom level customizable by a user settings*/
             /* Create new map instance*/
             map = new google.maps.Map( document.getElementById( 'gmap' ), {
-                zoom: 16,
+                zoom: <?php echo !empty($map_zoom_level) ? intval($map_zoom_level) : 16; ?>,
                 center: saved_lat_lng
             });
             var marker = new google.maps.Marker({
                 map: map,
                 position:  saved_lat_lng
+                draggable:true,
+                title: '<?php _e('You can drag the marker to your desired place to place a marker', ATBDP_TEXTDOMAIN); ?>'
             });
             marker.addListener('click', function() {
                 info_window.open(map, marker);
@@ -462,7 +466,7 @@ $listing_tags = get_terms(ATBDP_TAGS, array('hide_empty' => 0));
                     // add the marker to the markers array to keep track of it, so that we can show/hide/delete them all later.
                     markers.push(marker);
                 } else {
-                    alert('Geocode was not successful for the following reason: ' + status);
+                    alert( '<?php _e('Geocode was not successful for the following reason: ', ATBDP_TEXTDOMAIN); ?>' + status);
                 }
             });
         }
@@ -485,6 +489,8 @@ $listing_tags = get_terms(ATBDP_TAGS, array('hide_empty' => 0));
             var marker = new google.maps.Marker({
                 position: location,
                 /*label: labels[labelIndex++ % labels.length],*/
+                draggable:true,
+                title: '<?php _e('You can drag the marker to your desired place to place a marker', ATBDP_TEXTDOMAIN); ?>',
                 map: map
             });
             marker.addListener('click', function() {

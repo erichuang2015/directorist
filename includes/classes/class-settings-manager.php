@@ -127,10 +127,23 @@ class ATBDP_Settings_Manager {
                                                 'type' => 'textbox',
                                                 'name' => 'map_api_key',
                                                 'label' => __( 'Google Map API key', ATBDP_TEXTDOMAIN ),
-                                                'description' => __( 'You need to enter your google map api key in order to display google map. You can find your map api key and detailed information <a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank"> <strong style="color: red;">here</strong> </a>. or you can search in google', ATBDP_TEXTDOMAIN ),
+                                                'description' => sprintf(__( 'You need to enter your google map api key in order to display google map. You can find your map api key and detailed information %s. or you can search in google', ATBDP_TEXTDOMAIN ), '<a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank"> <strong style="color: red;">here</strong> </a>'),
                                                 'default' => atbdp_get_option('map_api_key', 'atbdp_general'),
                                                 'validation' => 'required',
                                             ),
+
+                                            array(
+                                                'type' => 'slider',
+                                                'name' => 'map_zoom_level',
+                                                'label' => __( 'Google Map Zoom Level', ATBDP_TEXTDOMAIN ),
+                                                'description' => __( 'You can adjust the zoom level of the map. 0 means 100% zoom-out. 22 means 100% zoom-in. Default is 16. ', ATBDP_TEXTDOMAIN ),
+                                                'min' => '0',
+                                                'max' => '22',
+                                                'step' => '1',
+                                                'default' => '16',
+                                                'validation' => 'required',
+                                            ),
+
                                             array(
                                                 'type' => 'toggle',
                                                 'name' => 'fix_js_conflict',

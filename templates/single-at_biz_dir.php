@@ -46,6 +46,8 @@ $recent_reviews = $ATBDP->review->db->get_all(5);// 5 recent reviews
 $average = $ATBDP->review->get_average($reviews);
 $reviews_count = $ATBDP->review->db->count(array('post_id' => $post->ID)); // get total review count for this post
 
+$map_zoom_level = get_directorist_option('map_zoom_level', 16);
+
 ?>
 
 <section class="directorist directory_wrapper">
@@ -254,7 +256,6 @@ $reviews_count = $ATBDP->review->db->count(array('post_id' => $post->ID)); // ge
                         <div class="directory_user_area_form">
                             <a href="<?= esc_url(ATBDP_Permalink::get_add_listing_page_link()); ?>" class="directory_btn btn btn-default"><?php _e('Submit New Listing', ATBDP_TEXTDOMAIN); ?></a>
 
-
                             <?php
                             if (!is_user_logged_in()){
                                 wp_login_form();
@@ -311,7 +312,7 @@ $reviews_count = $ATBDP->review->db->count(array('post_id' => $post->ID)); // ge
         function initMap() {
             /* Create new map instance*/
             map = new google.maps.Map(document.getElementById('gmap'), {
-                zoom: 20,
+                zoom: <?php echo !empty($map_zoom_level) ? intval($map_zoom_level) : 16; ?>,
                 center: saved_lat_lng
             });
             var marker = new google.maps.Marker({
@@ -330,22 +331,11 @@ $reviews_count = $ATBDP->review->db->count(array('post_id' => $post->ID)); // ge
         <?php } ?>
 
 
-
-
-
-
-
-
-
-
         //Convert address tags to google map links -
         $('address').each(function () {
             var link = "<a href='http://maps.google.com/maps?q=" + encodeURIComponent( $(this).text() ) + "' target='_blank'>" + $(this).text() + "</a>";
             $(this).html(link);
         });
-
-
-
 
     }); // ends jquery ready function.
 

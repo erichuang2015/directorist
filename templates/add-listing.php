@@ -15,8 +15,7 @@ $info_content .= "<p> {$ad}</p></div>";
 
 // grab social information
 $social_info = !empty( $social ) ? $social : array();
-
-
+$map_zoom_level = get_directorist_option('map_zoom_level', 16);
 
 ?>
 <div class="directorist directory_wrapper">
@@ -180,6 +179,7 @@ $social_info = !empty( $social ) ? $social : array();
          saved_lat_lng = {lat:<?= (!empty($manual_lat)) ? floatval($manual_lat) : '51.5073509' ?>, lng: <?= (!empty($manual_lng)) ? floatval($manual_lng) : '-0.12775829999998223' ?> }; // default is London city
         info_content = "<?= $info_content; ?>";
         markers = [];// initialize the array to keep track all the marker
+        /*@todo; make the max width size customizable*/
          info_window = new google.maps.InfoWindow({
             content: info_content,
              maxWidth: 400
@@ -250,16 +250,18 @@ $social_info = !empty( $social ) ? $social : array();
 
 
         function initMap() {
-
+            /*@todo; make the zoom level customizable by a user settings*/
             /* Create new map instance*/
                 map = new google.maps.Map(document.getElementById('gmap'), {
-                zoom: 16,
+                zoom: <?php echo !empty($map_zoom_level) ? intval($map_zoom_level) : 16; ?>,
                 center: saved_lat_lng
             });
              var marker = new google.maps.Marker({
-                map: map,
-                position:  saved_lat_lng
-            });
+                 map: map,
+                 position:  saved_lat_lng,
+                 draggable:true,
+                 title: '<?php _e('You can drag the marker to your desired place to place a marker', ATBDP_TEXTDOMAIN); ?>'
+             });
             marker.addListener('click', function() {
                 info_window.open(map, marker);
             });
@@ -312,14 +314,12 @@ $social_info = !empty( $social ) ? $social : array();
                     // add the marker to the markers array to keep track of it, so that we can show/hide/delete them all later.
                     markers.push(marker);
                 } else {
-                    alert('Geocode was not successful for the following reason: ' + status);
+                    alert( '<?php _e('Geocode was not successful for the following reason: ', ATBDP_TEXTDOMAIN); ?>' + status);
                 }
             });
         }
 
         initMap();
-
-
 
 
 
@@ -335,6 +335,8 @@ $social_info = !empty( $social ) ? $social : array();
              var marker = new google.maps.Marker({
                 position: location,
                 /*label: labels[labelIndex++ % labels.length],*/
+                 draggable:true,
+                 title: '<?php _e('You can drag the marker to your desired place to place a marker', ATBDP_TEXTDOMAIN); ?>',
                 map: map
             });
             marker.addListener('click', function() {
