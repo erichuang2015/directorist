@@ -20,10 +20,15 @@ class ATBDP_Enqueuer {
         // 'Professional WordPress Plugin Development' by Brad Williams
         add_action( 'wp_enqueue_scripts', array( $this, 'front_end_enqueue_scripts' ), -10 );
 
+        /*The plugins_loaded action hook fires early, and precedes the setup_theme, after_setup_theme, init and wp_loaded action hooks. This is why calling is_multiple_images_active() which is a wrapper function of vp_option() returned false all the time here. Because we bootstrapped the Vafpress at the after_theme_setup hook as directed by the author for various good reason. This bug took very hard time to fix :'( I should be more aware of the sequence of hook.*/
+        add_action('init', array($this, 'everything_has_loaded_and_ready')); // otherwise, vp_option would return null
+
+    }
+
+
+    public function everything_has_loaded_and_ready()
+    {
         $this->enable_multiple_image = is_multiple_images_active() ? 1 : 0; // is the MI Extension is installed???
-       // var_dump('from the enque');
-       // var_dump( is_multiple_images_active());
-        //var_dump(vp_option( "atbdp_option.enable_multiple_image"));
     }
 
 

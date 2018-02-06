@@ -6,7 +6,6 @@ foreach ($attachment_ids as $id){
 }
 // is multiple image upload extension is active  ?
 $active_mi_ext = is_multiple_images_active(); // default is no
-//var_dump($active_mi_ext);
 
 ?>
     <div class="directorist">

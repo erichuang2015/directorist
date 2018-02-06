@@ -1056,8 +1056,6 @@ if (!function_exists('is_multiple_images_active')){
         $enable = get_directorist_option('enable_multiple_image', 0);
         include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); // though the is_plugin_active() should work fine in the admin area but it showed me error. I tried several times. So, I had to include the function manually so that it works fine on back and front end.
         $active = is_plugin_active('directorist-multiple-image/bd-multiple-image.php');
-        //var_dump('from is multipel, enable', $enable);
-        //var_dump(get_directorist_option('enable_multiple_image', 0));
         return ((1==$enable) && $active); // plugin is active and enabled
     }
 }
