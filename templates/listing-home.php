@@ -1,10 +1,8 @@
-
 <?php
-
 $categories = get_terms(ATBDP_CATEGORY, array('hide_empty' => 0));
 $locations = get_terms(ATBDP_LOCATION, array('hide_empty' => 0));
 // get bg image if our directorist theme is active else, use the default bg.
-$bgimg = get_theme_mod('directorist_home_bg', ATBDP_PUBLIC_ASSETS.'images/home_page_bg.jpg');
+$bgimg = get_theme_mod('directoria_home_bg', ATBDP_PUBLIC_ASSETS.'images/home_page_bg.jpg');
 // get search page title and sub title from the plugin settings page
 $search_title = get_directorist_option('search_title', '');
 $search_subtitle = get_directorist_option('search_subtitle', '');
@@ -14,7 +12,6 @@ $show_popular_category = get_directorist_option('show_popular_category', 1);
 
 $popular_cat_title = get_directorist_option('popular_cat_title', __('Browse by popular categories', ATBDP_TEXTDOMAIN));
 $popular_cat_num = get_directorist_option('popular_cat_num', 10);
-
 ?>
 <!-- start search section -->
 <div class="directorist directory_search_area single_area" style="background-image: url('<?php echo esc_url($bgimg);?>')" >
@@ -29,7 +26,7 @@ $popular_cat_num = get_directorist_option('popular_cat_num', 10);
                     <!-- start search area -->
                     <div class="search_area">
                         <div class="title_area">
-                            <h2 class="title"><?php  echo esc_html($search_title);?></h2>
+                            <h2 class="title"><?php  echo esc_html($search_title); ?></h2>
                             <p class="sub_title"><?php  echo esc_html($search_subtitle); ?></p>
                         </div><!--- end title area -->
 
