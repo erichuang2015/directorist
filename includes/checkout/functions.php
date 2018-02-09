@@ -77,11 +77,11 @@ function atbdp_get_success_page_uri( $query_string = null ) {
 /**
  * Determines if we're currently on the Success page.
  *
- * @since 1.9.9
+ * @since 3.0.0
  * @return bool True if on the Success page, false otherwise.
  */
 function atbdp_is_success_page() {
-    $is_success_page = get_directorist_option( 'success_page', false );
+    $is_success_page = get_directorist_option( 'success_page' );
     $is_success_page = isset( $is_success_page ) ? is_page( $is_success_page ) : false;
 
     return apply_filters( 'atbdp_is_success_page', $is_success_page );
@@ -90,7 +90,7 @@ function atbdp_is_success_page() {
 /**
  * Send To Success Page
  *
- * Sends the user to the succes page.
+ * Sends the user to the success page.
  *
  * @param string $query_string
  * @access      public
@@ -117,7 +117,7 @@ function atbdp_send_to_success_page( $query_string = null ) {
  * @return mixed Full URL to the checkout page, if present | null if it doesn't exist
  */
 function atbdp_get_checkout_uri( $args = array() ) {
-    $uri = get_directorist_option( 'purchase_page', false );
+    $uri = get_directorist_option( 'purchase_page' );
     $uri = isset( $uri ) ? get_permalink( $uri ) : NULL;
 
     if ( ! empty( $args ) ) {
