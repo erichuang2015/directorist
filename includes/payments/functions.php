@@ -33,3 +33,25 @@ function atbdp_update_payment_status($payment_id, $status){
 function atbdp_purchase_form_required_fields(){
     return array();
 }
+
+/**
+ * Get all the payment statuses.
+ *
+ * @since    3.0.0
+ *
+ * @return   array    $statuses    A list of available payment status.
+ */
+function atbdp_get_payment_statuses() {
+
+    $statuses = array(
+        'created'   => __( "Created", ATBDP_POST_TYPE ),
+        'pending'   => __( "Pending", ATBDP_POST_TYPE ),
+        'completed' => __( "Completed", ATBDP_POST_TYPE ),
+        'failed'    => __( "Failed", ATBDP_POST_TYPE ),
+        'cancelled' => __( "Cancelled", ATBDP_POST_TYPE ),
+        'refunded'  => __( "Refunded", ATBDP_POST_TYPE )
+    );
+
+    return apply_filters( 'atbdp_payment_statuses', $statuses );
+
+}
