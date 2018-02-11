@@ -78,7 +78,7 @@ class VP_Option
 		if(isset($menu_label))            $this->set_menu_label($menu_label);
 
 		// add first_activation hook to save initial values to db
-		add_action('vp_option_first_activation', array($this, 'initial_db_setup'));
+		add_action( 'vp_option_first_activation', array($this, 'initial_db_setup') );
 
 		// check if option key not existed init data from default values
 		$options = get_option( $this->get_option_key() );

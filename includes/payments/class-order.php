@@ -46,9 +46,8 @@ class ATBDP_Order {
         );
 
         $args = array(
-            'label'               => __( 'Orders', ATBDP_TEXTDOMAIN ),
-            'description'         => __( 'Post Type Description', ATBDP_TEXTDOMAIN ),
             'labels'              => $labels,
+            'description'         => __( 'This order post type will keep track of user\'s order and payment status', ATBDP_TEXTDOMAIN ),
             'supports'            => array( 'title', 'author', ),
             'taxonomies'          => array( '' ),
             'hierarchical'        => false,
@@ -81,14 +80,22 @@ class ATBDP_Order {
         if( 'atbdp_orders' == $post_type ) {
             ?>
             <script type="text/javascript">
-                var acadp_bulk_actions = <?php echo json_encode( acadp_get_payment_bulk_actions() ); ?>;
-                //console.log(acadp_bulk_actions);
+                var atbdp_bulk_actions = <?php echo json_encode( atbdp_get_payment_bulk_actions() ); ?>;
+                //console.log(atbdp_bulk_actions);
+                /*$actions = array(
+                 'set_to_created'   => __( "Set Status to Created", ATBDP_TEXTDOMAIN ),
+                 'set_to_pending'   => __( "Set Status to Pending", ATBDP_TEXTDOMAIN ),
+                 'set_to_completed' => __( "Set Status to Completed", ATBDP_TEXTDOMAIN ),
+                 'set_to_failed'    => __( "Set Status to Failed", ATBDP_TEXTDOMAIN ),
+                 'set_to_cancelled' => __( "Set Status to Cancelled", ATBDP_TEXTDOMAIN ),
+                 'set_to_refunded'  => __( "Set Status to Refunded", ATBDP_TEXTDOMAIN )
+                 );*/
 
                 jQuery(document).ready(function() {
-                    for( var key in acadp_bulk_actions ) {
-                        if( acadp_bulk_actions.hasOwnProperty( key ) ) {
-                            jQuery('<option>').val( key ).text( acadp_bulk_actions[ key ] ).appendTo('select[name="action"]');
-                            jQuery('<option>').val( key ).text( acadp_bulk_actions[ key ] ).appendTo('select[name="action2"]');
+                    for( var key in atbdp_bulk_actions ) {
+                        if( atbdp_bulk_actions.hasOwnProperty( key ) ) {
+                            jQuery('<option>').val( key ).text( atbdp_bulk_actions[ key ] ).appendTo('select[name="action"]');
+                            jQuery('<option>').val( key ).text( atbdp_bulk_actions[ key ] ).appendTo('select[name="action2"]');
                         }
                     }
 
@@ -114,15 +121,27 @@ class ATBDP_Order {
         if( 'atbdp_orders' == $typenow ) {
 
             // Restrict by payment status
-            $statuses = acadp_get_payment_statuses();
+            $statuses = atbdp_get_payment_statuses();
+            /*
+             * @todo; remove all helper comments once work is done..
+             * $statuses = array(
+                    'created'   => __( "Created", ATBDP_TEXTDOMAIN ),
+                    'pending'   => __( "Pending", ATBDP_TEXTDOMAIN ),
+                    'completed' => __( "Completed", ATBDP_TEXTDOMAIN ),
+                    'failed'    => __( "Failed", ATBDP_TEXTDOMAIN ),
+                    'cancelled' => __( "Cancelled", ATBDP_TEXTDOMAIN ),
+                    'refunded'  => __( "Refunded", ATBDP_TEXTDOMAIN )
+                );
+            */
             $current_status = isset( $_GET['payment_status'] ) ? $_GET['payment_status'] : '';
 
             echo '<select name="payment_status">';
             echo '<option value="all">'.__( "All orders", ATBDP_TEXTDOMAIN ).'</option>';
             foreach( $statuses as $value => $title ) {
-                printf( '<option value="%s"%s>%s</option>', $value, ( $value == $current_status ? ' selected="selected"' : '' ), $title );
+                printf( '<option value="%s" %s>%s</option>', $value, selected( $value, $current_status), $title );
             }
             echo '</select>';
+
 
         }
 
@@ -193,26 +212,26 @@ class ATBDP_Order {
 
         switch ( $column ) {
             case 'ID' :
-                printf( '<a href="%s" target="_blank">%d</a>', acadp_get_payment_receipt_page_link( $post_id ), $post_id );
+                printf( '<a href="%s" target="_blank">%d</a>', ATBDP_Permalink::get_payment_receipt_page_link( $post_id ), $post_id );
                 break;
             case 'details' :
                 $listing_id = get_post_meta( $post_id, 'listing_id', true );
                 printf( '<p><a href="%s">%s:%d</a></p>', get_edit_post_link( $listing_id ), get_the_title( $listing_id ),  $listing_id );
 
-                $order_details = apply_filters( 'acadp_order_details', array(), $post_id );
+                $order_details = apply_filters( 'atbdp_order_details', array(), $post_id );
                 foreach( $order_details as $order_detail ) {
-                    echo '<div># '.$order_detail['label'].'</div>';
+                    echo '<div>#Short Notes: '.$order_detail['label'].'</div>';
                 }
 
-                $featured = get_post_meta( $post_id, 'featured', true );
+                $featured = get_post_meta( $post_id, 'featured', true ); // is this listing featured ?
                 if( $featured ) {
-                    $featured_listing_settings = get_option( 'acadp_featured_listing_settings' );
-                    echo '<div># '.$featured_listing_settings['label'].'</div>';
+                    $f_list_label = get_directorist_option( 'featured_listing_label' );
+                    echo "<div># {$f_list_label} </div>";
                 }
                 break;
             case 'amount' :
                 $amount = get_post_meta( $post_id, 'amount', true );
-                $amount = acadp_format_payment_amount( $amount );
+                $amount = atbdp_format_payment_amount( $amount );
 
                 $value = atbdp_order_currency_filter( $amount );
                 echo $value;
@@ -222,7 +241,7 @@ class ATBDP_Order {
                 if( 'free' == $gateway ) {
                     _e( 'Free Submission', ATBDP_TEXTDOMAIN );
                 } else {
-                    $gateway_settings = get_option( 'acadp_gateway_'.$gateway.'_settings' );
+                    $gateway_settings = get_option( 'atbdp_gateway_'.$gateway.'_settings' );
                     echo ! empty( $gateway_settings['label'] ) ? $gateway_settings['label'] : $gateway;
                 }
                 break;
@@ -243,7 +262,7 @@ class ATBDP_Order {
                 break;
             case 'status' :
                 $value = get_post_meta( $post_id, 'payment_status', true );
-                echo acadp_get_payment_status_i18n( $value );
+                echo atbdp_get_payment_status_i18n( $value );
                 break;
         }
 
@@ -287,7 +306,7 @@ class ATBDP_Order {
             $wp_list_table = _get_list_table('WP_Posts_List_Table');
             $action = $wp_list_table->current_action();
 
-            $allowed_actions = array_keys( acadp_get_payment_bulk_actions() );
+            $allowed_actions = array_keys( atbdp_get_payment_bulk_actions() );
             if( ! in_array( $action, $allowed_actions ) ) return;
 
             // Security check
@@ -342,7 +361,7 @@ class ATBDP_Order {
 
         if( $new_status == $old_status ) return true;
 
-        do_action( 'acadp_order_status_changed', $new_status, $old_status, $post_id );
+        do_action( 'atbdp_order_status_changed', $new_status, $old_status, $post_id );
 
         $non_complete_statuses = array( 'created', 'pending', 'failed', 'cancelled', 'refunded' );
 
@@ -364,7 +383,7 @@ class ATBDP_Order {
 
         // Email listing owner when his/her set to completed
         if( in_array( $old_status, $non_complete_statuses ) && 'completed' == $new_status ) {
-            acadp_email_listing_owner_order_completed( $post_id );
+            atbdp_email_listing_owner_order_completed( $post_id );
         }
 
         return true;
@@ -385,7 +404,7 @@ class ATBDP_Order {
         if( 'edit.php' == $pagenow && 'atbdp_orders' == $post_type ) {
 
             $message = '';
-            $allowed_actions = array_keys( acadp_get_payment_bulk_actions() );
+            $allowed_actions = array_keys( atbdp_get_payment_bulk_actions() );
 
             foreach( $allowed_actions as $action ) {
                 $_action = str_replace( 'set_to_', '', $action );

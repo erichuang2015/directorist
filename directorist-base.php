@@ -593,7 +593,6 @@ final class Directorist_Base {
 
         <!-- Review_area Section-->
         <div class="review_area">
-
             <?php
 
             // check if the user is logged in and the current user is not the owner of this listing.
@@ -602,7 +601,7 @@ final class Directorist_Base {
                 // if the current user is NOT the owner of the listing print review form
                 // get the settings of the admin whether to display review form even if the user is the owner of the listing.
                 $enable_owner_review = get_directorist_option('enable_owner_review', 1);
-                if (get_current_user_id() != $post->post_author || $enable_owner_review){
+                if ( get_current_user_id() != $post->post_author || $enable_owner_review ){
                     // if user has a review then fetch it.
                     $cur_user_review = ATBDP()->review->db->get_user_review_for_post(get_current_user_id(), get_the_ID());
                     ?>
@@ -615,7 +614,7 @@ final class Directorist_Base {
                             <?php wp_nonce_field( 'atbdp_review_action_form', 'atbdp_review_nonce_form' ); ?>
                             <input type="hidden" name="post_id" value="<?php the_ID(); ?>">
                             <!--<input type="email" name="email" class="directory_field" placeholder="Your email" required>-->
-                            <input type="hidden" name="name" class="btn btn-default" value="<?= wp_get_current_user()->display_name; ?>" placeholder="Your name" id="reviewer_name">
+                            <input type="hidden" name="name" class="btn btn-default" value="<?= wp_get_current_user()->display_name; ?>" placeholder="<?php esc_attr_e('Your name', ATBDP_TEXTDOMAIN); ?>" id="reviewer_name">
 
                             <div class="rating clearfix"> <!--It should be displayed on the left side -->
                                 <?php
@@ -667,7 +666,7 @@ final class Directorist_Base {
                     <span class="fa fa-info" aria-hidden="true"></span>
                     <?php
                     // get the custom registration page id from the db and create a permalink
-                    $reg_link_custom = atbdp_get_registration_page_url();
+                    $reg_link_custom = ATBDP_Permalink::get_registration_page_link();
                     //if we have custom registration page, use it, else use the default registration url.
                     $reg_link = !empty($reg_link_custom) ? $reg_link_custom : wp_registration_url();
 
@@ -703,7 +702,17 @@ final class Directorist_Base {
                             </div>
                         </div>
 
-                    <?php }  } ?>
+                    <?php }
+                }else{
+                    ?>
+                    <p class="notice">
+                        <span class="fa fa-info" aria-hidden="true"></span>
+                        <?php esc_html_e('No reviews available for this.', ATBDP_TEXTDOMAIN); ?>
+                    </p>
+
+
+        <?php
+                } ?>
             </div> <!--ends .client_reviews-->
 
 

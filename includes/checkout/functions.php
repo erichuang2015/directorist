@@ -324,7 +324,7 @@ function atbdp_enforced_ssl_redirect_handler() {
         return;
     }
 
-    if( atbdp_is_checkout() && false !== strpos( atbdp_get_current_page_url(), 'https://' ) ) {
+    if( atbdp_is_checkout() && false !== strpos( ATBDP_Permalink::get_current_page_url(), 'https://' ) ) {
         return;
     }
 

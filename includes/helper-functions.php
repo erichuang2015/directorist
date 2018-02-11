@@ -297,19 +297,14 @@ if (!function_exists('get_directorist_option')){
      * @param mixed $default    Default value for the option key if the option does not have value then default will be returned
      * @return mixed    It returns the value of the $name option if it exists in the option $group in the database, false otherwise.
      */
-    function get_directorist_option($name, $default=false){
+    function get_directorist_option($name, $default=''){
         // at first get the group of options from the database.
         // then check if the data exists in the array and if it exists then return it
         // if not, then return false
-        if (empty($name)) {
-            return (!empty($default)) ?  $default : false;
-        }
-
-        // vail out with returning a false if $name  option  is empty but return the default if it is not empty
-
-        // get the option from the database
-        $v = vp_option( "atbdp_option." . trim($name) );
-        return (!empty($v)) ? $v : ((!empty($default)) ?  $default : false);
+        if (empty($name)) { return $default; }
+        // get the option from the database and return it if it is not a null value. Otherwise, return the default value
+        $v = vp_option( "atbdp_option." . sanitize_key(trim($name)) );
+        return (isset($v)) ? $v : $default;
     }
 }
 
@@ -1054,8 +1049,8 @@ if (!function_exists('is_multiple_images_active')){
      */
     function  is_multiple_images_active(){
         $enable = get_directorist_option('enable_multiple_image', 0);
-        include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); // though the is_plugin_active() should work fine in the admin area but it showed me error. I tried several times. So, I had to include the function manually so that it works fine on back and front end.
-        $active = is_plugin_active('directorist-multiple-image/bd-multiple-image.php');
+        $active = in_array( 'directorist-multiple-image/bd-multiple-image.php', (array) get_option( 'active_plugins', array() ) ) ;
+
         return ((1==$enable) && $active); // plugin is active and enabled
     }
 }
@@ -1063,35 +1058,21 @@ if (!function_exists('is_multiple_images_active')){
 
 if (!function_exists('is_business_hour_active')){
     /**
-     * It checks if the Directorist Multiple images Extension is active and enabled
-     * @return bool It returns true if the Directorist Multiple images Extension is active and enabled
+     * It checks if the Directorist Business Hour Extension is active and enabled
+     * @return bool It returns true if the Directorist Business Hour Extension is active and enabled
      */
     function  is_business_hour_active(){
         $enable = get_directorist_option('enable_business_hour');
-        include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); // though the is_plugin_active() should work fine in the admin area but it showed me error. I tried several times. So, I had to include the function manually so that it works fine on back and front end.
-        $active = is_plugin_active('directorist-business-hour/bd-business-hour.php');
+        $active = in_array( 'directorist-business-hour/bd-business-hour.php', (array) get_option( 'active_plugins', array() ) ) ;
         return ($enable && $active); // plugin is active and enabled
     }
 }
 
-if (!function_exists('atbdp_get_current_page_url')){
-
-    function  atbdp_get_current_page_url($query_args=array()){
-
-        global $wp;
-
-        $current_url = home_url(add_query_arg($query_args, $wp->request));
-
-        return apply_filters('atbdp_current_page_url', $current_url );
-    }
-}
-
-
 if (!function_exists('is_empty_array')){
     /**
-     * It checks if the Directorist theme is installed currently.
+     * It checks the given array is empty
      * @param array $value The array of query args
-     * @return bool It returns true if the directorist theme is active currently. False otherwise.
+     * @return bool It returns true if the array is empty, and false otherwise.
      */
     function is_empty_array($value) {
         foreach($value as $key => $val) {
@@ -1099,18 +1080,6 @@ if (!function_exists('is_empty_array')){
                 return false;
         }
         return true;
-    }
-}
-
-/*@todo; move all the permalink related stuff to the permalink class*/
-if (!function_exists('atbdp_get_registration_page_url')){
-    function    atbdp_get_registration_page_url(){
-        return get_permalink(get_directorist_option('custom_registration'));
-    }
-}
-if (!function_exists('atbdp_get_user_dashboard_url')){
-    function    atbdp_get_user_dashboard_url(){
-        return get_permalink(get_directorist_option('user_dashboard'));
     }
 }
 

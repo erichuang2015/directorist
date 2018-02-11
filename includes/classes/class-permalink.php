@@ -23,18 +23,12 @@ class ATBDP_Permalink{
     {
 
         $link = home_url();
+        $id = get_directorist_option('search_result_page'); // get the page id of the search page.
+        if( $id ) $link = get_permalink( $id );
 
-        if( get_option('permalink_structure') ) {
 
-            $link = get_directorist_option('search_result_page'); // get the page id of the search page.
 
-            if( $link > 0 ) {
-                $link = get_permalink( $link );
-            }
-
-        }
-
-        return $link;
+        return apply_filters('atbdp_search_result_page_url', $link );
     }
 
     /**
@@ -46,17 +40,33 @@ class ATBDP_Permalink{
 
         $link = home_url();
 
-        if( get_option('permalink_structure') ) {
+        $id = get_directorist_option('user_dashboard'); // get the page id of the dashboard page.
 
-            $link = get_directorist_option('user_dashboard'); // get the page id of the dashboard page.
+        if( $id )  $link = get_permalink( $id );
 
-            if( $link > 0 ) {
-                $link = get_permalink( $link );
-            }
+        return apply_filters('atbdp_dashboard_page_url', $link );
+    }
 
+
+    /**
+     * It returns the link to the custom search archive page of ATBDP
+     * @param array $query_vars [optional] Array of query vars to be added to the registration page url
+     * @return string
+     */
+    public static function get_registration_page_link($query_vars=array())
+    {
+
+        $link = home_url();
+
+        $id = get_directorist_option('custom_registration'); // get the page id of the custom registration page.
+
+        if( $id ) $link = get_permalink( $id );
+
+        if (!empty($query_vars) && is_array($query_vars)){
+            $link = add_query_arg( $query_vars, $link );
         }
 
-        return $link;
+        return apply_filters('atbdp_registration_page_url', $link );
     }
 
 
@@ -66,20 +76,10 @@ class ATBDP_Permalink{
      */
     public static function get_add_listing_page_link()
     {
-
         $link = home_url();
-
-        if( get_option('permalink_structure') ) {
-
-            $link = get_directorist_option('add_listing_page'); // get the page id of the add listing page.
-
-            if( $link > 0 ) {
-                $link = get_permalink( $link );
-            }
-
-        }
-
-        return $link;
+        $id = get_directorist_option('add_listing_page');
+        if( $id ) $link = get_permalink( $id );
+        return apply_filters('atbdp_add_listing_page_url', $link );
     }
 
 
@@ -91,10 +91,12 @@ class ATBDP_Permalink{
     public static function get_current_page_url($query_args=array()){
 
         global $wp;
+        $link = home_url($wp->request);
+        if (!is_empty_array($query_args)){
+            $link = home_url(add_query_arg($query_args, $wp->request));
+        }
 
-        $current_url = home_url(add_query_arg($query_args, $wp->request));
-
-        return apply_filters('atbdp_current_page_url', $current_url );
+        return apply_filters('atbdp_current_page_url', $link );
     }
 
 
@@ -106,7 +108,16 @@ class ATBDP_Permalink{
      */
     public static function get_category_archive($cat, $field='slug')
     {
-        return self::get_search_result_page_link() . "?q=&in_cat={$cat->$field}";
+        $link = add_query_arg(
+            array(
+                'q'=>'',
+                'in_cat'=>$cat->{$field}
+            ),
+            self::get_search_result_page_link()
+        );
+        return apply_filters('atbdp_category_archive_url', $link);
+
+
     }
 
     /**
@@ -117,18 +128,48 @@ class ATBDP_Permalink{
      */
     public static function get_location_archive($loc, $field='slug')
     {
-        return self::get_search_result_page_link() . "?q=&in_loc={$loc->$field}";
+        $link = add_query_arg(
+            array(
+                'q'=>'',
+                'in_loc'=>$loc->{$field}
+            ),
+            self::get_search_result_page_link()
+        );
+        return apply_filters('atbdp_location_archive_url', $link);
+
     }
 
+    /**
+     * Generate a permalink for Payment receipt page.
+     *
+     * @since    3.0.0
+     *
+     * @param    int       $order_id    Order ID.
+     * @return   string                 Payment receipt page URL.
+     */
+    public static function get_payment_receipt_page_link($order_id) {
+        $link = home_url(); // default url
+        $id = get_directorist_option('payment_receipt_page');
+        if( $id ) {
+            $link = get_permalink( $id );
 
+            if( '' != get_option( 'permalink_structure' ) ) {
+                $link = user_trailingslashit( trailingslashit( $link ) . 'order/' . $order_id );
+            } else {
+                $link = add_query_arg(
+                    array(
+                        'atbdp_action' => 'order',
+                        'atbdp_order' => $order_id
+                    ),
+                    $link
+                );
+            }
+        }
 
+        return apply_filters('atbdp_payment_receipt_page_url', $link);
+    }
 
 } // end ATBDP_Permalink 
-
-
-
-
-
 
 endif;
 
