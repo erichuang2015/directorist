@@ -20,7 +20,10 @@ class ATBDP_Enqueuer {
         // 'Professional WordPress Plugin Development' by Brad Williams
         add_action( 'wp_enqueue_scripts', array( $this, 'front_end_enqueue_scripts' ), -10 );
 
-        /*The plugins_loaded action hook fires early, and precedes the setup_theme, after_setup_theme, init and wp_loaded action hooks. This is why calling is_multiple_images_active() which is a wrapper function of vp_option() returned false all the time here. Because we bootstrapped the Vafpress at the after_theme_setup hook as directed by the author for various good reason. This bug took very hard time to fix :'( I should be more aware of the sequence of hook.*/
+        /*The plugins_loaded action hook fires early, and precedes the setup_theme, after_setup_theme, init and wp_loaded action hooks.
+        This is why calling is_multiple_images_active() which is a wrapper function of vp_option() returned false all the time here.
+        Because we bootstrapped the Vafpress at the after_theme_setup hook as directed by the author for various good reason.
+        This bug took very hard time to fix :'( I should be more aware of the sequence of hook.*/
         add_action('init', array($this, 'everything_has_loaded_and_ready')); // otherwise, vp_option would return null
 
     }
@@ -210,7 +213,6 @@ class ATBDP_Enqueuer {
 
         // enqueue the style and the scripts on the page when the post type is our registered post type.
         if ( (is_object($post) && ATBDP_POST_TYPE == $post->post_type) || $force) {
-            $this->common_scripts_styles();
             wp_enqueue_style('sweetalertcss' );
             wp_enqueue_script('sweetalert' );
 
@@ -234,17 +236,9 @@ class ATBDP_Enqueuer {
     }
 
 
-    public function common_scripts_styles()
-    {
-
-
-
-
-    }
 
     public function add_listing_scripts_styles()
     {
-        $this->common_scripts_styles();
         wp_register_style( 'sweetalertcss', ATBDP_ADMIN_ASSETS.'css/sweetalert.min.css', false, ATBDP_VERSION );
         wp_register_script( 'sweetalert', ATBDP_ADMIN_ASSETS . 'js/sweetalert.min.js', array( 'jquery' ), ATBDP_VERSION, true );
         wp_enqueue_style('sweetalertcss');

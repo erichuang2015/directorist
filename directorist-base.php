@@ -369,7 +369,11 @@ final class Directorist_Base {
 
     /**
      * It gets the popular listings of the given listing/post
-     * @param int $count Number of popular listing to show.  If the count is more than one then it uses it, else the function will use the value from the settings page. Count variable is handy if we want to show different number of popular listings on different pages. For example, on different widgets place
+     *
+     * @param int $count Number of popular listing to show.  If the count is more than one then it uses it,
+     *                   else the function will use the value from the settings page.
+     *                   Count variable is handy if we want to show different number of popular listings on different pages.
+     *                   For example, on different widgets place
      * @return object|WP_Query It returns the popular listings if found.
      */
     private function get_popular_listings($count=0)
@@ -416,8 +420,6 @@ final class Directorist_Base {
         $related_listings = $this->get_related_listings($post);
 
 
-
-
         if ($related_listings->have_posts()){
             ?>
             <!--Related Listings starts-->
@@ -427,10 +429,6 @@ final class Directorist_Base {
                 </div>
                 <div class="row">
                     <?php foreach ($related_listings->posts as $r_post) {
-                        /*RATING RELATED STUFF STARTS*/
-                        //$reviews = ATBDP()->review->db->count(array('post_id' => $r_post->ID));
-                        //$average = ATBDP()->review->get_average($r_post->ID);
-
                         /*RATING RELATED STUFF ENDS*/
                         $info = ATBDP()->metabox->get_listing_info($r_post->ID); // get all post meta and extract it.
                         // this will have all vars like attachment etc

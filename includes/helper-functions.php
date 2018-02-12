@@ -303,15 +303,15 @@ if (!function_exists('get_directorist_option')){
         // if not, then return false
         if (empty($name)) { return $default; }
         // get the option from the database and return it if it is not a null value. Otherwise, return the default value
-        $v = vp_option( "atbdp_option." . sanitize_key(trim($name)) );
+        $options = (array) get_option('atbdp_option');
+        $v = (array_key_exists($name, $options))
+            ? $v =  $options[sanitize_key($name)]
+            : null;
+
+
         return (isset($v)) ? $v : $default;
     }
 }
-
-
-
-
-
 
 
 if (!function_exists('atbdp_yes_to_bool')){
@@ -325,28 +325,28 @@ if (!function_exists('atbdp_yes_to_bool')){
 if (!function_exists('atbdp_pagination')){
     /**
      * Prints pagination for custom post
-     * @param object|WP_Query $loop
+     * @param object|WP_Query $custom_post_query
      * @param int $paged
      *
      * @return string
      */
-    function atbdp_pagination( $loop, $paged = 1){
+    function atbdp_pagination( $custom_post_query, $paged = 1){
         $navigation = '';
         $largeNumber = 999999999; // we need a large number here
         $links = paginate_links( array(
             'base' => str_replace( $largeNumber, '%#%', esc_url( get_pagenum_link( $largeNumber ) ) ),
             'format' => '?paged=%#%',
             'current' => max( 1, $paged ),
-            'total' => $loop->max_num_pages,
-            'prev_text' => '<span class="fa fa-chevron-left"></span>',
-            'next_text' => '<span class="fa fa-chevron-right"></span>',
+            'total' => $custom_post_query->max_num_pages,
+            'prev_text' => apply_filters('atbdp_pagination_prev_text', '<span class="fa fa-chevron-left"></span>'),
+            'next_text' => apply_filters('atbdp_pagination_next_text', '<span class="fa fa-chevron-right"></span>'),
         ) );
 
 
         if ( $links ) {
             $navigation = _navigation_markup( $links, 'pagination', __( 'Posts navigation', ATBDP_TEXTDOMAIN) );
         }
-        return $navigation;
+        return apply_filters('atbdp_pagination', $navigation, $links, $custom_post_query, $paged);
     }
 }
 
@@ -1013,22 +1013,15 @@ if (!function_exists('atbdp_sanitize_array')){
     function atbdp_sanitize_array(&$array ) {
 
         foreach ($array as &$value) {
-
             if( !is_array($value) ) {
-
                 // sanitize if value is not an array
                 $value = sanitize_text_field($value);
-
             }else {
-
                 // go inside this function again
                 atbdp_sanitize_array($value);
             }
-
         }
-
         return $array;
-
     }
 }
 
@@ -1082,7 +1075,6 @@ if (!function_exists('is_empty_array')){
         return true;
     }
 }
-
 
 if (!function_exists('atbdp_get_paged_num')){
     /**
