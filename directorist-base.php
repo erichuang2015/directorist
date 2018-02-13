@@ -144,6 +144,14 @@ final class Directorist_Base {
     public $roles;
 
     /**
+     * ATBDP_Gateway Object.
+     *
+     * @var ATBDP_Gateway
+     * @since 1.0
+     */
+    public $gateway;
+
+    /**
      * Main Directorist_Base Instance.
      *
      * Insures that only one instance of Directorist_Base exists in memory at any one
@@ -177,6 +185,7 @@ final class Directorist_Base {
             self::$instance->listing        = new ATBDP_Listing;
             self::$instance->user           = new ATBDP_User;
             self::$instance->roles           = new ATBDP_Roles;
+            self::$instance->gateway           = new ATBDP_Gateway;
 
             // new settings
             new ATBDP_Settings_Manager();
@@ -284,6 +293,8 @@ final class Directorist_Base {
         load_dependencies('all', ATBDP_LIB_DIR); // load all php files from ATBDP_LIB_DIR
         /*LOAD Rating and Review functionality*/
         load_dependencies('all', ATBDP_INC_DIR . 'review-rating/');
+        /*Load gateway related stuff*/
+        load_dependencies('all', ATBDP_INC_DIR . 'gateways/');
         require_once ATBDP_INC_DIR . 'custom-actions.php';
         require_once ATBDP_INC_DIR . 'custom-filters.php';
     }

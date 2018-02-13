@@ -21,7 +21,7 @@ class ATBDP_Settings_Manager {
             'page_slug' => 'aazztech_settings',
             'menu_page' => 'edit.php?post_type=at_biz_dir',
             'use_auto_group_naming' => true,
-            'use_util_menu' => true,
+            'use_util_menu' => true, // show import and export menu
             'minimum_role' => 'manage_options',
             'layout' => 'fixed',
             'page_title' => __('Directory settings', ATBDP_TEXTDOMAIN),
@@ -156,6 +156,12 @@ class ATBDP_Settings_Manager {
                         'description'   => __('You can Customize General settings here. After switching any option, Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
                         'fields'        => $this->get_general_settings_fields(),
                     ), // ends general settings section
+                    'currency_section' => array(
+                        'type'          => 'section',
+                        'title'         => __('Currency Settings', ATBDP_TEXTDOMAIN),
+                        'description'   => __('This currency settings lets you customize how you would like to display price amount in your website. Note: You can accept currency in different currency. So, For payment related Currency Settings, Go to Gateway Settings Tab.', ATBDP_TEXTDOMAIN),
+                        'fields'        => $this->get_currency_settings_fields(),
+                    ), // ends general settings section
                 )),
             ),
 
@@ -225,6 +231,64 @@ class ATBDP_Settings_Manager {
                         'default' => atbdp_yes_to_bool($fix_b_js),
                     ),
                 )
+        );
+    }
+
+    function get_currency_settings_fields(){
+        return apply_filters('atbdp_currency_settings_fields', array(
+                array(
+                    'type' => 'notebox',
+                    'name' => 'g_currency_note',
+                    'label' => __('Note About This Currency Settings:', ATBDP_TEXTDOMAIN),
+                    'description' => __('This currency settings lets you customize how you would like to display price amount in your website. However, you can accept currency in a different currency. Therefore, for accepting currency in a different currency, Go to Gateway Settings Tab.', ATBDP_TEXTDOMAIN),
+                    'status' => 'info',
+                ),
+                array(
+                    'type' => 'textbox',
+                    'name' => 'g_currency',
+                    'label' => __( 'Currency Name', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Enter the Name of the currency', ATBDP_TEXTDOMAIN ),
+                    'default' => 'USD',
+                    'validation' => 'required',
+                ),
+                /*@todo; lets user use space as thousand separator in future. @see: https://docs.oracle.com/cd/E19455-01/806-0169/overview-9/index.html
+                */
+                array(
+                    'type' => 'textbox',
+                    'name' => 'g_thousand_separator',
+                    'label' => __( 'Thousand Separator', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Enter the currency thousand separator. Eg. , or . etc.', ATBDP_TEXTDOMAIN ),
+                    'default' => ',',
+                    'validation' => 'required',
+                ),
+
+                array(
+                    'type' => 'textbox',
+                    'name' => 'g_decimal_separator',
+                    'label' => __('Decimal Separator', ATBDP_TEXTDOMAIN),
+                    'description' => __('Enter the currency decimal separator. Eg. "." or ",". Default is "."', ATBDP_TEXTDOMAIN),
+                    'default' => '.',
+                ),
+                array(
+                    'type' => 'select',
+                    'name' => 'g_currency_position',
+                    'label' => __('Currency Position', ATBDP_TEXTDOMAIN),
+                    'description' => __('Select where you would like to show the currency symbol. Default is before. Eg. $5', ATBDP_TEXTDOMAIN),
+                    'default' => array(
+                        'before',
+                    ),
+                    'items' => array(
+                        array(
+                            'value' => 'before',
+                            'label' => __('$5 - Before', ATBDP_TEXTDOMAIN),
+                        ),
+                        array(
+                            'value' => 'after',
+                            'label' => __('After - 5$', ATBDP_TEXTDOMAIN),
+                        ),
+                    ),
+                ),
+            )
         );
     }
 

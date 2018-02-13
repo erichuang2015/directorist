@@ -15,7 +15,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 /**
  * ATBDP_Order Class
  *
- * @since    1.0.0
+ * @since    3.0.0
  * @access   public
  */
 class ATBDP_Order {
@@ -23,7 +23,7 @@ class ATBDP_Order {
     /**
      * Register a custom post type "atbdp_orders".
      *
-     * @since    1.0.0
+     * @since    3.0.0
      * @access   public
      */
     public function register_custom_post_type() {
@@ -71,7 +71,7 @@ class ATBDP_Order {
     /**
      * Add/Remove custom bulk actions to the select menus.
      *
-     * @since    1.0.0
+     * @since    3.0.0
      * @access   public
      */
     public function admin_footer_edit() {
@@ -111,7 +111,7 @@ class ATBDP_Order {
     /**
      * Add custom filter options.
      *
-     * @since    1.0.0
+     * @since    3.0.0
      * @access   public
      */
     public function restrict_manage_posts() {
@@ -150,7 +150,7 @@ class ATBDP_Order {
     /**
      * Parse a query string and enable filter by post meta "payment_status"
      *
-     * @since    1.0.0
+     * @since    3.0.0
      * @access   public
      *
      * @param	 WP_Query    $query    WordPress Query object
@@ -174,7 +174,7 @@ class ATBDP_Order {
     /**
      * Retrieve the table columns.
      *
-     * @since    1.0.0
+     * @since    3.0.0
      * @access   public
      *
      * @return   array    $columns    Array of all the list table columns.
@@ -200,7 +200,7 @@ class ATBDP_Order {
     /**
      * This function renders the custom columns in the list table.
      *
-     * @since    1.0.0
+     * @since    3.0.0
      * @access   public
      *
      * @param    string    $column    The name of the column.
@@ -215,6 +215,7 @@ class ATBDP_Order {
                 printf( '<a href="%s" target="_blank">%d</a>', ATBDP_Permalink::get_payment_receipt_page_link( $post_id ), $post_id );
                 break;
             case 'details' :
+
                 $listing_id = get_post_meta( $post_id, 'listing_id', true );
                 printf( '<p><a href="%s">%s:%d</a></p>', get_edit_post_link( $listing_id ), get_the_title( $listing_id ),  $listing_id );
 
@@ -231,9 +232,9 @@ class ATBDP_Order {
                 break;
             case 'amount' :
                 $amount = get_post_meta( $post_id, 'amount', true );
-                $amount = atbdp_format_payment_amount( $amount );
+                $amount = atbdp_format_payment_amount( $amount ); // get a formatted current amount
 
-                $value = atbdp_order_currency_filter( $amount );
+                $value = atbdp_order_currency_filter( $amount ); // add a currency sign before the price
                 echo $value;
                 break;
             case 'type' :
@@ -271,7 +272,7 @@ class ATBDP_Order {
     /**
      * Retrieve the table's sortable columns.
      *
-     * @since    1.0.0
+     * @since    3.0.0
      * @access   public
      *
      * @return   array    Array of all the sortable columns
@@ -291,7 +292,7 @@ class ATBDP_Order {
     /**
      * Called only in /wp-admin/edit.php* pages.
      *
-     * @since    1.0.0
+     * @since    3.0.0
      * @access   public
      */
     public function load_edit() {
@@ -345,7 +346,7 @@ class ATBDP_Order {
     /**
      * Update payment status.
      *
-     * @since    1.0.0
+     * @since    3.0.0
      * @access   public
      *
      * @param    string    $action    Action to be performed.
@@ -394,7 +395,7 @@ class ATBDP_Order {
      * Display an admin notice on the payment history page after performing
      * a bulk action.
      *
-     * @since    1.0.0
+     * @since    3.0.0
      * @access   public
      */
     public function admin_notices() {
@@ -424,7 +425,7 @@ class ATBDP_Order {
     /**
      * Sort custom columns.
      *
-     * @since    1.0.0
+     * @since    3.0.0
      * @access   public
      *
      * @param    array    $vars    Array of query variables.

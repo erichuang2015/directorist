@@ -308,7 +308,6 @@ if (!function_exists('get_directorist_option')){
             ? $v =  $options[sanitize_key($name)]
             : null;
 
-
         return (isset($v)) ? $v : $default;
     }
 }
