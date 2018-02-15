@@ -96,16 +96,11 @@ function atbdp_get_payment_bulk_actions() {
  * @return   string     $amount               Newly formatted amount or Price Not Available
  */
 function atbdp_format_amount( $amount, $decimals = true, $currency_settings = array() ) {
+    !is_array($currency_settings) || extract($currency_settings); // if it is array then extract it. Using the magic of OR CONDITION's FLOW
 
-    if( empty( $currency_settings ) ) {
-        $currency_settings = get_option( 'atbdp_currency_settings' );
-    }
-
-    //var_dump($currency_settings);
-
-    $currency = ! empty( $currency_settings[ 'currency' ] ) ? $currency_settings[ 'currency' ] : 'USD';
-    $thousands_sep = ! empty( $currency_settings[ 'thousands_separator' ] ) ? $currency_settings[ 'thousands_separator' ] : ',';
-    $decimal_sep = ! empty( $currency_settings[ 'decimal_separator' ] ) ? $currency_settings[ 'decimal_separator' ] : '.';
+    $currency       = ! empty( $currency )              ? $currency : get_directorist_option('g_currency', 'USD') ;
+    $thousands_sep  = ! empty( $thousands_separator )   ? $thousands_separator:  get_directorist_option('g_thousand_separator', ',');
+    $decimal_sep    = ! empty( $decimal_separator )     ? $decimal_separator:  get_directorist_option('g_decimal_separator', '.');
 
     // Format the amount
     if( $decimal_sep == ',' && false !== ( $sep_found = strpos( $amount, $decimal_sep ) ) ) {
@@ -146,7 +141,7 @@ function atbdp_format_amount( $amount, $decimals = true, $currency_settings = ar
  * @since    3.0.0
  *
  * @param    string    $amount      Price amount to format
- * @param    bool       $decimals   Whether or not to use decimals. Useful when set to false for non-currency numbers.
+ * @param    bool      $decimals    Whether or not to use decimals. Useful when set to false for non-currency numbers.
  * @return   string                 Newly formatted amount or Price Not Available
  */
 function atbdp_format_payment_amount( $amount, $decimals = true ) {
@@ -157,47 +152,41 @@ function atbdp_format_payment_amount( $amount, $decimals = true ) {
 
 
 /**
- * Get the directory's payment currency settings.
+ * Get the directory's payment currency settings if available. Otherwise, it returns the general currency settings
  *
- * @since    1.5.4
+ * @since    3.0.0
  * @return   array    $currency_settings    Currency settings array that contains currency name, thousand and decimal separators
  */
 function atbdp_get_payment_currency_settings() {
 
-    $payment_currency = get_directorist_option( 'payment_currency', get_directorist_option('g_currency', 'USD') ); // get the currency settings related to the payment
-    $payment_thousand_separator = get_directorist_option( 'payment_thousand_separator', get_directorist_option('g_thousand_separator', ',') );
-    $payment_decimal_separator = get_directorist_option( 'payment_decimal_separator', get_directorist_option('g_decimal_separator', '.') );
-    $payment_currency_position = get_directorist_option( 'payment_currency_position', get_directorist_option('g_currency_position', 'before') );
+    // Get the payment currency settings, and use the general currency settings if the payment currency setting is empty.
+    $currency_settings = array(
+        'currency'            =>  get_directorist_option( 'payment_currency', get_directorist_option('g_currency', 'USD') ),
+        'thousands_separator' =>  get_directorist_option( 'payment_thousand_separator', get_directorist_option('g_thousand_separator', ',') ),
+        'decimal_separator'   =>  get_directorist_option( 'payment_decimal_separator', get_directorist_option('g_decimal_separator', '.') ),
+        'position'            =>  get_directorist_option( 'payment_currency_position', get_directorist_option('g_currency_position','before')),
+    );
 
-
-
-        $currency_settings = array(
-            'currency'            => !empty($payment_currency) ? $payment_currency : 'USD',
-            'thousands_separator' => ! empty( $payment_thousand_separator ) ? $payment_thousand_separator : ',',
-            'decimal_separator'   => ! empty( $payment_decimal_separator  ) ? $payment_decimal_separator  : '.',
-            'position'            => !empty($payment_currency_position) ? $payment_currency_position : 'before'
-        );
-
-
-
-    return $currency_settings; // return the currency settings array
+    return apply_filters( 'atbdp_payment_currency_settings', $currency_settings ) ; // return the currency settings array
 
 }
 
 
 /**
- * Set the number of decimal places per currency
+ * Some currencies do not support for decimal. So, It Set the number of decimal places to 0 for RIAL, JPY, TWD, HUF currency. and it sets given decimal place for all other currency except the ones mentioned already.
  *
+ * @see https://developer.paypal.com/docs/classic/mass-pay/integration-guide/currency_codes/
  * @since    3.0.0
  *
  * @param    int       $decimals    Number of decimal places.
  * @param    string    $currency    Payment currency.
- * @return   int       $decimals
+ * @return   int       It returns the number of decimal place
  */
 function atbdp_currency_decimal_count( $decimals = 2, $currency = 'USD' ) {
-
+    /*Remove Decimal from the following currency as they do not support decimal*/
     switch( $currency ) {
         case 'RIAL' :
+        case 'SAR' :
         case 'JPY' :
         case 'TWD' :
         case 'HUF' :
@@ -209,3 +198,168 @@ function atbdp_currency_decimal_count( $decimals = 2, $currency = 'USD' ) {
 
 }
 
+
+/**
+ * Add currency symbol to the given price according to payment currency settings
+ *
+ * @since    3.0.0
+ *
+ * @param    string|int|float    $price    Paid Amount.
+ * @return   string              Formatted amount with currency.
+ */
+function atbdp_payment_currency_filter( $price = '' ) {
+
+    return atbdp_currency_filter( $price, atbdp_get_payment_currency_settings() );
+
+}
+
+
+/**
+ * Formats the currency display.
+ *
+ * @since    3.0.0
+ *
+ * @param    string|int|float    $price                Paid Amount.
+ * @param    array     $currency_settings    Currency Settings.
+ * @return   string    $formatted            Formatted amount with currency.
+ */
+function atbdp_currency_filter( $price = '', $currency_settings = array() ) {
+
+    !is_array($currency_settings) || extract($currency_settings); // if it is an array then extract it. Using the magic of OR CONDITION's FLOW
+    $currency       = ! empty( $currency ) ? $currency : get_directorist_option('g_currency', 'USD') ;
+    $position       = ! empty( $position ) ? $position :  get_directorist_option('g_currency_position', 'before');
+
+    $negative = $price < 0;
+
+    if( $negative ) {
+        $price = substr( $price, 1 ); // Remove proceeding "-" -
+    }
+
+    $symbol = atbdp_currency_symbol( $currency );
+
+    if( $position == 'before' ) {
+
+        switch( $currency ) {
+            case "GBP" :
+            case "BRL" :
+            case "EUR" :
+            case "USD" :
+            case "AUD" :
+            case "CAD" :
+            case "HKD" :
+            case "MXN" :
+            case "NZD" :
+            case "SGD" :
+            case "JPY" :
+                $formatted = $symbol . $price;
+                break;
+            default :
+                $formatted = $currency . ' ' . $price;
+                break;
+        }
+
+        $formatted = apply_filters( 'atbdp_' . strtolower( $currency ) . '_currency_filter_before', $formatted, $currency, $price );
+
+    } else {
+
+        switch( $currency ) {
+            case "GBP" :
+            case "BRL" :
+            case "EUR" :
+            case "USD" :
+            case "AUD" :
+            case "CAD" :
+            case "HKD" :
+            case "MXN" :
+            case "SGD" :
+            case "JPY" :
+                $formatted = $price . $symbol;
+                break;
+            default :
+                $formatted = $price . ' ' . $currency;
+                break;
+        }
+
+        $formatted = apply_filters( 'atbdp_' . strtolower( $currency ) . '_currency_filter_after', $formatted, $currency, $price );
+
+    }
+
+    if( $negative ) {
+        // Prepend the mins sign before the currency sign
+        $formatted = '-' . $formatted;
+    }
+
+    return $formatted;
+
+}
+
+/**
+ * Given a currency determine the symbol to use. If no currency given, site default is used.
+ * If no symbol is determine, the currency string is returned.
+ *
+ * @since    1.0.0
+ *
+ * @param    string    $currency    The currency string.
+ * @return   string                 The symbol to use for the currency.
+ */
+function atbdp_currency_symbol( $currency = '' ) {
+
+    switch( $currency ) {
+        case "GBP" :
+        case "POUND" :
+        case "pound" :
+            $symbol = '&pound;';
+            break;
+        case "BRL" :
+            $symbol = 'R&#36;';
+            break;
+        case "EUR" :
+            $symbol = '&euro;';
+            break;
+        case "USD" :
+        case "AUD" :
+        case "NZD" :
+        case "CAD" :
+        case "HKD" :
+        case "SGD" :
+            $symbol = '&#36;';
+            break;
+        case "JPY" :
+            $symbol = '&yen;';
+            break;
+        case "RUPEE" :
+        case "MUR" :
+        case "PKR" :
+            $symbol = '&#8360;';
+            break;
+        case "INR" :
+            $symbol = '&#8377;';
+            break;
+        case "MXN" :
+        case "PHP" :
+            $symbol = '&#8377;'; // Mexican and Philippine Peso Sign
+            break;
+        default :
+            $symbol = $currency;
+            break;
+    }
+
+    return apply_filters( 'atbdp_currency_symbol', $symbol, $currency );
+
+}
+
+
+/**
+ * Retrieve the payment status in localized format.
+ *
+ * @since    3.0.0
+ *
+ * @param    string    $status    Payment status.
+ * @return   string    $status    Localized payment status.
+ */
+function atbdp_get_payment_status_i18n( $status ) {
+
+    $statuses = atbdp_get_payment_statuses();
+    return array_key_exists($status, $statuses ) ? $statuses[ $status ] : __('Invalid', ATBDP_TEXTDOMAIN);
+
+}

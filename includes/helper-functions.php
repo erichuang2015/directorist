@@ -308,7 +308,7 @@ if (!function_exists('get_directorist_option')){
             ? $v =  $options[sanitize_key($name)]
             : null;
 
-        return (isset($v)) ? $v : $default;
+        return (isset($v) && '' != $v ) ? $v : $default; // we need to add '&& '' != $v' this because sometimes we may need some default when db returns empty string. And even if we need '' string then we can get it without specifying the default value.
     }
 }
 
