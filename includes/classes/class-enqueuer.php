@@ -46,13 +46,12 @@ class ATBDP_Enqueuer {
             wp_register_style( 'atbdp-font-awesome', ATBDP_PUBLIC_ASSETS . 'css/font-awesome.min.css', false, ATBDP_VERSION);
             wp_register_style( 'sweetalertcss', ATBDP_PUBLIC_ASSETS.'css/sweetalert.min.css', false, ATBDP_VERSION );
             wp_register_style( 'select2style', ATBDP_PUBLIC_ASSETS.'css/select2.min.css', false, ATBDP_VERSION );
-            wp_register_style( 'atbdp-bootstrap-style', ATBDP_PUBLIC_ASSETS . 'css/bootstrap.css', false, ATBDP_VERSION);
-            wp_register_style( 'atbdp-admin', ATBDP_ADMIN_ASSETS . 'css/style.css', array('atbdp-bootstrap-style', 'atbdp-font-awesome', 'select2style'), ATBDP_VERSION);
+            /*do not include bootstrap if it user wants to exclude*/
+            if ( ! get_directorist_option( 'exclude_admin_bootstrap_css' )) {
+                wp_register_style( 'atbdp-admin-bootstrap-style', ATBDP_PUBLIC_ASSETS . 'css/bootstrap.css', false, ATBDP_VERSION);
+            }
+            wp_register_style( 'atbdp-admin', ATBDP_ADMIN_ASSETS . 'css/style.css', array( 'atbdp-font-awesome', 'select2style'), ATBDP_VERSION);
 
-            // Scripts.... Right now we do not need bootstrap js in the admin.
-            /*if ('yes' !== get_directorist_option('fix_js_conflict')) {
-                wp_register_script('atbdp-bootstrap-script', ATBDP_PUBLIC_ASSETS . 'js/bootstrap.min.js', array('jquery'), ATBDP_VERSION, true);
-            }*/
 
 
             wp_register_script( 'sweetalert', ATBDP_PUBLIC_ASSETS . 'js/sweetalert.min.js', array( 'jquery' ), ATBDP_VERSION, true );
@@ -71,13 +70,6 @@ class ATBDP_Enqueuer {
                 'sweetalert',
                 'select2script',
             );
-            // We do not need bootstrap js in the admin page
-            /*
-             if ('yes' !== get_directorist_option('fix_js_conflict')) {
-                array_push($admin_scripts_dependency, 'atbdp-bootstrap-script');
-            }
-            */
-
 
             wp_register_script( 'atbdp-admin-script', ATBDP_ADMIN_ASSETS . 'js/main.js', $admin_scripts_dependency , ATBDP_VERSION, true );
 
@@ -87,7 +79,7 @@ class ATBDP_Enqueuer {
             /*@todo; we can also load scripts and style using very strict checking like loading based on post.php or edit.php etc. For example, sweetalert should be included in the post.php file where the user will add/edit listing */
 
             /* enqueue all styles*/
-            wp_enqueue_style('atbdp-bootstrap-style');
+            wp_enqueue_style('atbdp-admin-bootstrap-style');
             wp_enqueue_style('atbdp-font-awesome');
             wp_enqueue_style('sweetalertcss');
             wp_enqueue_style('select2style');
@@ -145,11 +137,14 @@ class ATBDP_Enqueuer {
         // This way,  we can just enqueue any styles and scripts in side the shortcode or any other functions.
 
         //@Todo; make unminified css minified then enqueue them.
-        wp_register_style( 'atbdp-bootstrap-style', ATBDP_PUBLIC_ASSETS . 'css/bootstrap.css', false, ATBDP_VERSION);
+        /*do not include bootstrap if it user wants to exclude*/
+        if ( ! get_directorist_option( 'exclude_bootstrap_css' )) {
+            wp_register_style( 'atbdp-bootstrap-style', ATBDP_PUBLIC_ASSETS . 'css/bootstrap.css', false, ATBDP_VERSION);
+        }
         wp_register_style( 'atbdp-font-awesome', ATBDP_PUBLIC_ASSETS . 'css/font-awesome.min.css', false, ATBDP_VERSION);
         wp_register_style( 'sweetalertcss', ATBDP_PUBLIC_ASSETS.'css/sweetalert.min.css', false, ATBDP_VERSION );
         wp_register_style( 'select2style', ATBDP_PUBLIC_ASSETS.'css/select2.min.css', false, ATBDP_VERSION );
-        wp_register_style( 'atbdp-style', ATBDP_PUBLIC_ASSETS . 'css/style.css', array( 'atbdp-font-awesome', 'atbdp-bootstrap-style'), ATBDP_VERSION);
+        wp_register_style( 'atbdp-style', ATBDP_PUBLIC_ASSETS . 'css/style.css', array( 'atbdp-font-awesome',), ATBDP_VERSION);
 
 
 
@@ -189,7 +184,7 @@ class ATBDP_Enqueuer {
         wp_enqueue_script('select2script');
 
         /* Enqueue all styles*/
-        //wp_enqueue_style('atbdp-bootstrap-style');
+        wp_enqueue_style('atbdp-bootstrap-style');
         wp_enqueue_style('atbdp-font-awesome');
         wp_enqueue_style('atbdp-style');
 

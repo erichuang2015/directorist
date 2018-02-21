@@ -84,7 +84,7 @@ class ATBDP_Permalink{
 
 
     /**
-     * It returns the current page url of the wordpress and you can add any query string to the url
+     * It returns the current page url of the WordPress and you can add any query string to the url
      * @param array $query_args The array of query arguments passed to the current url
      * @return mixed it returns the current url of WordPress
      */
@@ -100,7 +100,7 @@ class ATBDP_Permalink{
 
     /**
      * It returns the link to the custom category archive page of ATBDP
-     * @param $cat
+     * @param WP_Term $cat
      * @param string $field
      * @return string
      */
@@ -111,13 +111,24 @@ class ATBDP_Permalink{
 
     /**
      * It returns the link to the custom category archive page of ATBDP
-     * @param $loc
+     * @param WP_Term $loc
      * @param string $field
      * @return string
      */
     public static function get_location_archive($loc, $field='slug')
     {
         return self::get_search_result_page_link() . "?q=&in_loc={$loc->$field}";
+    }
+
+    /**
+     * It returns the link to the custom tag archive page of ATBDP
+     * @param WP_Term $tag
+     * @param string $field
+     * @return string
+     */
+    public static function get_tag_archive($tag, $field='slug')
+    {
+        return self::get_search_result_page_link() . "?q=&in_tag={$tag->$field}";
     }
 
 

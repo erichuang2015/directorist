@@ -189,7 +189,7 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
 
         address_input = document.getElementById('address');
         address_input.addEventListener('focus', geolocate);
-        // this function will work on sites that uses SSL, it applies to Chrome especially, other broweser may allow location sharing without securing.
+        // this function will work on sites that uses SSL, it applies to Chrome especially, other browsers may allow location sharing without securing.
         function geolocate() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {

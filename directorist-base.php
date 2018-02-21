@@ -569,9 +569,9 @@ final class Directorist_Base {
         </div>
         <div class="directory_review_info"><span class="rating"><?= ( !empty( $average ) ) ? esc_html( round( floatval( $average ), 1 ) ) : '';?></span>
             <span class="rating_num">
-                                (<?= (!empty($reviews_count)) ? $reviews_count : 0?>
+            (<?= (!empty($reviews_count)) ? $reviews_count : 0 ?>
                 <?= ($reviews_count>1) ? __('reviews', ATBDP_TEXTDOMAIN): __('review', ATBDP_TEXTDOMAIN); ?>)
-                            </span>
+            </span>
         </div>
         <?php
     }
@@ -582,20 +582,18 @@ final class Directorist_Base {
      */
     public function show_review($post)
     {
-
         $enable_review = get_directorist_option('enable_review', 1);
         if (!$enable_review ) return; // vail if review is not enabled
 
-        $reviews = ATBDP()->_get_reviews($post, 3);
+        $review_num = get_directorist_option('review_num', 5); // how many reviews to show?
+        $reviews = ATBDP()->_get_reviews($post, $review_num);
         $reviews_count = ATBDP()->review->db->count(array('post_id' => $post->ID)); // get total review count for this post
 
         ?>
 
         <!-- Review_area Section-->
         <div class="review_area">
-
             <?php
-
             // check if the user is logged in and the current user is not the owner of this listing.
             if (is_user_logged_in() ) {
                 global $wpdb;
@@ -687,37 +685,42 @@ final class Directorist_Base {
                 <div class="atbdp_reviews_title">
                     <p><?php _e('Reviews', ATBDP_TEXTDOMAIN); ?></p>
                 </div>
-                <?php if (!empty($reviews)) {
-                    ?>
-                    <?php foreach ($reviews as $review) { ?>
-                        <div class="single_review" id="single_review_<?= $review->id; ?>">
-                            <div class="review_top">
-                                <div class="reviewer"><i class="fa fa-user" aria-hidden="true"></i><p><?= esc_html($review->name); ?></p></div>
-                                <span class="review_time"><?= date("d/m/Y", strtotime($review->date_created)) ?></span>
-                                <div class="br-theme-css-stars-static">
-                                    <?= ATBDP()->review->print_static_rating($review->rating); ?>
+                <div id="client_review_list">
+                    <?php if (!empty($reviews)) {
+                        ?>
+                        <?php foreach ($reviews as $review) { ?>
+                            <div class="single_review" id="single_review_<?= $review->id; ?>">
+                                <div class="review_top">
+                                    <div class="reviewer"><i class="fa fa-user" aria-hidden="true"></i><p><?= esc_html($review->name); ?></p></div>
+                                    <span class="review_time"><?= date("d/m/Y", strtotime($review->date_created)) ?></span>
+                                    <div class="br-theme-css-stars-static">
+                                        <?= ATBDP()->review->print_static_rating($review->rating); ?>
+                                    </div>
+                                </div>
+                                <div class="review_content">
+                                    <p><?= esc_html($review->content); ?></p>
                                 </div>
                             </div>
-                            <div class="review_content">
-                                <p><?= esc_html($review->content); ?></p>
-                            </div>
-                        </div>
 
-                    <?php }  } ?>
+                        <?php }
+                    } else { ?>
+                        <p class="notice" id="review_notice">
+                            <span class="fa fa-info" aria-hidden="true"></span>
+                            <?php _e('No reviews found. Be the first to post a review !', ATBDP_TEXTDOMAIN);
+                            ?>
+                        </p>
+
+                    <?php } ?>
+                </div>
+
             </div> <!--ends .client_reviews-->
-
-
         </div> <!--end .review_area-->
         <?php
 
-        // if the count of review is more than the number of showing reviews then show the more review button, eg. here we will show the read more button  if the number of the review in the database is more than 3
-        if (!empty($reviews_count) && $reviews_count > 3){
+        // if the count of review is more than the number of showing reviews then show the more review button, eg. here we will show the read more button  if the number of the review in the database is more than $review_num=5 default
+        if (!empty($reviews_count) && $reviews_count > $review_num){
             echo "<button class='directory_btn' type='button' id='load_more_review' data-id='{$post->ID}''>".__('View More Review', ATBDP_TEXTDOMAIN)."</button>";
         }
-        ?>
-
-        <?php
-
 
     }
 

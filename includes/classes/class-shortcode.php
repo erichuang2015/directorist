@@ -32,6 +32,7 @@ class ATBDP_Shortcode {
         $s_string = sanitize_text_field( $_GET['q'] );// get the searched query
         $in_cat = !empty($_GET['in_cat']) ? sanitize_text_field($_GET['in_cat']) : '';
         $in_loc = !empty($_GET['in_loc']) ? sanitize_text_field($_GET['in_loc']) : '';
+        $in_tag = !empty($_GET['in_tag']) ? sanitize_text_field($_GET['in_tag']) : '';
 
         // lets setup the query args
         $args = array(
@@ -67,6 +68,17 @@ class ATBDP_Shortcode {
             );
 
         }
+
+        if( !empty($in_tag) ) {
+            /*@todo; add option to the settings panel to let user choose whether to include result from children or not*/
+            $tax_queries[] = array(
+                'taxonomy'         => ATBDP_TAGS,
+                'field'            => 'slug',
+                'terms'            => $in_tag,
+            );
+
+        }
+
         if (!is_empty_array($tax_queries)){
             $args['tax_query'] = $tax_queries;
         }
@@ -74,7 +86,7 @@ class ATBDP_Shortcode {
         $listings = new WP_Query($args);
 
 
-        $data_for_template = compact('listings', 'in_loc', 'in_cat', 's_string', 'paged');
+        $data_for_template = compact('listings', 'in_loc', 'in_cat', 'in_tag', 's_string', 'paged');
         ATBDP()->load_template('search-at_biz_dir', array( 'data' => $data_for_template ));
         return ob_get_clean();
     }
