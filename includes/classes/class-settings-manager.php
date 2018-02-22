@@ -254,6 +254,7 @@ if ( !class_exists('ATBDP_Settings_Manager' ) ):
             return apply_filters('atbdp_permalink_settings_fields', array(
                     array(
                         'type' => 'notebox',
+                        'name' => 'slug_notebox',
                         'label' => __('Notice about slugs:', ATBDP_TEXTDOMAIN),
                         'description' => __('Slugs must contain only alpha-numeric characters, underscores or dashes. All slugs must be unique and different.', ATBDP_TEXTDOMAIN),
                         'status' => 'warning',
@@ -289,6 +290,7 @@ if ( !class_exists('ATBDP_Settings_Manager' ) ):
 
                     array(
                         'type' => 'notebox',
+                        'name' => 'tips_notebox',
                         'label' => __('Tips & Troubleshooting:', ATBDP_TEXTDOMAIN),
                         'description' => __('NOTE: If changing this option does not work, then do not worry. Just go to "WordPress Dashboard>Settings>Permalinks" and just click save. It should work fine now.', ATBDP_TEXTDOMAIN),
                         'status' => 'info',
@@ -326,6 +328,13 @@ if ( !class_exists('ATBDP_Settings_Manager' ) ):
                         'label' => __('Search Bar Placeholder', ATBDP_TEXTDOMAIN),
                         'description' => __( 'Enter the placeholder text for the search field. Eg. What are you looking for?', ATBDP_TEXTDOMAIN ),
                         'default' => atbdp_get_option('search_placeholder', 'atbdp_general'),
+                    ),
+                    array(
+                        'type' => 'textbox',
+                        'name' => 'no_result_found_text',
+                        'label' => __('Text For "Search - No Result Found"', ATBDP_TEXTDOMAIN),
+                        'description' => __( 'Enter the text that you would like to display when a search finds zero results. Eg. Sorry, No Matched Results Found !', ATBDP_TEXTDOMAIN ),
+                        'default' => __( 'Sorry, No Matched Results Found !', ATBDP_TEXTDOMAIN ),
                     ),
                     array(
                         'type' => 'slider',

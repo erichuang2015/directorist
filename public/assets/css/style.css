@@ -935,7 +935,7 @@ textarea.directory_field{
 }
 .listings li .left_img img{
 	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
+-moz-border-radius: 3px;
 	border-radius: 3px;
 }
 .right_content {

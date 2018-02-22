@@ -73,13 +73,8 @@ $popular_cat_num = get_directorist_option('popular_cat_num', 10);
                     </div><!-- end search area -->
 
 
-                    <?php if ( 1 == $show_popular_category){ ?>
-                    <div class="directory_home_category_area">
-
-                        <span><?php _e('Or', ATBDP_TEXTDOMAIN); ?></span>
-                        <p><?php echo esc_html($popular_cat_title); ?></p>
-
-                        <?php
+                    <?php
+                    if ( 1 == $show_popular_category){
                         /*@todo; let user decide what the popular category should be counted based on, and how to sort them*/
                         $args = array(
                             'type' => ATBDP_POST_TYPE,
@@ -92,26 +87,31 @@ $popular_cat_num = get_directorist_option('popular_cat_num', 10);
                             'no_found_rows' => true, // Skip SQL_CALC_FOUND_ROWS for performance (no pagination).
 
                         );
-                        $top_categories = get_categories( $args );
+                        $top_categories = get_categories( $args ); // do not show any markup if we do not have any category at all.
+                        if (!empty($top_categories)){
+                        ?>
+                            <div class="directory_home_category_area">
 
-                       ?>
+                                <span><?php _e('Or', ATBDP_TEXTDOMAIN); ?></span>
+                                <p><?php echo esc_html($popular_cat_title); ?></p>
 
-                        <ul class="categories">
-                            <?php
-                            foreach ( $top_categories as $cat ) { ?>
-                                <li>
-                                    <a href="<?= ATBDP_Permalink::get_category_archive($cat); ?>">
-                                        <span class="fa <?= get_cat_icon($cat->term_id); ?>" aria-hidden="true"></span>
-                                        <p><?= $cat->name; ?></p>
-                                    </a>
-                                </li>
+                                <ul class="categories">
+                                    <?php
+                                    foreach ( $top_categories as $cat ) { ?>
+                                        <li>
+                                            <a href="<?= ATBDP_Permalink::get_category_archive($cat); ?>">
+                                                <span class="fa <?= get_cat_icon($cat->term_id); ?>" aria-hidden="true"></span>
+                                                <p><?= $cat->name; ?></p>
+                                            </a>
+                                        </li>
 
-                            <?php }
-                            ?>
+                                    <?php }
+                                    ?>
 
-                        </ul>
-                    </div><!-- End category area -->
-                    <?php } ?>
+                                </ul>
+                            </div><!-- End category area -->
+                    <?php }
+                    }?>
 
 
 

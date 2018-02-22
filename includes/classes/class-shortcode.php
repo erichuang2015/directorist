@@ -24,8 +24,8 @@ class ATBDP_Shortcode {
     {
         ob_start();
         if( !isset( $_GET['q'] ) ) {
-            /*@todo; make the following text configurable in the settings later. */
-            return '<span class="no-result">'.__( 'Sorry, No Matched Results Found !', ATBDP_TEXTDOMAIN ).'</span>';
+            $no_result = get_directorist_option('no_result_found_text', __( 'Sorry, No Matched Results Found !', ATBDP_TEXTDOMAIN ));
+            return apply_filters('atbdp_no_result_found_text', "<span class='no-result'>".esc_html($no_result)."</span>");
         }
         $paged = atbdp_get_paged_num();
         $srch_p_num = get_directorist_option('search_posts_num', 6);
@@ -42,8 +42,6 @@ class ATBDP_Shortcode {
             'paged'          => $paged,
             's'              => $s_string,
         );
-
-        /*@todo; make the query smaller and specific using cats and locs and in the premium version we may add many criteria to search by*/
 
         $tax_queries=array(); // initiate the tax query var to append to it different tax query
 
@@ -70,7 +68,6 @@ class ATBDP_Shortcode {
         }
 
         if( !empty($in_tag) ) {
-            /*@todo; add option to the settings panel to let user choose whether to include result from children or not*/
             $tax_queries[] = array(
                 'taxonomy'         => ATBDP_TAGS,
                 'field'            => 'slug',
@@ -83,7 +80,7 @@ class ATBDP_Shortcode {
             $args['tax_query'] = $tax_queries;
         }
 
-        $listings = new WP_Query($args);
+        $listings = new WP_Query(apply_filters('atbdp_search_query_args', $args));
 
 
         $data_for_template = compact('listings', 'in_loc', 'in_cat', 'in_tag', 's_string', 'paged');

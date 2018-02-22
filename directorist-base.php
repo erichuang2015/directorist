@@ -86,13 +86,6 @@ final class Directorist_Base {
      */
     public $ajax_handler;
 
-    /**
-     * ATBDP_Settings Object.
-     *
-     * @var object|ATBDP_Settings
-     * @since 1.0
-     */
-    public $settings;
 
     /**
      * ATBDP_Shortcode Object.
@@ -196,6 +189,12 @@ final class Directorist_Base {
 /*            add_action('atbdp_after_listing_tagline', array(self::$instance, 'show_review_after_tagliine')); // show rating after the tagline of related listing*/
             add_action('atbdp_after_listing_tagline', array(self::$instance, 'show_review_after_tagliine')); // show rating after the tagline of the normal post on single page and also the search result page.
             add_action('atbdp_after_map', array(self::$instance, 'show_review'));
+            // Attempt to create listing related custom pages with plugin's custom shortcode to give user best experience.
+            // we can check the database if our custom pages have been installed correctly or not here first.
+            // This way we can minimize the adding of our custom function to the WordPress hooks.
+            if (get_option('atbdp_pages_version') < 1){
+                add_action('wp_loaded', array(self::$instance, 'add_custom_directorist_pages'));
+            }
 
 
 
@@ -311,6 +310,73 @@ final class Directorist_Base {
         ATBDP_Installation::install();
     }
 
+    public function add_custom_directorist_pages()
+    {
+        global $current_user;
+        $options = get_option('atbdp_option'); // we are retrieving all of our custom options because it contains all the page options too. and we can filter this array instead of calling get_directorist_option() over and over.
+        /*
+        Remember: We can not add new option to atbdp_option if there is no key matched. Because VafPress will override it.
+        Use normal update_option() instead if you need to add custom option that is not available in the settings fields of VP Framework.
+        */
+        $directorist_pages = array(
+            'search_listing' => array(
+                'title'   => __( 'Search Home', ATBDP_TEXTDOMAIN ),
+                'content' => '[search_listing]'
+            ),
+            'search_result_page' => array(
+                'title'   => __( 'Search Result', ATBDP_TEXTDOMAIN ),
+                'content' => '[search_result]'
+            ),
+            'add_listing_page' => array(
+                'title'   => __( 'Add Listing', ATBDP_TEXTDOMAIN ),
+                'content' => '[add_listing]'
+            ),
+            'all_listing_page' => array(
+                'title'   => __( 'All Listings', ATBDP_TEXTDOMAIN ),
+                'content' => '[all_listing]'
+            ),
+            'user_dashboard' => array(
+                'title'   => __( 'Dashboard', ATBDP_TEXTDOMAIN ),
+                'content' => '[user_dashboard]'
+            ),
+            'custom_registration' => array(
+                'title'   => __( 'Registration', ATBDP_TEXTDOMAIN ),
+                'content' => '[custom_registration]'
+            ),
+        );
+        $new_settings = 0; // lets keep track of new settings so that we do not update option unnecessarily.
+        // lets iterate over the array and insert a new page with with the appropriate shortcode if the page id is not available in the option array.
+        foreach ($directorist_pages as $op_name => $page_settings) {
+            // $op_name is the page option name in the database.
+            // if we do not have the page id assigned in the settings with the given page option name, then create an page
+            // and update the option.
+            if (empty($options[$op_name])){
+                $id = wp_insert_post(
+                    array(
+                        'post_title'     => $page_settings['title'],
+                        'post_content'   => $page_settings['content'],
+                        'post_status'    => 'publish',
+                        'post_author'    => $current_user->ID,
+                        'post_type'      => 'page',
+                        'comment_status' => 'closed'
+                    )
+                );
+                // if we have added the page successfully, lets add the page id to the options array to save the page settings in the database after the loop.
+                if($id) {
+                    $options[$op_name] = (int) $id;
+                }
+                $new_settings++;
+            }
+
+            // if we have new options then lets update the options with new option values.
+            if ($new_settings) {
+                update_option('atbdp_option', $options);
+            };
+            update_option('atbdp_pages_version', 1);
+        }
+
+    }
+
 
     /**
      * It displays popular listings
@@ -384,7 +450,7 @@ final class Directorist_Base {
          * @since 1.0.0
          * @param int $p_count The number of popular listing  to show
          */
-        $p_count = apply_filters('bdpl_popular_listing_number', $p_count);
+        $p_count = apply_filters('atbdp_popular_listing_number', $p_count);
 
         $args = array(
             'post_type'  => ATBDP_POST_TYPE,
@@ -400,7 +466,7 @@ final class Directorist_Base {
                 ),
             ),
         );
-        return new WP_Query( $args );
+        return new WP_Query( apply_filters('atbdp_popular_listing_args', $args) );
 
     }
 
@@ -551,7 +617,7 @@ final class Directorist_Base {
             'post__not_in' => array($post->ID),
         );
 
-        return new WP_Query( $args );
+        return new WP_Query( apply_filters('atbdp_related_listing_args', $args) );
 
     }
 
@@ -665,7 +731,7 @@ final class Directorist_Base {
                     <span class="fa fa-info" aria-hidden="true"></span>
                     <?php
                     // get the custom registration page id from the db and create a permalink
-                    $reg_link_custom = atbdp_get_registration_page_url();
+                    $reg_link_custom = ATBDP_Permalink::get_registration_page_link();
                     //if we have custom registration page, use it, else use the default registration url.
                     $reg_link = !empty($reg_link_custom) ? $reg_link_custom : wp_registration_url();
 

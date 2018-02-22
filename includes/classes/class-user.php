@@ -204,7 +204,7 @@ class ATBDP_User {
             $validation = $this->registration_validation( $username, $password, $email, $website, $first_name, $last_name, $bio );
             if ('passed' !== $validation){
 
-                wp_safe_redirect(atbdp_get_registration_page_url().'?errors=true');
+                wp_safe_redirect(ATBDP_Permalink::get_registration_page_link().'?errors=true');
                 exit();
             }
 
@@ -224,10 +224,10 @@ class ATBDP_User {
             if ($user_id && !is_wp_error( $user_id )) {
                 // user has been created successfully, now work on activation process
                 wp_new_user_notification($user_id, null, 'both'); // send activation to the user and the admin
-                wp_safe_redirect(atbdp_get_registration_page_url().'?success=true');
+                wp_safe_redirect(ATBDP_Permalink::get_registration_page_link().'?success=true');
                 exit();
             } else {
-                wp_safe_redirect(atbdp_get_registration_page_url().'?errors=true');
+                wp_safe_redirect(ATBDP_Permalink::get_registration_page_link().'?errors=true');
                 exit();
             }
 

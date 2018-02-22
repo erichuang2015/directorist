@@ -15,7 +15,6 @@ class ATBDP_Roles {
     public function __construct()
     {
         // Add custom ATBDP_Roles & Capabilities once only
-        //var_dump(get_option( 'atbdp_roles_mapped' ));
         if( ! get_option( 'atbdp_roles_mapped' ) ) {
             $this->add_caps();
             // Insert atbdp_roles_mapped option to the db to prevent mapping meta cap
