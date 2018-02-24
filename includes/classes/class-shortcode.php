@@ -126,11 +126,10 @@ class ATBDP_Shortcode {
 
     }
     public function search_listing($atts, $content = null) {
-
         ob_start();
-         ATBDP()->load_template('listing-home');
-         ATBDP()->enquirer->common_scripts_styles();
-         ATBDP()->enquirer->search_listing_scripts_styles();
+        ATBDP()->load_template('listing-home');
+        ATBDP()->enquirer->common_scripts_styles();
+        ATBDP()->enquirer->search_listing_scripts_styles();
         return ob_get_clean();
     }
 

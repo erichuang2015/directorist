@@ -195,9 +195,6 @@ final class Directorist_Base {
             if (get_option('atbdp_pages_version') < 1){
                 add_action('wp_loaded', array(self::$instance, 'add_custom_directorist_pages'));
             }
-
-
-
         }
 
         return self::$instance;
@@ -318,6 +315,7 @@ final class Directorist_Base {
         Remember: We can not add new option to atbdp_option if there is no key matched. Because VafPress will override it.
         Use normal update_option() instead if you need to add custom option that is not available in the settings fields of VP Framework.
         */
+
         $directorist_pages = array(
             'search_listing' => array(
                 'title'   => __( 'Search Home', ATBDP_TEXTDOMAIN ),
@@ -364,6 +362,22 @@ final class Directorist_Base {
                 // if we have added the page successfully, lets add the page id to the options array to save the page settings in the database after the loop.
                 if($id) {
                     $options[$op_name] = (int) $id;
+
+                    /*TRYING TO SET THE DEFAULT PAGE TEMPLATE FOR THIS PAGE WHERE OUR SHORTCODE IS USED */
+                    // get the template list of the theme and if it has any full width template then assign it.
+                    $page_templates = wp_get_theme()->get_page_templates();
+                    $custom_template = ''; // place holder for full width template
+                    $temp_type = ('search_listing' == $op_name) ? 'home-page.php' : 'full'; // look for home template for search_listing page
+                    // lets see if we can find any full width template, then use it for the page where our shortcode is used.
+                    foreach ($page_templates as $slug => $name) {
+                        if (strpos($slug, $temp_type)){
+                            $custom_template = $slug;
+                            break;
+                        }
+                    }
+                    if (!empty($custom_template)) update_post_meta($id, '_wp_page_template', sanitize_text_field($custom_template));
+
+
                 }
                 $new_settings++;
             }

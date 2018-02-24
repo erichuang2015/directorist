@@ -96,6 +96,7 @@ if (!class_exists('ATBDP_Permalink')):
 
             return apply_filters('atbdp_current_page_url', $current_url );
         }
+
         
         /**
          * It returns the link to the custom category archive page of ATBDP
