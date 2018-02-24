@@ -3,7 +3,7 @@
 Plugin Name: Directorist - Business Directory Plugin
 Plugin URI: https://aazztech.com/product/directorist-business-directory-plugin
 Description: Create a professional directory listing website like Yelp by a few clicks only. You can list place, any business etc.  with this plugin very easily.
-Version: 2.0.0
+Version: 3.0.0
 Author: AazzTech
 Author URI: https://aazztech.com
 License: GPLv2 or later
@@ -648,9 +648,9 @@ final class Directorist_Base {
      */
     public function show_review($post)
     {
-        $enable_review = get_directorist_option('enable_review', 1);
+        $enable_review = get_directorist_option('enable_review');
         if (!$enable_review ) return; // vail if review is not enabled
-
+        $enable_owner_review = get_directorist_option('enable_owner_review');
         $review_num = get_directorist_option('review_num', 5); // how many reviews to show?
         $reviews = ATBDP()->_get_reviews($post, $review_num);
         $reviews_count = ATBDP()->review->db->count(array('post_id' => $post->ID)); // get total review count for this post
@@ -665,7 +665,6 @@ final class Directorist_Base {
                 global $wpdb;
                 // if the current user is NOT the owner of the listing print review form
                 // get the settings of the admin whether to display review form even if the user is the owner of the listing.
-                $enable_owner_review = get_directorist_option('enable_owner_review', 1);
                 if (get_current_user_id() != $post->post_author || $enable_owner_review){
                     // if user has a review then fetch it.
                     $cur_user_review = ATBDP()->review->db->get_user_review_for_post(get_current_user_id(), get_the_ID());

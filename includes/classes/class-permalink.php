@@ -84,59 +84,54 @@ if (!class_exists('ATBDP_Permalink')):
 
 
         /**
-         * It returns the current page url of the wordpress and you can add any query string to the url
+         * It returns the current page url of the WordPress and you can add any query string to the url
          * @param array $query_args The array of query arguments passed to the current url
          * @return mixed it returns the current url of WordPress
          */
         public static function get_current_page_url($query_args=array()){
 
             global $wp;
-            $link = home_url($wp->request);
-            if (!is_empty_array($query_args)){
-                $link = home_url(add_query_arg($query_args, $wp->request));
-            }
 
-            return apply_filters('atbdp_current_page_url', $link );
+            $current_url = home_url(add_query_arg($query_args, $wp->request));
+
+            return apply_filters('atbdp_current_page_url', $current_url );
         }
-
-
+        
         /**
          * It returns the link to the custom category archive page of ATBDP
-         * @param $cat
+         * @param WP_Term $cat
          * @param string $field
          * @return string
          */
         public static function get_category_archive($cat, $field='slug')
         {
-            $link = add_query_arg(
-                array(
-                    'q'=>'',
-                    'in_cat'=>$cat->{$field}
-                ),
-                self::get_search_result_page_link()
-            );
+            $link = self::get_search_result_page_link() . "?q=&in_cat={$cat->$field}";
             return apply_filters('atbdp_category_archive_url', $link);
-
 
         }
 
         /**
          * It returns the link to the custom category archive page of ATBDP
-         * @param $loc
+         * @param WP_Term $loc
          * @param string $field
          * @return string
          */
         public static function get_location_archive($loc, $field='slug')
         {
-            $link = add_query_arg(
-                array(
-                    'q'=>'',
-                    'in_loc'=>$loc->{$field}
-                ),
-                self::get_search_result_page_link()
-            );
+            $link = self::get_search_result_page_link() . "?q=&in_loc={$loc->$field}";
             return apply_filters('atbdp_location_archive_url', $link);
 
+        }
+
+        /**
+         * It returns the link to the custom tag archive page of ATBDP
+         * @param WP_Term $tag
+         * @param string $field
+         * @return string
+         */
+        public static function get_tag_archive($tag, $field='slug')
+        {
+            return self::get_search_result_page_link() . "?q=&in_tag={$tag->$field}";
         }
 
         /**
