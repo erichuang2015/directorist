@@ -197,5 +197,6 @@ $u_address= get_user_meta($uid, 'address', true);
                 </div>
 
             </div>
+        </div>
     </div>
 </div>

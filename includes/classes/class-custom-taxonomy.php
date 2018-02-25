@@ -131,8 +131,8 @@ class ATBDP_Custom_Taxonomy {
 
         /*LOCATION*/
         $labels = array(
-            'name'              => _x( 'Directory Locations', 'taxonomy general name', ATBDP_TEXTDOMAIN ),
-            'singular_name'     => _x( 'Directory Location', 'taxonomy singular name', ATBDP_TEXTDOMAIN ),
+            'name'              => _x( 'Directory Locations', 'Location general name', ATBDP_TEXTDOMAIN ),
+            'singular_name'     => _x( 'Directory Location', 'Location singular name', ATBDP_TEXTDOMAIN ),
             'search_items'      => __( 'Search Location', ATBDP_TEXTDOMAIN ),
             'all_items'         => __( 'All Locations', ATBDP_TEXTDOMAIN ),
             'parent_item'       => __( 'Parent Location', ATBDP_TEXTDOMAIN ),
@@ -150,6 +150,8 @@ class ATBDP_Custom_Taxonomy {
             'show_ui'           => true,
             'show_admin_column' => true,
             'query_var'         => true,
+            'public'            => true,
+            'show_in_nav_menus' => true,
         );
 
 
@@ -166,8 +168,8 @@ class ATBDP_Custom_Taxonomy {
         /*CATEGORY*/
 
         $labels2 = array(
-            'name'              => _x( 'Directory categories', 'taxonomy general name', ATBDP_TEXTDOMAIN ),
-            'singular_name'     => _x( 'Directory category', 'taxonomy singular name', ATBDP_TEXTDOMAIN ),
+            'name'              => _x( 'Directory categories', 'Category general name', ATBDP_TEXTDOMAIN ),
+            'singular_name'     => _x( 'Directory category', 'Category singular name', ATBDP_TEXTDOMAIN ),
             'search_items'      => __( 'Search category', ATBDP_TEXTDOMAIN ),
             'all_items'         => __( 'All categories', ATBDP_TEXTDOMAIN ),
             'parent_item'       => __( 'Parent category', ATBDP_TEXTDOMAIN ),
@@ -185,6 +187,8 @@ class ATBDP_Custom_Taxonomy {
             'show_ui'           => true,
             'show_admin_column' => true,
             'query_var'         => true,
+            'public'            => true,
+            'show_in_nav_menus' => true,
         );
 
         // get the rewrite slug from the user settings, if exist use it.
@@ -199,8 +203,8 @@ class ATBDP_Custom_Taxonomy {
 
         /*TAGS*/
         $labels3 = array(
-            'name'              => _x( 'Directory Tags', 'taxonomy general name', ATBDP_TEXTDOMAIN ),
-            'singular_name'     => _x( 'Directory tag', 'taxonomy singular name', ATBDP_TEXTDOMAIN ),
+            'name'              => _x( 'Directory Tags', 'Tag general name', ATBDP_TEXTDOMAIN ),
+            'singular_name'     => _x( 'Directory Tag', 'Tag singular name', ATBDP_TEXTDOMAIN ),
             'search_items'      => __( 'Search tag', ATBDP_TEXTDOMAIN ),
             'all_items'         => __( 'All Tags', ATBDP_TEXTDOMAIN ),
             'parent_item'       => __( 'Parent tag', ATBDP_TEXTDOMAIN ),
@@ -218,7 +222,8 @@ class ATBDP_Custom_Taxonomy {
             'show_ui'           => true,
             'show_admin_column' => true,
             'query_var'         => true,
-            'rewrite'           => array( 'slug' => ATBDP_TAGS ), // we can give user option to select their fav slug later
+            'public'            => true,
+            'show_in_nav_menus' => true,
         );
 
         // get the rewrite slug from the user settings, if exist use it.

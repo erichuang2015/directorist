@@ -193,15 +193,15 @@ class ATBDP_Settings_Manager {
     }
 
     /**
-     * Get all the settings fields for the general settings section
-     * @since 3.0.0
-     * @return array
-     */
-    function get_general_settings_fields(){
-        /*ADAPTED FOR BACKWARD COMPATIBILITY*/
-        $fix_b_js = atbdp_get_option('fix_js_conflict', 'atbdp_general', 'no'); // fix bootstrap js conflict
+         * Get all the settings fields for the general settings section
+         * @since 3.0.0
+         * @return array
+         */
+        function get_general_settings_fields(){
+            /*ADAPTED FOR BACKWARD COMPATIBILITY*/
+            $fix_b_js = atbdp_get_option('fix_js_conflict', 'atbdp_general', 'no'); // fix bootstrap js conflict
 
-        return apply_filters('atbdp_general_settings_fields', array(
+            return apply_filters('atbdp_general_settings_fields', array(
                     array(
                         'type' => 'textbox',
                         'name' => 'map_api_key',
@@ -230,9 +230,24 @@ class ATBDP_Settings_Manager {
                         'description' => __('If you use a theme that uses Bootstrap Framework especially Bootstrap JS, then Check this setting to fix any conflict with theme bootstrap js.', ATBDP_TEXTDOMAIN),
                         'default' => atbdp_yes_to_bool($fix_b_js),
                     ),
+                    array(
+                        'type' => 'toggle',
+                        'name' => 'exclude_bootstrap_css',
+                        'label' => __('Do not include Plugin\'s Bootstrap CSS in the Front-End', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can turn this option ON to disable Bootstrap CSS in the Front-End if your theme is using bootstrap CSS already and you are facing problem.', ATBDP_TEXTDOMAIN),
+                        'default' => 0,
+                    ),
+                    array(
+                        'type' => 'toggle',
+                        'name' => 'exclude_admin_bootstrap_css',
+                        'label' => __('Do not include Plugin\'s Bootstrap CSS in the Backend', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can turn this option ON to disable Bootstrap CSS in the Admin Area of Directoria. It is better to keep this option turned off to load bootstrap css in the admin area of this plugin, unless you have a good reason to turn it ON', ATBDP_TEXTDOMAIN),
+                        'default' => 0,
+                    ),
+
                 )
-        );
-    }
+            );
+        }
 
     function get_currency_settings_fields(){
         return apply_filters('atbdp_currency_settings_fields', array(
@@ -346,12 +361,12 @@ class ATBDP_Settings_Manager {
     }
 
     /**
-     * Get all the settings fields for the search settings section
-     * @since 3.0.0
-     * @return array
-     */
-    function get_search_settings_fields(){
-        return apply_filters('atbdp_search_settings_fields', array(
+         * Get all the settings fields for the search settings section
+         * @since 3.0.0
+         * @return array
+         */
+        function get_search_settings_fields(){
+            return apply_filters('atbdp_search_settings_fields', array(
                     array(
                         'type' => 'textbox',
                         'name' => 'search_title',
@@ -375,6 +390,13 @@ class ATBDP_Settings_Manager {
                         'default' => atbdp_get_option('search_placeholder', 'atbdp_general'),
                     ),
                     array(
+                        'type' => 'textbox',
+                        'name' => 'no_result_found_text',
+                        'label' => __('Text For "Search - No Result Found"', ATBDP_TEXTDOMAIN),
+                        'description' => __( 'Enter the text that you would like to display when a search finds zero results. Eg. Sorry, No Matched Results Found !', ATBDP_TEXTDOMAIN ),
+                        'default' => __( 'Sorry, No Matched Results Found !', ATBDP_TEXTDOMAIN ),
+                    ),
+                    array(
                         'type' => 'slider',
                         'name' => 'search_posts_num',
                         'label' => __('Number of Search Results', ATBDP_TEXTDOMAIN),
@@ -386,9 +408,9 @@ class ATBDP_Settings_Manager {
                         'validation' => 'numeric|minlength[1]',
                     ),
 
-            )
-        );
-    }
+                )
+            );
+        }
 
     /**
      * Get all the settings fields for the listings settings section
@@ -576,8 +598,7 @@ class ATBDP_Settings_Manager {
     function get_extension_settings_fields(){
         /*BACKWARD Compatibility: $e_review. It may be removed in future release*/
         $e_review = atbdp_get_option('enable_review', 'atbdp_general', 'yes');
-
-        return apply_filters('atbdp_extension_settings_fields', array(
+            return apply_filters('atbdp_extension_settings_fields', array(
                     array(
                         'type' => 'toggle',
                         'name' => 'enable_review',
@@ -605,11 +626,13 @@ class ATBDP_Settings_Manager {
                         'default' => '5',
                         'validation' => 'numeric|minlength[1]',
                     ),
+
             )
         );
     }
 
 
 
-} // ends ATBDP_Settings_Manager
+
+    } // ends ATBDP_Settings_Manager
 endif;

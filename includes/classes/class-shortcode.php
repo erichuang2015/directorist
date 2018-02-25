@@ -24,14 +24,15 @@ class ATBDP_Shortcode {
     {
         ob_start();
         if( !isset( $_GET['q'] ) ) {
-            /*@todo; make the following text configurable in the settings later. */
-            return '<span class="no-result">'.__( 'Sorry, No Matched Results Found !', ATBDP_TEXTDOMAIN ).'</span>';
+            $no_result = get_directorist_option('no_result_found_text', __( 'Sorry, No Matched Results Found !', ATBDP_TEXTDOMAIN ));
+            return apply_filters('atbdp_no_result_found_text', "<span class='no-result'>".esc_html($no_result)."</span>");
         }
         $paged = atbdp_get_paged_num();
         $srch_p_num = get_directorist_option('search_posts_num', 6);
         $s_string = sanitize_text_field( $_GET['q'] );// get the searched query
         $in_cat = !empty($_GET['in_cat']) ? sanitize_text_field($_GET['in_cat']) : '';
         $in_loc = !empty($_GET['in_loc']) ? sanitize_text_field($_GET['in_loc']) : '';
+        $in_tag = !empty($_GET['in_tag']) ? sanitize_text_field($_GET['in_tag']) : '';
 
         // lets setup the query args
         $args = array(
@@ -41,8 +42,6 @@ class ATBDP_Shortcode {
             'paged'          => $paged,
             's'              => $s_string,
         );
-
-        /*@todo; make the query smaller and specific using cats and locs and in the premium version we may add many criteria to search by*/
 
         $tax_queries=array(); // initiate the tax query var to append to it different tax query
 
@@ -67,14 +66,24 @@ class ATBDP_Shortcode {
             );
 
         }
+
+        if( !empty($in_tag) ) {
+            $tax_queries[] = array(
+                'taxonomy'         => ATBDP_TAGS,
+                'field'            => 'slug',
+                'terms'            => $in_tag,
+            );
+
+        }
+
         if (!is_empty_array($tax_queries)){
             $args['tax_query'] = $tax_queries;
         }
 
-        $listings = new WP_Query($args);
+        $listings = new WP_Query(apply_filters('atbdp_search_query_args', $args));
 
 
-        $data_for_template = compact('listings', 'in_loc', 'in_cat', 's_string', 'paged');
+        $data_for_template = compact('listings', 'in_loc', 'in_cat', 'in_tag', 's_string', 'paged');
         ATBDP()->load_template('search-at_biz_dir', array( 'data' => $data_for_template ));
         return ob_get_clean();
     }
@@ -83,7 +92,6 @@ class ATBDP_Shortcode {
     {
         ob_start();
         ATBDP()->load_template('front-end/all-listing');
-        ATBDP()->enquirer->common_scripts_styles();
         return ob_get_clean();
     }
 
@@ -117,11 +125,9 @@ class ATBDP_Shortcode {
 
     }
     public function search_listing($atts, $content = null) {
-
         ob_start();
-         ATBDP()->load_template('listing-home');
-         ATBDP()->enquirer->common_scripts_styles();
-         ATBDP()->enquirer->search_listing_scripts_styles();
+        ATBDP()->load_template('listing-home');
+        ATBDP()->enquirer->search_listing_scripts_styles();
         return ob_get_clean();
     }
 

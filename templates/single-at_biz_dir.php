@@ -129,7 +129,7 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
                     // if business hour is active then add the following markup...
                     if ( is_business_hour_active() && $enable_bh_on_page && (!is_empty_array($business_hours) || !empty($enable247hour)) ) {
                     ?>
-                    <div class="row">
+                    <div class="row"><!-- we need to add a row when business hour extension is active in order to divide the width in two columns-->
                         <div class="col-md-5">
                             <!-- Opening/Business hour Information section-->
                             <div class="opening_hours">
@@ -191,11 +191,13 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
                             <!--We need to close the row and col div when we have business hour enabled. We used negative checking so that they can show by default if the setting is not set by the user after adding the plugin.-->
                             <?php if ( is_business_hour_active() && $enable_bh_on_page && (!is_empty_array($business_hours) || !empty($enable247hour)) ) {
                             ?>
-                        </div> <!--ends. .col-md-7 ddflkdsjflkdsjfl-->
+                        </div> <!--ends. .col-md-7 wrapper before contact information-->
                     </div> <!-- ends .row-->
                 <?php } ?>
 
-                    <?php if (!empty($manual_lat) && !empty($manual_lng)){
+                    <?php
+                    /*@todo; add a settings to toggle the display of map for individual listing or all listings.*/
+                    if (!empty($manual_lat) && !empty($manual_lng)){
                         echo '<div id="gmap"></div>';
                     } ?>
                     <!--Google map section-->

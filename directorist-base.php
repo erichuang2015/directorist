@@ -3,7 +3,7 @@
 Plugin Name: Directorist - Business Directory Plugin
 Plugin URI: https://aazztech.com/product/directorist-business-directory-plugin
 Description: Create a professional directory listing website like Yelp by a few clicks only. You can list place, any business etc.  with this plugin very easily.
-Version: 2.0.0
+Version: 3.0.0
 Author: AazzTech
 Author URI: https://aazztech.com
 License: GPLv2 or later
@@ -86,13 +86,6 @@ final class Directorist_Base {
      */
     public $ajax_handler;
 
-    /**
-     * ATBDP_Settings Object.
-     *
-     * @var object|ATBDP_Settings
-     * @since 1.0
-     */
-    public $settings;
 
     /**
      * ATBDP_Shortcode Object.
@@ -205,9 +198,12 @@ final class Directorist_Base {
 /*            add_action('atbdp_after_listing_tagline', array(self::$instance, 'show_review_after_tagliine')); // show rating after the tagline of related listing*/
             add_action('atbdp_after_listing_tagline', array(self::$instance, 'show_review_after_tagliine')); // show rating after the tagline of the normal post on single page and also the search result page.
             add_action('atbdp_after_map', array(self::$instance, 'show_review'));
-
-
-
+            // Attempt to create listing related custom pages with plugin's custom shortcode to give user best experience.
+            // we can check the database if our custom pages have been installed correctly or not here first.
+            // This way we can minimize the adding of our custom function to the WordPress hooks.
+            if (get_option('atbdp_pages_version') < 1){
+                add_action('wp_loaded', array(self::$instance, 'add_custom_directorist_pages'));
+            }
         }
 
         return self::$instance;
@@ -322,6 +318,90 @@ final class Directorist_Base {
         ATBDP_Installation::install();
     }
 
+    public function add_custom_directorist_pages()
+    {
+        global $current_user;
+        $options = get_option('atbdp_option'); // we are retrieving all of our custom options because it contains all the page options too. and we can filter this array instead of calling get_directorist_option() over and over.
+        /*
+        Remember: We can not add new option to atbdp_option if there is no key matched. Because VafPress will override it.
+        Use normal update_option() instead if you need to add custom option that is not available in the settings fields of VP Framework.
+        */
+
+        $directorist_pages = array(
+            'search_listing' => array(
+                'title'   => __( 'Search Home', ATBDP_TEXTDOMAIN ),
+                'content' => '[search_listing]'
+            ),
+            'search_result_page' => array(
+                'title'   => __( 'Search Result', ATBDP_TEXTDOMAIN ),
+                'content' => '[search_result]'
+            ),
+            'add_listing_page' => array(
+                'title'   => __( 'Add Listing', ATBDP_TEXTDOMAIN ),
+                'content' => '[add_listing]'
+            ),
+            'all_listing_page' => array(
+                'title'   => __( 'All Listings', ATBDP_TEXTDOMAIN ),
+                'content' => '[all_listing]'
+            ),
+            'user_dashboard' => array(
+                'title'   => __( 'Dashboard', ATBDP_TEXTDOMAIN ),
+                'content' => '[user_dashboard]'
+            ),
+            'custom_registration' => array(
+                'title'   => __( 'Registration', ATBDP_TEXTDOMAIN ),
+                'content' => '[custom_registration]'
+            ),
+        );
+        $new_settings = 0; // lets keep track of new settings so that we do not update option unnecessarily.
+        // lets iterate over the array and insert a new page with with the appropriate shortcode if the page id is not available in the option array.
+        foreach ($directorist_pages as $op_name => $page_settings) {
+            // $op_name is the page option name in the database.
+            // if we do not have the page id assigned in the settings with the given page option name, then create an page
+            // and update the option.
+            if (empty($options[$op_name])){
+                $id = wp_insert_post(
+                    array(
+                        'post_title'     => $page_settings['title'],
+                        'post_content'   => $page_settings['content'],
+                        'post_status'    => 'publish',
+                        'post_author'    => $current_user->ID,
+                        'post_type'      => 'page',
+                        'comment_status' => 'closed'
+                    )
+                );
+                // if we have added the page successfully, lets add the page id to the options array to save the page settings in the database after the loop.
+                if($id) {
+                    $options[$op_name] = (int) $id;
+
+                    /*TRYING TO SET THE DEFAULT PAGE TEMPLATE FOR THIS PAGE WHERE OUR SHORTCODE IS USED */
+                    // get the template list of the theme and if it has any full width template then assign it.
+                    $page_templates = wp_get_theme()->get_page_templates();
+                    $custom_template = ''; // place holder for full width template
+                    $temp_type = ('search_listing' == $op_name) ? 'home-page.php' : 'full'; // look for home template for search_listing page
+                    // lets see if we can find any full width template, then use it for the page where our shortcode is used.
+                    foreach ($page_templates as $slug => $name) {
+                        if (strpos($slug, $temp_type)){
+                            $custom_template = $slug;
+                            break;
+                        }
+                    }
+                    if (!empty($custom_template)) update_post_meta($id, '_wp_page_template', sanitize_text_field($custom_template));
+
+
+                }
+                $new_settings++;
+            }
+
+            // if we have new options then lets update the options with new option values.
+            if ($new_settings) {
+                update_option('atbdp_option', $options);
+            };
+            update_option('atbdp_pages_version', 1);
+        }
+
+    }
+
 
     /**
      * It displays popular listings
@@ -399,7 +479,7 @@ final class Directorist_Base {
          * @since 1.0.0
          * @param int $p_count The number of popular listing  to show
          */
-        $p_count = apply_filters('bdpl_popular_listing_number', $p_count);
+        $p_count = apply_filters('atbdp_popular_listing_number', $p_count);
 
         $args = array(
             'post_type'  => ATBDP_POST_TYPE,
@@ -415,7 +495,7 @@ final class Directorist_Base {
                 ),
             ),
         );
-        return new WP_Query( $args );
+        return new WP_Query( apply_filters('atbdp_popular_listing_args', $args) );
 
     }
 
@@ -560,7 +640,7 @@ final class Directorist_Base {
             'post__not_in' => array($post->ID),
         );
 
-        return new WP_Query( $args );
+        return new WP_Query( apply_filters('atbdp_related_listing_args', $args) );
 
     }
 
@@ -578,9 +658,9 @@ final class Directorist_Base {
         </div>
         <div class="directory_review_info"><span class="rating"><?= ( !empty( $average ) ) ? esc_html( round( floatval( $average ), 1 ) ) : '';?></span>
             <span class="rating_num">
-                                (<?= (!empty($reviews_count)) ? $reviews_count : 0?>
+            (<?= (!empty($reviews_count)) ? $reviews_count : 0 ?>
                 <?= ($reviews_count>1) ? __('reviews', ATBDP_TEXTDOMAIN): __('review', ATBDP_TEXTDOMAIN); ?>)
-                            </span>
+            </span>
         </div>
         <?php
     }
@@ -591,11 +671,11 @@ final class Directorist_Base {
      */
     public function show_review($post)
     {
-
-        $enable_review = get_directorist_option('enable_review', 1);
+        $enable_review = get_directorist_option('enable_review');
         if (!$enable_review ) return; // vail if review is not enabled
-
-        $reviews = ATBDP()->_get_reviews($post, 3);
+        $enable_owner_review = get_directorist_option('enable_owner_review');
+        $review_num = get_directorist_option('review_num', 5); // how many reviews to show?
+        $reviews = ATBDP()->_get_reviews($post, $review_num);
         $reviews_count = ATBDP()->review->db->count(array('post_id' => $post->ID)); // get total review count for this post
 
         ?>
@@ -603,14 +683,13 @@ final class Directorist_Base {
         <!-- Review_area Section-->
         <div class="review_area">
             <?php
-
             // check if the user is logged in and the current user is not the owner of this listing.
             if (is_user_logged_in() ) {
                 global $wpdb;
                 // if the current user is NOT the owner of the listing print review form
                 // get the settings of the admin whether to display review form even if the user is the owner of the listing.
-                $enable_owner_review = get_directorist_option('enable_owner_review', 1);
-                if ( get_current_user_id() != $post->post_author || $enable_owner_review ){
+                if (get_current_user_id() != $post->post_author || $enable_owner_review){
+
                     // if user has a review then fetch it.
                     $cur_user_review = ATBDP()->review->db->get_user_review_for_post(get_current_user_id(), get_the_ID());
                     ?>
@@ -695,47 +774,41 @@ final class Directorist_Base {
                 <div class="atbdp_reviews_title">
                     <p><?php _e('Reviews', ATBDP_TEXTDOMAIN); ?></p>
                 </div>
-                <?php if (!empty($reviews)) {
-                    ?>
-                    <?php foreach ($reviews as $review) { ?>
-                        <div class="single_review" id="single_review_<?= $review->id; ?>">
-                            <div class="review_top">
-                                <div class="reviewer"><i class="fa fa-user" aria-hidden="true"></i><p><?= esc_html($review->name); ?></p></div>
-                                <span class="review_time"><?= date("d/m/Y", strtotime($review->date_created)) ?></span>
-                                <div class="br-theme-css-stars-static">
-                                    <?= ATBDP()->review->print_static_rating($review->rating); ?>
+                <div id="client_review_list">
+                    <?php if (!empty($reviews)) {
+                        ?>
+                        <?php foreach ($reviews as $review) { ?>
+                            <div class="single_review" id="single_review_<?= $review->id; ?>">
+                                <div class="review_top">
+                                    <div class="reviewer"><i class="fa fa-user" aria-hidden="true"></i><p><?= esc_html($review->name); ?></p></div>
+                                    <span class="review_time"><?= date("d/m/Y", strtotime($review->date_created)) ?></span>
+                                    <div class="br-theme-css-stars-static">
+                                        <?= ATBDP()->review->print_static_rating($review->rating); ?>
+                                    </div>
+                                </div>
+                                <div class="review_content">
+                                    <p><?= esc_html($review->content); ?></p>
                                 </div>
                             </div>
-                            <div class="review_content">
-                                <p><?= esc_html($review->content); ?></p>
-                            </div>
-                        </div>
 
-                    <?php }
-                }else{
-                    ?>
-                    <p class="notice">
-                        <span class="fa fa-info" aria-hidden="true"></span>
-                        <?php esc_html_e('No reviews available for this.', ATBDP_TEXTDOMAIN); ?>
-                    </p>
+                        <?php }
+                    } else { ?>
+                        <p class="notice" id="review_notice">
+                            <span class="fa fa-info" aria-hidden="true"></span>
+                            <?php _e('No reviews found. Be the first to post a review !', ATBDP_TEXTDOMAIN);
+                            ?>
+                        </p>
+                    <?php } ?>
+                </div>
 
-
-        <?php
-                } ?>
             </div> <!--ends .client_reviews-->
-
-
         </div> <!--end .review_area-->
         <?php
 
-        // if the count of review is more than the number of showing reviews then show the more review button, eg. here we will show the read more button  if the number of the review in the database is more than 3
-        if (!empty($reviews_count) && $reviews_count > 3){
+        // if the count of review is more than the number of showing reviews then show the more review button, eg. here we will show the read more button  if the number of the review in the database is more than $review_num=5 default
+        if (!empty($reviews_count) && $reviews_count > $review_num){
             echo "<button class='directory_btn' type='button' id='load_more_review' data-id='{$post->ID}''>".__('View More Review', ATBDP_TEXTDOMAIN)."</button>";
         }
-        ?>
-
-        <?php
-
 
     }
 

@@ -37,7 +37,7 @@
             var name= $form.find("#reviewer_name").val();
             var content= $form.find("#review_content").val();
             var rating= $form.find("#review_rating").val();
-            console.log(response);
+            //console.log(response);
 
             if (response.success){
                 d = new Date(); // parse mysql date string to js date object
@@ -55,10 +55,10 @@
                     '</div>';
 
                 // as we have saved a review lets add a delete button so that user cann delete the review he has just added.
-                deleteBtn += '<button class="directory_btn" type="button" id="atbdp_review_remove" data-review_id="'+response.data.id+'">Remove</button>';
+                deleteBtn += '<button class="directory_btn btn btn-danger" type="button" id="atbdp_review_remove" data-review_id="'+response.data.id+'">Remove</button>';
                 $form.append(deleteBtn);
                 if (submit_count===1){
-                    $('#client_reviews').prepend(output); // add the review if it's the first review of the user
+                    $('#client_review_list').prepend(output); // add the review if it's the first review of the user
                 }
                 submit_count++;
                 // show success message
@@ -67,6 +67,14 @@
                     type:"success",
                     timer: 800,
                     showConfirmButton: false });
+
+                //reset the form
+                $form[0].reset();
+                // remove the notice if there was any
+                $r_notice = $('#review_notice');
+                if ($r_notice){
+                    $r_notice.remove();
+                }
             }else {
                 // show error message
                 swal({
@@ -139,7 +147,7 @@
             }
 
 
-            $('#client_reviews').append(output);
+            $('#client_review_list').append(output);
 
 
 

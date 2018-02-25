@@ -17,10 +17,10 @@ class ATBDP_Roles {
     {
         // Add custom ATBDP_Roles & Capabilities once only
         if (get_option('atbdp_roles_version') < $this->version){
+            $this->add_caps();
             // Insert atbdp_roles_mapped option to the db to prevent mapping meta cap
-            //add_option( 'atbdp_roles_version', $this->version );
+            add_option( 'atbdp_roles_version', $this->version );
         }
-        $this->add_caps();
 
 
     }

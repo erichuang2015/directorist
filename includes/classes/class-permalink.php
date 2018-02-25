@@ -14,22 +14,22 @@
 if ( ! defined('ABSPATH') ) { die( 'You are not allowed to access this file directly' ); }
 
 if (!class_exists('ATBDP_Permalink')):
-class ATBDP_Permalink{
-    /**
-     * It returns the link to the custom search archive page of ATBDP
-     * @return string
-     */
-    public static function get_search_result_page_link()
-    {
+    class ATBDP_Permalink{
+        /**
+         * It returns the link to the custom search archive page of ATBDP
+         * @return string
+         */
+        public static function get_search_result_page_link()
+        {
 
-        $link = home_url();
-        $id = get_directorist_option('search_result_page'); // get the page id of the search page.
-        if( $id ) $link = get_permalink( $id );
+            $link = home_url();
+            $id = get_directorist_option('search_result_page'); // get the page id of the search page.
+            if( $id ) $link = get_permalink( $id );
 
 
 
-        return apply_filters('atbdp_search_result_page_url', $link );
-    }
+            return apply_filters('atbdp_search_result_page_url', $link );
+        }
 
     /**
      * It returns the link to the custom search archive page of ATBDP
@@ -38,7 +38,8 @@ class ATBDP_Permalink{
     public static function get_dashboard_page_link()
     {
 
-        $link = home_url();
+
+            $link = home_url();
 
         $id = get_directorist_option('user_dashboard'); // get the page id of the dashboard page.
 
@@ -48,17 +49,20 @@ class ATBDP_Permalink{
     }
 
 
-    /**
-     * It returns the link to the custom search archive page of ATBDP
-     * @param array $query_vars [optional] Array of query vars to be added to the registration page url
-     * @return string
-     */
-    public static function get_registration_page_link($query_vars=array())
-    {
+        /**
+         * It returns the link to the custom search archive page of ATBDP
+         * @param array $query_vars [optional] Array of query vars to be added to the registration page url
+         * @return string
+         */
+        public static function get_registration_page_link($query_vars=array())
+        {
 
-        $link = home_url();
 
-        $id = get_directorist_option('custom_registration'); // get the page id of the custom registration page.
+            $link = home_url();
+
+
+            $id = get_directorist_option('custom_registration'); // get the page id of the custom registration page.
+
 
         if( $id ) $link = get_permalink( $id );
 
@@ -139,6 +143,24 @@ class ATBDP_Permalink{
 
     }
 
+        /**
+         * It returns the link to the custom tag archive page of ATBDP
+         * @param WP_Term $tag
+         * @param string $field
+         * @return string
+         */
+        public static function get_tag_archive($tag, $field='slug')
+        {
+            $link = add_query_arg(
+                array(
+                    'q'=>'',
+                    'in_tag'=>$tag->{$field}
+                ),
+                self::get_search_result_page_link()
+            );
+            return apply_filters('atbdp_tag_archive_url', $link);
+        }
+
     /**
      * Generate a permalink for Payment receipt page.
      *
@@ -169,7 +191,6 @@ class ATBDP_Permalink{
         return apply_filters('atbdp_payment_receipt_page_url', $link);
     }
 
-} // end ATBDP_Permalink 
+    } // end ATBDP_Permalink
 
 endif;
-

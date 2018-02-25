@@ -1030,7 +1030,7 @@ if (!function_exists('is_directoria_active')){
      * @return bool It returns true if the directorist theme is active currently. False otherwise.
      */
     function  is_directoria_active(){
-       return wp_get_theme()->get_stylesheet() === 'directoria';
+        return wp_get_theme()->get_stylesheet() === 'directoria';
     }
 }
 
@@ -1101,6 +1101,3 @@ if (!function_exists('atbdp_get_paged_num')){
 
 
 }
-
-
-

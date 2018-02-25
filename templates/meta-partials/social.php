@@ -33,7 +33,7 @@ $ATBDP = ATBDP();
                         </div>
                         <div class="col-md-3 col-md-12">
                             <span data-id="<?= $index; ?>" class="removeSocialField dashicons dashicons-trash"
-                                  title="Remove this item"></span> <span class="adl-move-icon dashicons dashicons-move"></span>
+                                  title="<?php _e('Remove this item', ATBDP_TEXTDOMAIN); ?>"></span> <span class="adl-move-icon dashicons dashicons-move"></span>
                         </div>
                     </div> <!--   ends .row   &  .atbdp_social_field_wrapper-->
 
@@ -55,7 +55,7 @@ $ATBDP = ATBDP();
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group">
-                            <input type="url" name="listing[social][0][url]" id="atbdp_s_link" class="form-control atbdp_social_input"
+                            <input type="url" name="listing[social][0][url]" id="atbdp_s_link" class="form-control directory_field atbdp_social_input"
                                    value="" placeholder="eg. http://example.com" required="">
                         </div>
                     </div>
