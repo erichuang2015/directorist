@@ -239,6 +239,20 @@ if ( !class_exists('ATBDP_Settings_Manager' ) ):
                         'description' => __('You can turn this option ON to disable Bootstrap CSS in the Admin Area of Directoria. It is better to keep this option turned off to load bootstrap css in the admin area of this plugin, unless you have a good reason to turn it ON', ATBDP_TEXTDOMAIN),
                         'default' => 0,
                     ),
+                    array(
+                        'type' => 'toggle',
+                        'name' => 'hide_submit_listing_widget',
+                        'label' => __('Hide Submit Listing Widget', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can turn this option ON to hide the "Submit New Listing" widget from the listing sidebar on Listing Detailed page.', ATBDP_TEXTDOMAIN),
+                        'default' => 0,
+                    ),
+                    array(
+                        'type' => 'toggle',
+                        'name' => 'hide_sign_in_widget',
+                        'label' => __('Hide Log In/Registration Widget', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can turn this option ON to hide the "Login/Registration" widget from the listing sidebar on Listing Detailed Page.', ATBDP_TEXTDOMAIN),
+                        'default' => 0,
+                    ),
 
                 )
             );

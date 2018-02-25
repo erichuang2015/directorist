@@ -21,6 +21,9 @@ $business_hours = !empty($listing_info['bdbh']) ? atbdp_sanitize_array($listing_
 $bdbh_settings = !empty($listing_info['bdbh_settings']) ? extract(atbdp_sanitize_array($listing_info['bdbh_settings'])) : array();
 /*Code for Business Hour Extensions*/
 
+$hide_new_listing_widget = get_directorist_option('hide_submit_listing_widget');
+$hide_login_widget = get_directorist_option('hide_sign_in_widget');
+
 
 $manual_lat = (!empty($manual_lat)) ? floatval($manual_lat) : false;
 $manual_lng = (!empty($manual_lng)) ? floatval($manual_lng) : false;
@@ -237,20 +240,27 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
 
 
                 <!--SIDE BAR -->
+            <?php if (empty($hide_new_listing_widget) || empty($hide_login_widget)){ ?>
                 <div class="col-md-4 col-sm-4">
                     <div class="directory_user_area">
+                        <?php if (empty($hide_new_listing_widget)) { ?>
                         <div class="directory_are_title">
                             <h4><?php _e('Submit Your Item', ATBDP_TEXTDOMAIN); ?></h4>
                         </div>
+                        <?php } ?>
 
                         <div class="directory_user_area_form">
-                            <a href="<?= esc_url(ATBDP_Permalink::get_add_listing_page_link()); ?>" class="<?= atbdp_directorist_button_classes(); ?>"><?php _e('Submit New Listing', ATBDP_TEXTDOMAIN); ?></a>
+                            <?php if (empty($hide_new_listing_widget)) { ?>
+                                <a href="<?= esc_url(ATBDP_Permalink::get_add_listing_page_link()); ?>" class="<?= atbdp_directorist_button_classes(); ?>"><?php _e('Submit New Listing', ATBDP_TEXTDOMAIN); ?></a>
+                                <?php
+                                    atbdp_after_new_listing_button(); // fires an empty action to let dev extend by adding anything here
+                            }
 
-                            <?php
-                            atbdp_after_new_listing_button(); // fires an empty action to let dev extend by adding anything here
-                            if (!is_user_logged_in()){
-                                wp_login_form();
-                                wp_register();
+                            if (empty($hide_login_widget)) {
+                                if (!is_user_logged_in()){
+                                    wp_login_form();
+                                    wp_register();
+                                }
                             }
                             ?>
                         </div>
@@ -273,6 +283,7 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
                     ?>
 
                 </div> <!--ends .col-md-4 col-sm-4-->
+            <?php } ?>
 
 
             <?php
