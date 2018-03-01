@@ -20,6 +20,24 @@ if ( !defined( 'ABSPATH' ) ) exit;
  */
 class ATBDP_Order {
 
+
+    public function __construct()
+    {
+        add_action( 'init', array($this, 'register_custom_post_type') );
+
+        if( is_admin() ) {
+            add_action( 'admin_footer-edit.php', array($this, 'admin_footer_edit') );
+            add_action( 'restrict_manage_posts', array($this, 'restrict_manage_posts') );
+            add_action( 'manage_atbdp_orders_posts_custom_column', array($this, 'custom_column_content', 10, 2 ));
+            add_action( 'load-edit.php', array($this, 'load_edit') );
+            add_action( 'admin_notices', array($this, 'admin_notices') );
+
+            add_filter( 'parse_query', array($this, 'parse_query') );
+            add_filter( 'manage_edit-atbdp_orders_columns', array($this, 'get_columns') );
+            add_filter( 'manage_edit-atbdp_orders_sortable_columns', array($this, 'get_sortable_columns') );
+        }
+    }
+
     /**
      * Register a custom post type "atbdp_orders".
      *
@@ -234,7 +252,7 @@ class ATBDP_Order {
                 $amount = get_post_meta( $post_id, 'amount', true );
                 $amount = atbdp_format_payment_amount( $amount ); // get a formatted current amount
 
-                $value = atbdp_order_currency_filter( $amount ); // add a currency sign before the price
+                $value = atbdp_payment_currency_filter( $amount ); // add a currency sign before the price
                 echo $value;
                 break;
             case 'type' :
@@ -280,9 +298,12 @@ class ATBDP_Order {
     public function get_sortable_columns() {
 
         $columns = array(
-            'ID' 	 => 'ID',
-            'amount' => 'amount',
-            'date' 	 => 'date'
+            'ID' 	    => 'ID',
+            'amount'    => 'amount',
+            'type'      => 'type',
+            'customer'  => 'customer',
+            'date' 	    => 'date',
+            'status'    => 'status',
         );
 
         return $columns;
@@ -384,7 +405,8 @@ class ATBDP_Order {
 
         // Email listing owner when his/her set to completed
         if( in_array( $old_status, $non_complete_statuses ) && 'completed' == $new_status ) {
-            atbdp_email_listing_owner_order_completed( $post_id );
+            /*@todo; send and email to the listing owner telling him that his listing order has been completed.*/
+            //atbdp_email_listing_owner_order_completed( $post_id );
         }
 
         return true;
@@ -415,8 +437,7 @@ class ATBDP_Order {
                 }
             }
 
-            $class = "updated";
-            if( ! empty( $message ) ) echo "<div class=\"$class\"> <p>$message</p></div>";
+            if( ! empty( $message ) ) echo "<div class='updated'> <p>{$message}</p></div>";
 
         }
 
@@ -449,6 +470,7 @@ class ATBDP_Order {
                 );
 
             }
+
 
         }
 

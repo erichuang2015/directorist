@@ -262,7 +262,7 @@ class ATBDP_Settings_Manager {
                     'type' => 'textbox',
                     'name' => 'g_currency',
                     'label' => __( 'Currency Name', ATBDP_TEXTDOMAIN ),
-                    'description' => __( 'Enter the Name of the currency', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Enter the Name of the currency eg. USD or GBP etc.', ATBDP_TEXTDOMAIN ),
                     'default' => 'USD',
                     'validation' => 'required',
                 ),

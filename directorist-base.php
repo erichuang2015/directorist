@@ -132,7 +132,7 @@ final class Directorist_Base {
      * ATBDP_Roles Object.
      *
      * @var object|ATBDP_Roles
-     * @since 1.0
+     * @since 3.0
      */
     public $roles;
 
@@ -140,9 +140,17 @@ final class Directorist_Base {
      * ATBDP_Gateway Object.
      *
      * @var ATBDP_Gateway
-     * @since 1.0
+     * @since 3.1.0
      */
     public $gateway;
+
+    /**
+     * ATBDP_Order Object.
+     *
+     * @var ATBDP_Order
+     * @since 3.1.0
+     */
+    public $order;
 
     /**
      * Main Directorist_Base Instance.
@@ -177,8 +185,9 @@ final class Directorist_Base {
             self::$instance->helper         = new ATBDP_Helper;
             self::$instance->listing        = new ATBDP_Listing;
             self::$instance->user           = new ATBDP_User;
-            self::$instance->roles           = new ATBDP_Roles;
-            self::$instance->gateway           = new ATBDP_Gateway;
+            self::$instance->roles          = new ATBDP_Roles;
+            self::$instance->gateway        = new ATBDP_Gateway;
+            self::$instance->order          = new ATBDP_Order;
 
             // new settings
             new ATBDP_Settings_Manager();
@@ -188,6 +197,7 @@ final class Directorist_Base {
             new ATBDP_Extensions();
             /*Initiate Review and Rating Features*/
             self::$instance->review         = new ATBDP_Review_Rating;
+
             //map custom capabilities
             add_filter('map_meta_cap', array(self::$instance->roles, 'meta_caps'), 10, 4);
 
@@ -291,6 +301,8 @@ final class Directorist_Base {
         load_dependencies('all', ATBDP_INC_DIR . 'review-rating/');
         /*Load gateway related stuff*/
         load_dependencies('all', ATBDP_INC_DIR . 'gateways/');
+        /*Load payment related stuff*/
+        load_dependencies('all', ATBDP_INC_DIR . 'payments/');
         require_once ATBDP_INC_DIR . 'custom-actions.php';
         require_once ATBDP_INC_DIR . 'custom-filters.php';
     }

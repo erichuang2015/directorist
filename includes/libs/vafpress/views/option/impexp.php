@@ -4,7 +4,7 @@
 			<?php _e('Import', ATBDP_TEXTDOMAIN) ?>
 		</label>
 		<div class="description">
-			<p><?php _e('Import Options', ATBDP_TEXTDOMAIN) ?></p>
+			<p><?php _e('Import Settings Data', ATBDP_TEXTDOMAIN) ?></p>
 		</div>
 	</div>
 	<div class="field">
@@ -27,7 +27,7 @@
 			<?php _e('Export', ATBDP_TEXTDOMAIN) ?>
 		</label>
 		<div class="description">
-			<p><?php _e('Export Options', ATBDP_TEXTDOMAIN) ?></p>
+			<p><?php _e('Export Settings Data', ATBDP_TEXTDOMAIN) ?></p>
 		</div>
 	</div>
 	<div class="field">

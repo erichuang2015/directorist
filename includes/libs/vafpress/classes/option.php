@@ -470,7 +470,7 @@ class VP_Option
 		{
 			// setup utility menu
 			$util_menu = new VP_Option_Control_Group_Menu();
-			$util_menu->set_title(__('Import/Export', ATBDP_TEXTDOMAIN));
+			$util_menu->set_title(__('Import/Export Settings', ATBDP_TEXTDOMAIN));
 			$util_menu->set_name('menu_util');
 			$util_menu->set_icon('font-awesome:fa-ambulance');
 
@@ -485,7 +485,7 @@ class VP_Option
 
 			// setup exim section
 			$exim_section = new VP_Option_Control_Group_Section();
-			$exim_section->set_title(__('Export/Import', ATBDP_TEXTDOMAIN));
+			$exim_section->set_title(__('Export/Import Settings DATA', ATBDP_TEXTDOMAIN));
 			$exim_section->set_name('section_exim');
 
 			// setup exim field

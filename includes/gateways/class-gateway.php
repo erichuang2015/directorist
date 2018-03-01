@@ -67,6 +67,32 @@ class ATBDP_Gateway{
                     'description' => __('If you enable Test Mode, then no real transaction will occur. If you want to test the payment system of your website then you can set this option enabled.', ATBDP_TEXTDOMAIN),
                     'default' => 1,
                 ),
+                array(
+                    'type' => 'checkimage',
+                    'name' => 'offline_gateways',
+                    'label' => __('Offline Gateways', ATBDP_TEXTDOMAIN),
+                    'description' => __('Select the type of offline payment you want to accept based on your business model or listing type. Default is Bank Transfer.', ATBDP_TEXTDOMAIN),
+                    'items' => apply_filters('atbdp_offline_gateways', array(
+                        array(
+                            'value' => 'bank_transfer',
+                            'label' => __('Bank Transfer', ATBDP_TEXTDOMAIN),
+                            'img' => esc_url(ATBDP_ADMIN_ASSETS . 'images/bank_icon.png'),
+
+                        ),
+                        array(
+                            'value' => 'cash_on_delivery',
+                            'label' => __('Cash On Delivery', ATBDP_TEXTDOMAIN),
+                            'img' => esc_url(ATBDP_ADMIN_ASSETS . 'images/cash_icon.png'),
+
+                        ),
+                    )),
+
+                    'default' => array(
+                        'bank_transfer',
+                    ),
+                ),
+                /*@todo; think whether it is good to list online payments here or in separate tab when a new payment gateway is added*/
+
 
                 array(
                     'type' => 'notebox',
@@ -79,7 +105,7 @@ class ATBDP_Gateway{
                     'type' => 'textbox',
                     'name' => 'payment_currency',
                     'label' => __( 'Currency Name', ATBDP_TEXTDOMAIN ),
-                    'description' => __( 'Enter the Name of the currency', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Enter the Name of the currency eg. USD or GBP etc.', ATBDP_TEXTDOMAIN ),
                     'default' => 'USD',
                     'validation' => 'required',
                 ),
