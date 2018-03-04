@@ -245,3 +245,19 @@ ADMIN SIDE STYLE
 .directorist .business-hour-title p{
 	margin-top: 5px;
 }
+
+/*OVERRIDE VAFPRESS STYLE*/
+.vp-wrap .vp-menus li.vp-current>a.vp-menu-goto {
+	background-color: #3485ba;
+	color: #FFF;
+}
+.vp-wrap a.vp-menu-goto:focus,
+.vp-wrap a.vp-menu-dropdown:focus
+{
+	outline:none;
+	box-shadow: none;
+}
+
+li.vp-current a.vp-js-menu-dropdown.vp-menu-dropdown {
+	background-color: rgba(108, 185, 234, 0.18823529411764706);
+}

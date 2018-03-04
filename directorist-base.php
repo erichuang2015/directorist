@@ -214,6 +214,8 @@ final class Directorist_Base {
             if (get_option('atbdp_pages_version') < 1){
                 add_action('wp_loaded', array(self::$instance, 'add_custom_directorist_pages'));
             }
+            // init offline gateway
+            new ATBDP_Offline_Gateway;
         }
 
         return self::$instance;

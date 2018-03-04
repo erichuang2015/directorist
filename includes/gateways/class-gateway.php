@@ -6,7 +6,7 @@
  * @subpackage    directorist/includes/gateways
  * @copyright     Copyright 2018. AazzTech
  * @license       https://www.gnu.org/licenses/gpl-3.0.en.html GNU Public License
- * @since         3.0.0
+ * @since         3.1.0
  */
 
 // Exit if accessed directly
@@ -15,22 +15,147 @@ if ( !defined( 'ABSPATH' ) ) exit;
 /**
  * ATBDP_Gateway Class
  *
- * @since    3.0.0
+ * @since    3.1.0
  * @access   public
  */
 
 class ATBDP_Gateway{
     public function __construct()
     {
-        add_filter('atbdp_extension_settings_submenus', array($this, 'gateway_settings_submenu'), 10, 1);
+        // add monetization menu
 
+        add_filter('atbdp_settings_menus', array($this, 'add_monetization_menu'));
+
+        // add gateway submenu
+        add_filter('atbdp_monetization_settings_submenus', array($this, 'gateway_settings_submenu'), 10, 1);
+
+
+    }
+
+    /**
+     * Add Monetization menu
+     * @param array $menus The array of menus
+     * @return array It returns the new array of menus.
+     */
+    public function add_monetization_menu($menus)
+    {
+        $menus['monetization_menu'] = array(
+            'title' => __('Monetization', ATBDP_TEXTDOMAIN),
+            'name' => 'monetization_menu',
+            'icon' => 'font-awesome:fa-money',
+            'menus' => $this->get_monetization_settings_submenus(),
+        );
+        return $menus;
+    }
+
+
+    /**
+     * It registers the monetization submenu
+     * @return array it returns an array of submenus
+     */
+    public function get_monetization_settings_submenus()
+    {
+        return apply_filters('atbdp_monetization_settings_submenus', array(
+            'monetization_submenu1' => array(
+                'title' => __( 'Monetization Settings', ATBDP_TEXTDOMAIN),
+                'name' => 'monetization_submenu1',
+                'icon' => 'font-awesome:fa-home',
+                'controls' => apply_filters('atbdp_monetization_settings_controls', array(
+                    'monetization_section' => array(
+                        'type'          => 'section',
+                        'title'         => __('Monetization General Settings', ATBDP_TEXTDOMAIN),
+                        'description'   => __('You can Customize Monetization settings here. After switching any option, Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'fields'        => $this->get_monetization_settings_fields(),
+                    ), // ends monetization settings section
+                    'featured_listing_section' => array(
+                        'type'          => 'section',
+                        'title'         => __('Monetize by Featured Listing', ATBDP_TEXTDOMAIN),
+                        'description'   => __('You can Customize featured listing related settings here', ATBDP_TEXTDOMAIN),
+                        'fields'        => $this->get_featured_listing_settings_fields(),
+                    ), // ends monetization settings section
+
+                )),
+            ),
+
+        ) );
+    }
+
+
+    /**
+     * It register the settings fields for monetization submenu
+     * @return array It returns an array of settings fields arrays
+     */
+    public function get_monetization_settings_fields()
+    {
+        return apply_filters('atbdp_monetization_settings_fields', array(
+                array(
+                    'type' => 'toggle',
+                    'name' => 'enable_monetization',
+                    'label' => __('Enable Monetization Feature', ATBDP_TEXTDOMAIN),
+                    'description' => __('Choose whether you want to monetize your site or not. Monetization features will let you accept payment from your users if they submit listing based on different criteria. Default is OFF.', ATBDP_TEXTDOMAIN),
+                    'default' => '',
+                ),
+
+
+            )
+        );
+    }
+
+
+    /**
+     * It registers the settings fields of featured listings
+     * @return array It returns an array of featured settings fields arrays
+     */
+    public function get_featured_listing_settings_fields()
+    {
+        return apply_filters('atbdp_monetization_settings_fields', array(
+                array(
+                    'type' => 'toggle',
+                    'name' => 'enable_featured_listing',
+                    'label' => __('Monetize by Featured Listing', ATBDP_TEXTDOMAIN),
+                    'description' => __('You can enabled this option to collect payment from your user for making their listing featured. Settings this option to OFF will disable all sorts of monetization features. This setting gives you a quick way to turn monetization on or off instantly. Default is OFF.', ATBDP_TEXTDOMAIN),
+                    'default' => '',
+                ),
+
+                array(
+                    'type' => 'textbox',
+                    'name' => 'featured_listing_title',
+                    'label' => __('Title', ATBDP_TEXTDOMAIN),
+                    'description' => __('You can set the title for featured listing to show on the ORDER PAGE', ATBDP_TEXTDOMAIN),
+                    'default' => __('Featured', ATBDP_TEXTDOMAIN),
+                ),
+
+                array(
+                    'type' => 'textarea',
+                    'name' => 'featured_listing_desc',
+                    'label' => __('Description', ATBDP_TEXTDOMAIN),
+                    'description' => __('You can set some description for your user for upgrading to featured listing.', ATBDP_TEXTDOMAIN),
+                    'default' => __('You can make your listing featured. Featured listing will appear on top of other listings.', ATBDP_TEXTDOMAIN),
+                ),
+                array(
+                    'type' => 'textbox',
+                    'name' => 'featured_listing_price',
+                    'label' => __('Price in ', ATBDP_TEXTDOMAIN) . acadp_get_payment_currency(),
+                    'description' => __('Set the price you want to charge a user if he/she wants to upgrade his/her listing to featured listing. Note: you can change the currency settings under the gateway settings', ATBDP_TEXTDOMAIN),
+                    'default' => 19.99,
+                ),
+                array(
+                    'type' => 'toggle',
+                    'name' => 'show_featured_ribbon',
+                    'label' => __('Show Featured Ribbon/Text', ATBDP_TEXTDOMAIN),
+                    'description' => __('Set this option to "ON" to show Featured Ribbon/Label besides featured listings. . Default is ON', ATBDP_TEXTDOMAIN),
+                    'default' => 1,
+                ),
+
+            )
+        );
     }
 
 
     /**
      * It register the gateway settings submenu
-     * @param array $submenus
-     * @return array            It returns gateway submenu
+     * @param array $submenus       Array of Submenus
+     * @return array                It returns gateway submenu
      */
     function gateway_settings_submenu($submenus){
         $submenus['gateway_submenu'] =  array(
@@ -46,10 +171,13 @@ class ATBDP_Gateway{
                 ),
             )),
         );
-        //padded_var_dump($submenus);
         return $submenus;
     }
 
+    /**
+     * It register gateway settings fields
+     * @return array It returns an array of gateway settings fields
+     */
     function get_gateway_settings_fields(){
         return apply_filters('atbdp_gateway_settings_fields', array(
                 array(
@@ -59,16 +187,15 @@ class ATBDP_Gateway{
                     'description' => __('Choose whether you want to accept offline Payment or not. Default is ON.', ATBDP_TEXTDOMAIN),
                     'default' => 1,
                 ),
-
                 array(
                     'type' => 'toggle',
                     'name' => 'gateway_test_mode',
                     'label' => __('Enable Test Mode', ATBDP_TEXTDOMAIN),
-                    'description' => __('If you enable Test Mode, then no real transaction will occur. If you want to test the payment system of your website then you can set this option enabled.', ATBDP_TEXTDOMAIN),
+                    'description' => __('If you enable Test Mode, then no real transaction will occur. If you want to test the payment system of your website then you can set this option enabled. NOTE: Your payment gateway must support test mode eg. they should provide you a sandbox account to test. Otherwise, use only offline gateway to test.', ATBDP_TEXTDOMAIN),
                     'default' => 1,
                 ),
                 array(
-                    'type' => 'checkimage',
+                    'type' => 'checkbox',
                     'name' => 'offline_gateways',
                     'label' => __('Offline Gateways', ATBDP_TEXTDOMAIN),
                     'description' => __('Select the type of offline payment you want to accept based on your business model or listing type. Default is Bank Transfer.', ATBDP_TEXTDOMAIN),
@@ -76,13 +203,11 @@ class ATBDP_Gateway{
                         array(
                             'value' => 'bank_transfer',
                             'label' => __('Bank Transfer', ATBDP_TEXTDOMAIN),
-                            'img' => esc_url(ATBDP_ADMIN_ASSETS . 'images/bank_icon.png'),
 
                         ),
                         array(
                             'value' => 'cash_on_delivery',
                             'label' => __('Cash On Delivery', ATBDP_TEXTDOMAIN),
-                            'img' => esc_url(ATBDP_ADMIN_ASSETS . 'images/cash_icon.png'),
 
                         ),
                     )),

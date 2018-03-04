@@ -6,7 +6,7 @@
  * @subpackage    directorist/includes/orders
  * @copyright     Copyright 2018. AazzTech
  * @license       https://www.gnu.org/licenses/gpl-3.0.en.html GNU Public License
- * @since         3.0.0
+ * @since         3.1.0
  */
 
 // Exit if accessed directly
@@ -15,7 +15,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 /**
  * ATBDP_Order Class
  *
- * @since    3.0.0
+ * @since    3.1.0
  * @access   public
  */
 class ATBDP_Order {
@@ -41,7 +41,7 @@ class ATBDP_Order {
     /**
      * Register a custom post type "atbdp_orders".
      *
-     * @since    3.0.0
+     * @since    3.1.0
      * @access   public
      */
     public function register_custom_post_type() {
@@ -89,7 +89,7 @@ class ATBDP_Order {
     /**
      * Add/Remove custom bulk actions to the select menus.
      *
-     * @since    3.0.0
+     * @since    3.1.0
      * @access   public
      */
     public function admin_footer_edit() {
@@ -129,7 +129,7 @@ class ATBDP_Order {
     /**
      * Add custom filter options.
      *
-     * @since    3.0.0
+     * @since    3.1.0
      * @access   public
      */
     public function restrict_manage_posts() {
@@ -168,7 +168,7 @@ class ATBDP_Order {
     /**
      * Parse a query string and enable filter by post meta "payment_status"
      *
-     * @since    3.0.0
+     * @since    3.1.0
      * @access   public
      *
      * @param	 WP_Query    $query    WordPress Query object
@@ -192,7 +192,7 @@ class ATBDP_Order {
     /**
      * Retrieve the table columns.
      *
-     * @since    3.0.0
+     * @since    3.1.0
      * @access   public
      *
      * @return   array    $columns    Array of all the list table columns.
@@ -218,7 +218,7 @@ class ATBDP_Order {
     /**
      * This function renders the custom columns in the list table.
      *
-     * @since    3.0.0
+     * @since    3.1.0
      * @access   public
      *
      * @param    string    $column    The name of the column.
@@ -290,7 +290,7 @@ class ATBDP_Order {
     /**
      * Retrieve the table's sortable columns.
      *
-     * @since    3.0.0
+     * @since    3.1.0
      * @access   public
      *
      * @return   array    Array of all the sortable columns
@@ -313,7 +313,7 @@ class ATBDP_Order {
     /**
      * Called only in /wp-admin/edit.php* pages.
      *
-     * @since    3.0.0
+     * @since    3.1.0
      * @access   public
      */
     public function load_edit() {
@@ -367,7 +367,7 @@ class ATBDP_Order {
     /**
      * Update payment status.
      *
-     * @since    3.0.0
+     * @since    3.1.0
      * @access   public
      *
      * @param    string    $action    Action to be performed.
@@ -417,7 +417,7 @@ class ATBDP_Order {
      * Display an admin notice on the payment history page after performing
      * a bulk action.
      *
-     * @since    3.0.0
+     * @since    3.1.0
      * @access   public
      */
     public function admin_notices() {
@@ -446,7 +446,7 @@ class ATBDP_Order {
     /**
      * Sort custom columns.
      *
-     * @since    3.0.0
+     * @since    3.1.0
      * @access   public
      *
      * @param    array    $vars    Array of query variables.

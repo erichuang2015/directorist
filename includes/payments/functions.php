@@ -6,7 +6,7 @@
  * @subpackage  Payment
  * @copyright   Copyright (c) 2018, AazzTech
  * @license     http://opensource.org/licenses/gpl-3.0.html GNU Public License
- * @since       3.0.0
+ * @since       3.1.0
  */
 
 
@@ -37,7 +37,7 @@ function atbdp_purchase_form_required_fields(){
 /**
  * Get all the payment statuses.
  *
- * @since    3.0.0
+ * @since    3.1.0
  *
  * @return   array    $statuses    A list of available payment status.
  */
@@ -59,7 +59,7 @@ function atbdp_get_payment_statuses() {
 /**
  * Get order bulk actions array.
  *
- * @since    3.0.0
+ * @since    3.1.0
  *
  * @return   array    $actions    An array of bulk list of order history status.
  */
@@ -83,7 +83,7 @@ function atbdp_get_payment_bulk_actions() {
 /**
  * Returns a nicely formatted amount.
  *
- * @since    3.0.0
+ * @since    3.1.0
  *
  * @param    string     $amount               Price amount to format
  * @param    bool       $decimals             Whether to use decimals or not. Useful when set to false for non-currency numbers.
@@ -138,7 +138,7 @@ function atbdp_format_amount( $amount, $decimals = true, $currency_settings = ar
 /**
  * Returns a nicely formatted currency amount.
  *
- * @since    3.0.0
+ * @since    3.1.0
  *
  * @param    string    $amount      Price amount to format
  * @param    bool      $decimals    Whether or not to use decimals. Useful when set to false for non-currency numbers.
@@ -154,7 +154,7 @@ function atbdp_format_payment_amount( $amount, $decimals = true ) {
 /**
  * Get the directory's payment currency settings if available. Otherwise, it returns the general currency settings
  *
- * @since    3.0.0
+ * @since    3.1.0
  * @return   array    $currency_settings    Currency settings array that contains currency name, thousand and decimal separators
  */
 function atbdp_get_payment_currency_settings() {
@@ -176,7 +176,7 @@ function atbdp_get_payment_currency_settings() {
  * Some currencies do not support for decimal. So, It Set the number of decimal places to 0 for RIAL, JPY, TWD, HUF currency. and it sets given decimal place for all other currency except the ones mentioned already.
  *
  * @see https://developer.paypal.com/docs/classic/mass-pay/integration-guide/currency_codes/
- * @since    3.0.0
+ * @since    3.1.0
  *
  * @param    int       $decimals    Number of decimal places.
  * @param    string    $currency    Payment currency.
@@ -202,7 +202,7 @@ function atbdp_currency_decimal_count( $decimals = 2, $currency = 'USD' ) {
 /**
  * Add currency symbol to the given price according to payment currency settings
  *
- * @since    3.0.0
+ * @since    3.1.0
  *
  * @param    string|int|float    $price    Paid Amount.
  * @return   string              Formatted amount with currency.
@@ -217,7 +217,7 @@ function atbdp_payment_currency_filter( $price = '' ) {
 /**
  * Formats the currency display.
  *
- * @since    3.0.0
+ * @since    3.1.0
  *
  * @param    string|int|float    $price                Paid Amount.
  * @param    array     $currency_settings    Currency Settings.
@@ -352,7 +352,7 @@ function atbdp_currency_symbol( $currency = '' ) {
 /**
  * Retrieve the payment status in localized format.
  *
- * @since    3.0.0
+ * @since    3.1.0
  *
  * @param    string    $status    Payment status.
  * @return   string    $status    Localized payment status.
