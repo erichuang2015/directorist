@@ -1,6 +1,5 @@
 <?php
-$ATBDP = ATBDP();
-$listings =  $ATBDP->user->current_user_listings();
+$listings =  ATBDP()->user->current_user_listings();
 $uid = get_current_user_id();
 $c_user = get_userdata($uid);
 
@@ -48,13 +47,13 @@ $u_address= get_user_meta($uid, 'address', true);
                             <?php if ($listings->have_posts()) {
                                 foreach ($listings->posts as $post) {
                                     /*RATING RELATED STUFF STARTS*/
-                                    $reviews = $ATBDP->review->db->count(array('post_id' => $post->ID));
-                                    $average = $ATBDP->review->get_average($post->ID);
+                                    $reviews = ATBDP()->review->db->count(array('post_id' => $post->ID));
+                                    $average = ATBDP()->review->get_average($post->ID);
                                     /*RATING RELATED STUFF ENDS*/
-                                    $info = $ATBDP->metabox->get_listing_info($post->ID); // get all post meta and extract it.
+                                    $info = ATBDP()->metabox->get_listing_info($post->ID); // get all post meta and extract it.
                                     extract($info);
                                     // get only one parent or high level term object
-                                    $single_parent = $ATBDP->taxonomy->get_one_high_level_term($post->ID, ATBDP_CATEGORY);
+                                    $single_parent = ATBDP()->taxonomy->get_one_high_level_term($post->ID, ATBDP_CATEGORY);
                                     ?>
                                     <div class="col-lg-4 col-sm-6" id="listing_id_<?= $post->ID; ?>">
                                         <div class="single_directory_post">

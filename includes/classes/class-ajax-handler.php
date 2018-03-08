@@ -28,6 +28,10 @@ if(!class_exists('ATBDP_Ajax_Handler')):
         add_action('wp_ajax_remove_listing', array($this, 'remove_listing')); //@TODO; complete it later
         add_action('wp_ajax_update_user_profile', array($this, 'update_user_profile'));
 
+        /*CHECKOUT RELATED STUFF*/
+        add_action( 'wp_ajax_atbdp_format_total_amount', array('ATBDP_Checkout', 'ajax_atbdp_format_total_amount') );
+        add_action( 'wp_ajax_nopriv_atbdp_format_total_amount', array('ATBDP_Checkout', 'ajax_atbdp_format_total_amount') );
+
 
     }
 
@@ -58,11 +62,10 @@ if(!class_exists('ATBDP_Ajax_Handler')):
 
         // process the data and the return a success
 
-        if ($this->pass_nonce_security()){
+        if (valid_js_nonce()){
             // passed the security
             // update the user data and also its meta
-            $ATBDP = ATBDP();
-            $success = $ATBDP->user->update_profile($_POST['user']); // update_profile() will handle sanitisation, so we can just the pass the data through it
+            $success = ATBDP()->user->update_profile($_POST['user']); // update_profile() will handle sanitisation, so we can just the pass the data through it
             if ($success) {
                 wp_send_json_success(array('message'=>__('Profile updated successfully', ATBDP_TEXTDOMAIN)));
             }else{
@@ -78,12 +81,10 @@ if(!class_exists('ATBDP_Ajax_Handler')):
         public function remove_listing()
     {
         // delete the listing from here. first check the nonce and then delete and then send success.
-        $ATBDP = ATBDP();
         // save the data if nonce is good and data is valid
-        if ($this->pass_nonce_security()) {
+        if (valid_js_nonce()) {
             if ( !empty($_POST['listing_id'])){
-//                $success = $ATBDP->review->db->delete(absint($_POST['listing_id']));
-                $success = $ATBDP->listing->db->delete_listing_by_id(absint($_POST['listing_id']));
+                $success = ATBDP()->listing->db->delete_listing_by_id(absint($_POST['listing_id']));
                 if ($success){
                     echo 'success';
                 }else{
@@ -101,11 +102,10 @@ if(!class_exists('ATBDP_Ajax_Handler')):
 
     public function remove_listing_review()
     {
-        $ATBDP = ATBDP();
         // save the data if nonce is good and data is valid
-        if ($this->pass_nonce_security()){
+        if (valid_js_nonce()){
             if ( !empty($_POST['review_id'])){
-                $success = $ATBDP->review->db->delete(absint($_POST['review_id']));
+                $success = ATBDP()->review->db->delete(absint($_POST['review_id']));
                 if ($success){
                     echo 'success';
                 }else{
@@ -124,11 +124,10 @@ if(!class_exists('ATBDP_Ajax_Handler')):
 
     public function load_more_review()
     {
-        $ATBDP = ATBDP();
         // save the data if nonce is good and data is valid
-        if ($this->pass_nonce_security()){
+        if (valid_js_nonce()){
             if (!empty($_POST['offset']) && !empty($_POST['post_id'])){
-                $reviews = $ATBDP->review->db->get_reviews_by('post_id', absint($_POST['post_id']), absint($_POST['offset']), 3,'date_created', 'DESC', ARRAY_A); // get only 3
+                $reviews = ATBDP()->review->db->get_reviews_by('post_id', absint($_POST['post_id']), absint($_POST['offset']), 3,'date_created', 'DESC', ARRAY_A); // get only 3
                 if (!is_wp_error($reviews)){
                     echo json_encode($reviews);
                 }else{
@@ -152,9 +151,8 @@ if(!class_exists('ATBDP_Ajax_Handler')):
 
     public function save_listing_review()
     {
-        $ATBDP = ATBDP();
         // save the data if nonce is good and data is valid
-        if ($this->pass_nonce_security() && $this->validate_listing_review()){
+        if (valid_js_nonce() && $this->validate_listing_review()){
             /*
              * $args = array(
 					'post_id'          => $post_id,
@@ -176,7 +174,7 @@ if(!class_exists('ATBDP_Ajax_Handler')):
                 'by_guest'        => !empty( $user->ID )? 0 : 1,
                 'by_user_id'        => !empty( $user->ID )? $user->ID : 0,
             );
-            if ($id = $ATBDP->review->db->add($data)){
+            if ($id = ATBDP()->review->db->add($data)){
                 wp_send_json_success(array('id'=>$id));
             }
         }else{
@@ -205,29 +203,11 @@ if(!class_exists('ATBDP_Ajax_Handler')):
      *  Add new Social Item in the member page in response to Ajax request
      */
     public function atbdp_social_info_handler() {
-             $ATBDP = ATBDP();
             $id = (!empty($_POST['id'])) ? absint($_POST['id']) : 0;
-            $ATBDP->load_template('ajax/social', array( 'id' => $id, ));
+            ATBDP()->load_template('ajax/social', array( 'id' => $id, ));
             die();
 
     }
-
-
-        /**
-         * It checks if the nonce is set and valid
-         * @return bool it returns true if the nonce is valid and false otherwise
-         */
-        public function pass_nonce_security()
-    {
-        if ( !empty($_POST['atbdp_nonce_js']) && (wp_verify_nonce($_POST['atbdp_nonce_js'], 'atbdp_nonce_action_js')))
-            return true;
-        return false;
-    }
-
-
-
-
-
 
 }
 

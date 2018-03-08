@@ -25,17 +25,17 @@ class ATBDP_Order {
     {
         add_action( 'init', array($this, 'register_custom_post_type') );
 
-        if( is_admin() ) {
-            add_action( 'admin_footer-edit.php', array($this, 'admin_footer_edit') );
-            add_action( 'restrict_manage_posts', array($this, 'restrict_manage_posts') );
-            add_action( 'manage_atbdp_orders_posts_custom_column', array($this, 'custom_column_content', 10, 2 ));
-            add_action( 'load-edit.php', array($this, 'load_edit') );
-            add_action( 'admin_notices', array($this, 'admin_notices') );
+        add_action( 'admin_footer-edit.php', array($this, 'admin_footer_edit') );
+        add_action( 'restrict_manage_posts', array($this, 'restrict_manage_posts') );
+        add_action( 'load-edit.php', array($this, 'load_edit') );
+        add_action( 'admin_notices', array($this, 'admin_notices') );
 
-            add_filter( 'parse_query', array($this, 'parse_query') );
-            add_filter( 'manage_edit-atbdp_orders_columns', array($this, 'get_columns') );
-            add_filter( 'manage_edit-atbdp_orders_sortable_columns', array($this, 'get_sortable_columns') );
-        }
+        add_filter( 'parse_query', array($this, 'parse_query') );
+        add_filter( 'manage_atbdp_orders_posts_columns', array($this, 'add_new_order_columns') );
+        add_action('manage_atbdp_orders_posts_custom_column', array($this, 'manage_order_columns'), 10, 2);
+
+        add_filter( 'manage_edit-atbdp_orders_sortable_columns', array($this, 'get_sortable_columns') );
+
     }
 
     /**
@@ -178,11 +178,11 @@ class ATBDP_Order {
         global $pagenow, $post_type;
 
         if( 'edit.php' == $pagenow && 'atbdp_orders' == $post_type ) {
-
+            $st= !empty($_GET['payment_status']) ? $_GET['payment_status']: '';
             // Filter by post meta "payment_status"
-            if( isset( $_GET['payment_status'] ) && $_GET['payment_status'] != '' ) {
+            if( '' != $st && 'all' != $st ) {
                 $query->query_vars['meta_key'] = 'payment_status';
-                $query->query_vars['meta_value'] = sanitize_key( $_GET['payment_status'] );
+                $query->query_vars['meta_value'] = sanitize_key( $st );
             }
 
         }
@@ -194,10 +194,11 @@ class ATBDP_Order {
      *
      * @since    3.1.0
      * @access   public
+     * @param    array $columns
      *
      * @return   array    $columns    Array of all the list table columns.
      */
-    public function get_columns() {
+    public function add_new_order_columns($columns) {
 
         $columns = array(
             'cb'             => '<input type="checkbox" />', // Render a checkbox instead of text
@@ -208,7 +209,7 @@ class ATBDP_Order {
             'transaction_id' => __( 'Transaction ID', ATBDP_TEXTDOMAIN ),
             'customer'       => __( 'Customer', ATBDP_TEXTDOMAIN ),
             'date'           => __( 'Date', ATBDP_TEXTDOMAIN ),
-            'status'         => __( 'Status', ATBDP_TEXTDOMAIN )
+            'status'         => __( 'Status', ATBDP_TEXTDOMAIN ),
         );
 
         return $columns;
@@ -224,48 +225,46 @@ class ATBDP_Order {
      * @param    string    $column    The name of the column.
      * @param    string    $post_id   Post ID.
      */
-    public function custom_column_content( $column, $post_id ) {
+    public function manage_order_columns( $column, $post_id ) {
 
         global $post;
-
         switch ( $column ) {
             case 'ID' :
-                printf( '<a href="%s" target="_blank">%d</a>', ATBDP_Permalink::get_payment_receipt_page_link( $post_id ), $post_id );
+                printf( '<a href="%s" target="_blank">Order #%d</a>', ATBDP_Permalink::get_payment_receipt_page_link( $post_id ), $post_id );
                 break;
             case 'details' :
-
-                $listing_id = get_post_meta( $post_id, 'listing_id', true );
-                printf( '<p><a href="%s">%s:%d</a></p>', get_edit_post_link( $listing_id ), get_the_title( $listing_id ),  $listing_id );
+                $listing_id = get_post_meta( $post_id, '_listing_id', true );
+                printf( '<p><a href="%s"> %s: [Listing ID #%d]</a></p>', get_edit_post_link( $listing_id ), get_the_title( $listing_id ),  $listing_id );
 
                 $order_details = apply_filters( 'atbdp_order_details', array(), $post_id );
                 foreach( $order_details as $order_detail ) {
                     echo '<div>#Short Notes: '.$order_detail['label'].'</div>';
                 }
 
-                $featured = get_post_meta( $post_id, 'featured', true ); // is this listing featured ?
+                $featured = get_post_meta( $post_id, '_featured', true ); // is this listing featured ?
                 if( $featured ) {
                     $f_list_label = get_directorist_option( 'featured_listing_label' );
                     echo "<div># {$f_list_label} </div>";
                 }
                 break;
             case 'amount' :
-                $amount = get_post_meta( $post_id, 'amount', true );
+                $amount = get_post_meta( $post_id, '_amount', true );
                 $amount = atbdp_format_payment_amount( $amount ); // get a formatted current amount
 
                 $value = atbdp_payment_currency_filter( $amount ); // add a currency sign before the price
                 echo $value;
                 break;
             case 'type' :
-                $gateway = get_post_meta( $post_id, 'payment_gateway', true );
+                $gateway = get_post_meta( $post_id, '_payment_gateway', true );
                 if( 'free' == $gateway ) {
                     _e( 'Free Submission', ATBDP_TEXTDOMAIN );
                 } else {
-                    $gateway_settings = get_option( 'atbdp_gateway_'.$gateway.'_settings' );
-                    echo ! empty( $gateway_settings['label'] ) ? $gateway_settings['label'] : $gateway;
+                    $label = apply_filters('atbdp_'.$gateway.'gateway_label', '');
+                    echo ! empty( $label ) ? $label : $gateway;
                 }
                 break;
             case 'transaction_id' :
-                echo get_post_meta( $post_id, 'transaction_id', true );
+                echo get_post_meta( $post_id, '_transaction_id', true );
                 break;
             case 'customer' :
                 $user_info = get_userdata( $post->post_author );
@@ -280,7 +279,7 @@ class ATBDP_Order {
                 echo $value;
                 break;
             case 'status' :
-                $value = get_post_meta( $post_id, 'payment_status', true );
+                $value = get_post_meta( $post_id, '_payment_status', true );
                 echo atbdp_get_payment_status_i18n( $value );
                 break;
         }

@@ -28,9 +28,6 @@ class ATBDP_Metabox {
      * @param Object $post Current Post Object being displayed
      */
     public function listing_info_meta( $post ) {
-        /*$ATBDP = ATBDP();
-        global $pagenow, $typenow, $ATBDP;*/
-
         add_meta_box( '_listing_info',
         __( 'Listing Information', ATBDP_TEXTDOMAIN ),
         array($this, 'listing_info'),

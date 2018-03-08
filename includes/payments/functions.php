@@ -49,7 +49,7 @@ function atbdp_get_payment_statuses() {
         'completed' => __( "Completed", ATBDP_TEXTDOMAIN ),
         'failed'    => __( "Failed", ATBDP_TEXTDOMAIN ),
         'cancelled' => __( "Cancelled", ATBDP_TEXTDOMAIN ),
-        'refunded'  => __( "Refunded", ATBDP_TEXTDOMAIN )
+        'refunded'  => __( "Refunded", ATBDP_TEXTDOMAIN ),
     );
 
     return apply_filters( 'atbdp_payment_statuses', $statuses );
@@ -71,7 +71,7 @@ function atbdp_get_payment_bulk_actions() {
         'set_to_completed' => __( "Set Status to Completed", ATBDP_TEXTDOMAIN ),
         'set_to_failed'    => __( "Set Status to Failed", ATBDP_TEXTDOMAIN ),
         'set_to_cancelled' => __( "Set Status to Cancelled", ATBDP_TEXTDOMAIN ),
-        'set_to_refunded'  => __( "Set Status to Refunded", ATBDP_TEXTDOMAIN )
+        'set_to_refunded'  => __( "Set Status to Refunded", ATBDP_TEXTDOMAIN ),
     );
 
     return apply_filters( 'atbdp_order_bulk_actions', $actions );
@@ -362,4 +362,15 @@ function atbdp_get_payment_status_i18n( $status ) {
     $statuses = atbdp_get_payment_statuses();
     return array_key_exists($status, $statuses ) ? $statuses[ $status ] : __('Invalid', ATBDP_TEXTDOMAIN);
 
+}
+
+/**
+ * Get the directory's set payment currency
+ *
+ * @since    3.1.0
+ * @return   string    The currency code.
+ */
+function atbdp_get_payment_currency() {
+    $cs = atbdp_get_payment_currency_settings();
+    return ! empty( $cs[ 'currency' ] ) ? strtoupper($cs[ 'currency' ]) : 'USD';
 }

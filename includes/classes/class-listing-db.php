@@ -57,8 +57,7 @@ class ATBDP_Listing_DB {
         $deleted = wp_delete_post(absint($id), true); // i
         if ( false !== $deleted ) {
             // as post has been deleted, now delete the review if there is any associated with the post
-            $ATBDP= ATBDP();
-            $review_delete = $ATBDP->review->db->delete_reviews_by('post_id', absint($id));
+            $review_delete = ATBDP()->review->db->delete_reviews_by('post_id', absint($id));
             return true;
 
         }

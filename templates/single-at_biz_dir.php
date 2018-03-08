@@ -1,5 +1,4 @@
 <?php
-$ATBDP = ATBDP();
 $lf= get_post_meta($post->ID, '_listing_info', true);
 $listing_info = (!empty($lf))? aazztech_enc_unserialize($lf) : array();
 $attachment_ids= (!empty($listing_info['attachment_id'])) ? $listing_info['attachment_id'] : array();

@@ -113,6 +113,245 @@ class ATBDP_Settings_Manager {
                 'icon' => 'font-awesome:fa-magic',
                 'menus' => $this->get_extension_settings_submenus(),
             ),
+            'email_menu' => array(
+                'title' => __('Emails Settings', ATBDP_TEXTDOMAIN),
+                'name' => 'email_menu1',
+                'icon' => 'font-awesome:fa-envelope',
+                'menus' => $this->get_email_settings_submenus(),
+            ),
+        ));
+    }
+
+
+    /**
+     * Get all the submenus for the email menu
+     * @since 3.1.0
+     * @return array It returns an array of submenus
+     */
+    public function get_email_settings_submenus()
+    {
+        return apply_filters('atbdp_email_settings_submenus', array(
+            array(
+                'title' => __('Email General', ATBDP_TEXTDOMAIN),
+                'name' => 'emails_general',
+                'icon' => 'font-awesome:fa-home',
+                'controls' => apply_filters('atbdp_email_settings_controls', array(
+                    'emails' => array(
+                        'type' => 'section',
+                        'title' => __('Email General Settings', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can Customize Email and Notification-related settings here. You can enable or disable any emails here. Here, ON means Enabled, and OFF means disabled. After switching any option, Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'fields' => $this->get_email_settings_fields(),
+                    ),
+                )),
+            ),
+            array(
+                'title' => __('Email Templates', ATBDP_TEXTDOMAIN),
+                'name' => 'emails_templates',
+                'icon' => 'font-awesome:fa-envelope',
+                'controls' => apply_filters('atbdp_email_settings_controls', array(
+                    'emails_templates' => array(
+                        'type' => 'section',
+                        'title' => __('Email Templates', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'fields' => $this->get_email_template_settings_fields(),
+                    ),
+                )),
+            ),
+        ));
+    }
+
+    /**
+     * Get all the settings fields for the email settings section
+     * @since 3.1.0
+     * @return array
+     */
+    public function get_email_template_settings_fields()
+    {
+        $nw_list_tmpl = <<<KAMAL
+Dear ***NAME***,
+
+This email is to notify you that your listing "***LISTING_TITLE***" has been received and it is under review now. 
+It may take up to 24 hours to complete the review.
+
+Thanks,
+The Administrator of ***SITE_NAME***
+KAMAL;
+
+        return apply_filters('atbdp_email_template_settings_fields', array(
+                array(
+                    'type' => 'textarea',
+                    'name' => 'email_tmpl_new_listing',
+                    'label' => __('Template for new listing', ATBDP_TEXTDOMAIN),
+                    'description' => __('Edit the template for sending to the user when a listing is submitted/received.', ATBDP_TEXTDOMAIN),
+                    'default' => $nw_list_tmpl,
+                ),
+
+        ));
+    }
+
+    /**
+     * Get all the settings fields for the email settings section
+     * @since 3.1.0
+     * @return array
+     */
+    public function get_email_settings_fields()
+    {
+        return apply_filters('atbdp_email_settings_fields', array(
+                array(
+                    'type' => 'toggle',
+                    'name' => 'disable_email_notification',
+                    'label' => __('Disable all Email Notifications', ATBDP_TEXTDOMAIN),
+                    'description' => __('Set this option to "ON" to DISABLE ALL EMAIL NOTIFICATIONS. Default is OFF which means Email notification is enabled by default.', ATBDP_TEXTDOMAIN),
+                    'default' => '',
+                ),
+                array(
+                    'type' => 'multiselect',
+                    'name' => 'notify_admin',
+                    'label' => __('Notify the Admin when any of the selected event happens', ATBDP_TEXTDOMAIN),
+                    'description' => __('Select the situation when you would like to send an email to the Admin', ATBDP_TEXTDOMAIN),
+                    'items' => $this->events_to_notify_admin(),
+                    'default' => $this->default_events_to_notify_admin(),
+                ),
+                array(
+                    'type' => 'multiselect',
+                    'name' => 'notify_user',
+                    'label' => __('Notify the Listing Owner when any of the selected event happens', ATBDP_TEXTDOMAIN),
+                    'description' => __('Select the situation when you would like to send an email to the Listing', ATBDP_TEXTDOMAIN),
+                    'items' => $this->events_to_notify_user(),
+                    'default' => $this->default_events_to_notify_user(),
+                ),
+            )
+        );
+    }
+
+    /**
+     * Get the list of an array of notification events array to notify admin
+     * @since 3.1.0
+     * @return array It returns an array of events when an admin should be notified
+     */
+    public function events_to_notify_admin()
+    {
+        $events = array_merge($this->default_notifiable_events(), $this->only_admin_notifiable_events());
+        return apply_filters('atbdp_events_to_notify_admin', $events);
+    }
+
+    /**
+     * Get the list of an array of notification events array to notify user
+     * @since 3.1.0
+     * @return array It returns an array of events when an user should be notified
+     */
+    public function events_to_notify_user()
+    {
+        $events = array_merge($this->default_notifiable_events(), $this->only_user_notifiable_events());
+        return apply_filters('atbdp_events_to_notify_user', $events);
+    }
+
+    /**
+     * Get the default events to notify the admin.
+     * @since 3.1.0
+     * @return array It returns an array of default events when an admin should be notified.
+     */
+    public function default_events_to_notify_admin()
+    {
+        return apply_filters('atbdp_default_events_to_notify_admin', array(
+            'order_created',
+            'order_completed',
+            'listing_submitted',
+            'payment_received',
+            'listing_published',
+        ));
+    }
+
+    /**
+     * Get the default events to notify the user.
+     * @since 3.1.0
+     * @return array It returns an array of default events when an user should be notified.
+     */
+    public function default_events_to_notify_user()
+    {
+        return apply_filters('atbdp_default_events_to_notify_user', array(
+            'order_created',
+            'listing_submitted',
+            'payment_received',
+            'listing_published',
+            'listing_nearly_expired',
+            'listing_expired',
+            'listing_renewed',
+            'order_completed',
+            'listing_edited',
+        ));
+    }
+
+    /**
+     * Get an array of events to notify both the admin and the users
+     * @since 3.1.0
+     * @return array it returns an array of events
+     */
+    private function default_notifiable_events()
+    {
+        return apply_filters('atbdp_default_notifiable_events', array(
+            array(
+                'value' => 'order_created',
+                'label' => __('Order Created', ATBDP_TEXTDOMAIN),
+            ),
+            array(
+                'value' => 'order_completed',
+                'label' => __('Order Completed', ATBDP_TEXTDOMAIN),
+            ),
+            array(
+                'value' => 'listing_submitted',
+                'label' => __('New Listing Submitted', ATBDP_TEXTDOMAIN),
+            ),
+            array(
+                'value' => 'listing_published',
+                'label' => __('Listing Approved/Published', ATBDP_TEXTDOMAIN),
+            ),
+            array(
+                'value' => 'listing_edited',
+                'label' => __('Listing Edited', ATBDP_TEXTDOMAIN),
+            ),
+            array(
+                'value' => 'payment_received',
+                'label' => __('Payment Received', ATBDP_TEXTDOMAIN),
+            ),
+        ));
+    }
+
+    /**
+     * Get an array of events to notify only the admin
+     * @since 3.1.0
+     * @return array it returns an array of events
+     */
+    private function only_admin_notifiable_events()
+    {
+        return apply_filters('atbdp_only_admin_notifiable_events', array(
+                array(
+                    'value' => 'listing_owner_contacted',
+                    'label' => __('Listing owner is contacted', ATBDP_TEXTDOMAIN),
+                ),
+        ));
+    }
+
+    /**
+     * Get an array of events to notify only users
+     * @since 3.1.0
+     * @return array it returns an array of events
+     */
+    private function only_user_notifiable_events()
+    {
+       return apply_filters('atbdp_only_user_notifiable_events', array(
+                array(
+                    'value' => 'listing_nearly_expired',
+                    'label' => __('Listing Expired', ATBDP_TEXTDOMAIN),
+                ),
+                array(
+                    'value' => 'listing_expired',
+                    'label' => __('Listing Expired', ATBDP_TEXTDOMAIN),
+                ),
+                array(
+                    'value' => 'listing_renewed',
+                    'label' => __('Listing Renewed', ATBDP_TEXTDOMAIN),
+                ),
         ));
     }
 
@@ -193,62 +432,65 @@ class ATBDP_Settings_Manager {
     }
 
     /**
-         * Get all the settings fields for the general settings section
-         * @since 3.0.0
-         * @return array
-         */
-        function get_general_settings_fields(){
-            /*ADAPTED FOR BACKWARD COMPATIBILITY*/
-            $fix_b_js = atbdp_get_option('fix_js_conflict', 'atbdp_general', 'no'); // fix bootstrap js conflict
+     * Get all the settings fields for the general settings section
+     * @since 3.0.0
+     * @return array
+     */
+    function get_general_settings_fields(){
+        /*ADAPTED FOR BACKWARD COMPATIBILITY*/
+        $fix_b_js = atbdp_get_option('fix_js_conflict', 'atbdp_general', 'no'); // fix bootstrap js conflict
 
-            return apply_filters('atbdp_general_settings_fields', array(
-                    array(
-                        'type' => 'textbox',
-                        'name' => 'map_api_key',
-                        'label' => __( 'Google Map API key', ATBDP_TEXTDOMAIN ),
-                        'description' => sprintf(__( 'You need to enter your google map api key in order to display google map. You can find your map api key and detailed information %s. or you can search in google', ATBDP_TEXTDOMAIN ), '<a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank"> <strong style="color: red;">here</strong> </a>'),
-                        'default' => atbdp_get_option('map_api_key', 'atbdp_general'),
-                        'validation' => 'required',
-                    ),
+        return apply_filters('atbdp_general_settings_fields', array(
+                array(
+                    'type' => 'textbox',
+                    'name' => 'map_api_key',
+                    'label' => __( 'Google Map API key', ATBDP_TEXTDOMAIN ),
+                    'description' => sprintf(__( 'You need to enter your google map api key in order to display google map. You can find your map api key and detailed information %s. or you can search in google', ATBDP_TEXTDOMAIN ), '<a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank"> <strong style="color: red;">here</strong> </a>'),
+                    'default' => atbdp_get_option('map_api_key', 'atbdp_general'),
+                    'validation' => 'required',
+                ),
 
-                    array(
-                        'type' => 'slider',
-                        'name' => 'map_zoom_level',
-                        'label' => __( 'Google Map Zoom Level', ATBDP_TEXTDOMAIN ),
-                        'description' => __( 'You can adjust the zoom level of the map. 0 means 100% zoom-out. 22 means 100% zoom-in. Minimum Zoom Allowed = 1. Max Zoom Allowed = 22. Default is 16. ', ATBDP_TEXTDOMAIN ),
-                        'min' => '1',
-                        'max' => '22',
-                        'step' => '1',
-                        'default' => '16',
-                        'validation' => 'required',
-                    ),
+                array(
+                    'type' => 'slider',
+                    'name' => 'map_zoom_level',
+                    'label' => __( 'Google Map Zoom Level', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'You can adjust the zoom level of the map. 0 means 100% zoom-out. 22 means 100% zoom-in. Minimum Zoom Allowed = 1. Max Zoom Allowed = 22. Default is 16. ', ATBDP_TEXTDOMAIN ),
+                    'min' => '1',
+                    'max' => '22',
+                    'step' => '1',
+                    'default' => '16',
+                    'validation' => 'required',
+                ),
 
-                    array(
-                        'type' => 'toggle',
-                        'name' => 'fix_js_conflict',
-                        'label' => __('Fix Conflict with Bootstrap JS', ATBDP_TEXTDOMAIN),
-                        'description' => __('If you use a theme that uses Bootstrap Framework especially Bootstrap JS, then Check this setting to fix any conflict with theme bootstrap js.', ATBDP_TEXTDOMAIN),
-                        'default' => atbdp_yes_to_bool($fix_b_js),
-                    ),
-                    array(
-                        'type' => 'toggle',
-                        'name' => 'exclude_bootstrap_css',
-                        'label' => __('Do not include Plugin\'s Bootstrap CSS in the Front-End', ATBDP_TEXTDOMAIN),
-                        'description' => __('You can turn this option ON to disable Bootstrap CSS in the Front-End if your theme is using bootstrap CSS already and you are facing problem.', ATBDP_TEXTDOMAIN),
-                        'default' => 0,
-                    ),
-                    array(
-                        'type' => 'toggle',
-                        'name' => 'exclude_admin_bootstrap_css',
-                        'label' => __('Do not include Plugin\'s Bootstrap CSS in the Backend', ATBDP_TEXTDOMAIN),
-                        'description' => __('You can turn this option ON to disable Bootstrap CSS in the Admin Area of Directoria. It is better to keep this option turned off to load bootstrap css in the admin area of this plugin, unless you have a good reason to turn it ON', ATBDP_TEXTDOMAIN),
-                        'default' => 0,
-                    ),
+                array(
+                    'type' => 'toggle',
+                    'name' => 'fix_js_conflict',
+                    'label' => __('Fix Conflict with Bootstrap JS', ATBDP_TEXTDOMAIN),
+                    'description' => __('If you use a theme that uses Bootstrap Framework especially Bootstrap JS, then Check this setting to fix any conflict with theme bootstrap js.', ATBDP_TEXTDOMAIN),
+                    'default' => atbdp_yes_to_bool($fix_b_js),
+                ),
+                array(
+                    'type' => 'toggle',
+                    'name' => 'exclude_bootstrap_css',
+                    'label' => __('Do not include Plugin\'s Bootstrap CSS in the Front-End', ATBDP_TEXTDOMAIN),
+                    'description' => __('You can turn this option ON to disable Bootstrap CSS in the Front-End if your theme is using bootstrap CSS already and you are facing problem.', ATBDP_TEXTDOMAIN),
+                    'default' => 0,
+                ),
+                array(
+                    'type' => 'toggle',
+                    'name' => 'exclude_admin_bootstrap_css',
+                    'label' => __('Do not include Plugin\'s Bootstrap CSS in the Backend', ATBDP_TEXTDOMAIN),
+                    'description' => __('You can turn this option ON to disable Bootstrap CSS in the Admin Area of Directorist. It is better to keep this option turned off to load bootstrap css in the admin area of this plugin, unless you have a good reason to turn it ON', ATBDP_TEXTDOMAIN),
+                    'default' => 0,
+                ),
 
-                )
-            );
-        }
+            )
+        );
+    }
 
+    /**
+     * @return mixed|void
+     */
     function get_currency_settings_fields(){
         return apply_filters('atbdp_currency_settings_fields', array(
                 array(

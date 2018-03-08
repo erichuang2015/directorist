@@ -63,9 +63,8 @@ if (!class_exists('ATBDP_Add_Listing')):
         public function add_listing_to_db() {
             // has the listing for been submitted ?
             if ( !empty( $_POST['add_listing_form'] ) ) {
-                $ATBDP = ATBDP();
                 // add listing form has been submitted
-                if ($ATBDP->helper->verify_nonce($this->nonce, $this->nonce_action )) {
+                if (ATBDP()->helper->verify_nonce($this->nonce, $this->nonce_action )) {
                     // we have data and passed the security
                     // we not need to sanitize post vars to be saved to the database,
                     // because wp_insert_post() does this inside that like : $postarr = sanitize_post($postarr, 'db');;
@@ -95,7 +94,7 @@ if (!class_exists('ATBDP_Add_Listing')):
                         // Check if the current user is the owner of the post
                         $post = get_post($args['ID']);
                         // update the post if the current user own the listing he is trying to edit. or we and give access to the editor or the admin of the post.
-                        if (get_current_user_id() == $post->post_author || current_user_can('edit_others_posts')){
+                        if (get_current_user_id() == $post->post_author || current_user_can('edit_others_at_biz_dirs')){
                             // Convert taxonomy input to term IDs, to avoid ambiguity.
                             if ( isset( $args['tax_input'] ) ) {
                                 foreach ( (array) $args['tax_input'] as $taxonomy => $terms ) {
@@ -153,10 +152,12 @@ if (!class_exists('ATBDP_Add_Listing')):
 
                     }else{
                         // the post is a new post, so insert it as new post.
-                        $post_id = wp_insert_post($args);
+                        if (current_user_can('publish_at_biz_dirs')){
+                            $post_id = wp_insert_post($args);
+                        }
                     }
 
-                    if ($post_id){
+                    if (!empty($post_id)){
                         // post inserted successfully,
                         // Redirect to avoid duplicate form submissions
                         wp_redirect(get_permalink($post_id));

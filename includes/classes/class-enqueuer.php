@@ -168,17 +168,12 @@ class ATBDP_Enqueuer {
 
         wp_register_script( 'atbdp-google-map-front', '//maps.googleapis.com/maps/api/js?key='.$map_api_key.'&libraries=places', false, ATBDP_VERSION, true );
 
-        wp_register_script( 'atbdp-all-listing', ATBDP_PUBLIC_ASSETS . 'js/all-listing.js', array(
-            'jquery',
-            'atbdp-google-map-front',
-        ), ATBDP_VERSION, true );
 
         wp_register_script( 'atbdp-user-dashboard', ATBDP_PUBLIC_ASSETS . 'js/user-dashboard.js', array( 'jquery' ), ATBDP_VERSION, true );
 
 
         wp_register_script( 'select2script', ATBDP_PUBLIC_ASSETS . 'js/select2.min.js', array( 'jquery' ), ATBDP_VERSION, true );
-
-
+        wp_register_script( 'atbdp_checkout_script', ATBDP_PUBLIC_ASSETS . 'js/checkout.js', array( 'jquery' ), ATBDP_VERSION, true );
 
         // we need select2 js on taxonomy edit screen to let the use to select the fonts-awesome icons ans search the icons easily
         // @TODO; make the styles and the scripts specific to the scripts where they are used specifically. For example. load select2js scripts and styles in
@@ -198,34 +193,32 @@ class ATBDP_Enqueuer {
         wp_enqueue_script('atbdp-uikit');
         wp_enqueue_script('atbdp-uikit-grid');
 
+        wp_enqueue_style('wp-color-picker');
+
         $data = array(
-            'nonce'       => wp_create_nonce('atbdp_nonce'),
+            'nonce'       => wp_create_nonce('atbdp_nonce_action_js'),
+            'ajaxurl'       => admin_url('admin-ajax.php'),
+            'nonceName'       => 'atbdp_nonce_js',
             'PublicAssetPath'  => ATBDP_PUBLIC_ASSETS,
         );
-        wp_enqueue_style('wp-color-picker');
-        wp_localize_script( 'atbdp-all-listing', 'atbdp_data', $data );
+        wp_localize_script( 'atbdp_checkout_script', 'atbdp_checkout', $data );
+
+
+
 
 
         // enqueue the style and the scripts on the page when the post type is our registered post type.
         if ( (is_object($post) && ATBDP_POST_TYPE == $post->post_type) || $force) {
             wp_enqueue_style('sweetalertcss' );
             wp_enqueue_script('sweetalert' );
-
             wp_enqueue_script( 'atbdp-public-script', ATBDP_PUBLIC_ASSETS . 'js/main.js', array(
                 'jquery',
                 'atbdp-google-map-front',
             ), ATBDP_VERSION, true );
 
-
+            wp_localize_script( 'atbdp-public-script', 'atbdp_public_data', $data );
             wp_enqueue_style('wp-color-picker');
 
-            $data = array(
-                'nonce'       => wp_create_nonce('atbdp_nonce_action_js'),
-                'ajaxurl'       => admin_url('admin-ajax.php'),
-                'nonceName'       => 'atbdp_nonce_js',
-                'AdminAssetPath'  => ATBDP_PUBLIC_ASSETS,
-            );
-            wp_localize_script( 'atbdp-public-script', 'atbdp_public_data', $data );
             wp_enqueue_media();
         }
     }

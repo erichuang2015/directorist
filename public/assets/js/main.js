@@ -290,16 +290,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
     /*HELPERS*/
     function print_static_rating($star_number)
     {
@@ -335,9 +325,6 @@
 
 
 
-
-
-
     /*This function handles all ajax request*/
     function atbdp_do_ajax( ElementToShowLoadingIconAfter, ActionName, arg, CallBackHandler){
         var data;
@@ -364,136 +351,8 @@
     }
 
 
-
-
-
-
-    // Suggest fill up
-    const $customSuggest = $('.directory_custom_suggestion'),
-        $searchQuery = $('.search_query input');
-
-    $searchQuery.on('focusin', function () {
-        $customSuggest.removeClass('v_hide');
-    });
-
-    $customSuggest.find('ul li').on('click', function () {
-        $searchQuery.val($(this).attr('data-value'));
-        $customSuggest.addClass('v_hide');
-    });
-    $searchQuery.on('focusout', function () {
-        $customSuggest.addClass('v_hide');
-    });
-
-
 })(jQuery);
 
-
-
-
-
-
-
-
-
-/*// Custom Image uploader for listing image
-jQuery(function($){
-    // Set all variables to be used in scope
-    var frame,
-        metaBox = $('#_listing_gallery'), // meta box id here
-        addImgLink = metaBox.find('#listing_image_btn'),
-        delImgLink = metaBox.find( '#delete-custom-img'),
-        imgContainer = metaBox.find( '.listing-img-container'),
-        imgIdInput = metaBox.find( '#listing_image_id'),
-
-        addImgLink2 = imgContainer;
-
-
-    // ADD IMAGE LINK
-    addImgLink.on( 'click', function( event ){
-        alert('main js on front end.');
-        event.preventDefault();
-
-        // If the media frame already exists, reopen it.
-        if ( frame ) {
-            frame.open();
-            return;
-        }
-        //@todo; make all js static texts in javascript translatable
-        // Create a new media frame
-        frame = wp.media({
-            title: 'Select or Upload a Listing Image',
-            button: {
-                text: 'Use this Image'
-            },
-            library : { type : 'image'}, // image only
-            multiple: false  // Set to true to allow multiple files to be selected
-        });
-
-
-        // When an image is selected in the media frame...
-        frame.on( 'select', function() {
-            //console.dir(frame.state().get('selection'));
-            const selection = frame.state().get('selection').first().toJSON();
-            var data = ''; // create a placeholder to save all our image from the selection of media uploader
-
-            // if no image exist then remove the place holder image before appending new image
-            if ($('.single_attachment').length === 0) {
-                imgContainer.html('');
-            }
-                // add the id to the input field of the image uploader and then save the ids in the database as a post meta
-                // so check if the attachment is really an image and reject other types
-                if ( selection.type === 'image'){
-                    // we have got an image attachment so lets proceed.
-                    // target the input field and then assign the current id of the attachment to an array.
-                        data += '<div class="single_attachment">';
-                        data += '<input class="listing_image_attachment" name="listing[attachment_id][]" type="hidden" value="'+selection.id+'">';
-                        data += '<img style="width: 100%; height: 100%;" src="'+selection.url+'" alt="Listing Image" /> <span class="remove_image  dashicons dashicons-dismiss" title="Remove it"></span></div>';
-                }
-
-
-            imgContainer.append(data);
-
-            // Unhide the remove image link
-            delImgLink.removeClass( 'hidden' );
-        });
-
-        // Finally, open the modal on click
-        frame.open();
-    });
-
-
-
-
-    // DELETE ALL IMAGES LINK
-    delImgLink.on( 'click', function( event ){
-
-        event.preventDefault();
-
-        // Clear out the preview image and set no image as placeholder
-        imgContainer.html( '<img src="'+atbdp_data.AdminAssetPath+'images/no-image.jpg" alt="Listing Image" />' );
-
-        // Un-hide the add image link
-        //addImgLink.removeClass( 'hidden' );
-
-        // Hide the delete image link
-        delImgLink.addClass( 'hidden' );
-
-
-    });
-
-    $(document).on('click', '.remove_image', function (e) {
-        e.preventDefault();
-        $(this).parent().remove();
-        // if no image exist then add placeholder and hide remove image button
-        if ($('.single_attachment').length == 0) {
-
-            imgContainer.html( '<img src="'+atbdp_data.AdminAssetPath+'images/no-image.jpg" alt="Listing Image" />' );
-            delImgLink.addClass( 'hidden' );
-
-        }
-    });
-
-});*/
 
 // Custom Image uploader for user dashboard page
 jQuery(function($){
@@ -549,7 +408,7 @@ jQuery(function($){
     delImgLink.on('click', function (e) {
         e.preventDefault();
         // if no image exist then add placeholder and hide remove image button
-            imgTag.attr('src', atbdp_public_data.AdminAssetPath+'images/no-image.jpg');
+            imgTag.attr('src', atbdp_public_data.PublicAssetPath+'images/no-image.jpg');
             imgIdInput.attr('value', ''); // set the value of input field
 
 

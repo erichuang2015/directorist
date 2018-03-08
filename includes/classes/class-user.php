@@ -90,8 +90,7 @@ class ATBDP_User {
         }
     }
     public function registration_form( ) {
-        $ATBDP = ATBDP();
-        $ATBDP->load_template('front-end/user-registration-form');
+        ATBDP()->load_template('front-end/user-registration-form');
     }
 
     /**
@@ -241,9 +240,8 @@ class ATBDP_User {
 
     public function user_dashboard()
     {
-        $ATBDP = ATBDP();
         // load user dashboard on the front end
-        $ATBDP->load_template('front-end/user-dashboard');
+        ATBDP()->load_template('front-end/user-dashboard');
     }
 
     /**
@@ -253,8 +251,7 @@ class ATBDP_User {
      */
     public function current_user_listings()
     {
-        $ATBDP = ATBDP();
-        return $ATBDP->listing->db->get_listing_by_user(); // it returns all the listing of the current user.
+        return ATBDP()->listing->db->get_listing_by_user(); // it returns all the listing of the current user.
     }
 
     /**

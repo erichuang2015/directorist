@@ -3,7 +3,6 @@
  * Template for showing Social Meta Info on Add listing page
  */
 $social_info = (array_key_exists('social_info', $args)) ? $args['social_info'] : array();
-$ATBDP = ATBDP();
 ?>
 
 
@@ -18,7 +17,7 @@ $ATBDP = ATBDP();
                         <div class="col-md-3 col-sm-12">
                             <div class="form-group">
                                 <select name="listing[social][<?= $index; ?>][id]" id="atbdp_social" class="form-control">
-                                    <?php foreach ($ATBDP->helper->social_links() as $nameID => $socialName) { ?>
+                                    <?php foreach (ATBDP()->helper->social_links() as $nameID => $socialName) { ?>
                                         <option value='<?= esc_attr($nameID); ?>' <?php selected($nameID, $socialInfo['id']); ?> > <?= esc_html($socialName); ?></option>;
                                     <?php } ?>
                                 </select>
@@ -46,7 +45,7 @@ $ATBDP = ATBDP();
                     <div class="col-md-3 col-sm-12">
                         <div class="form-group">
                             <select name="listing[social][0][id]" id="atbdp_social" class="form-control">
-                                <?php foreach ($ATBDP->helper->social_links() as $nameID => $socialName) { ?>
+                                <?php foreach (ATBDP()->helper->social_links() as $nameID => $socialName) { ?>
                                     <option value='<?= esc_attr($nameID); ?>'> <?= esc_html($socialName); ?></option>;
                                 <?php } ?>
                             </select>

@@ -130,12 +130,12 @@ class ATBDP_Gateway{
                     'name' => 'featured_listing_desc',
                     'label' => __('Description', ATBDP_TEXTDOMAIN),
                     'description' => __('You can set some description for your user for upgrading to featured listing.', ATBDP_TEXTDOMAIN),
-                    'default' => __('You can make your listing featured. Featured listing will appear on top of other listings.', ATBDP_TEXTDOMAIN),
+                    'default' => __('You can make your listing featured. A Featured listing will appear on top of other listings.', ATBDP_TEXTDOMAIN),
                 ),
                 array(
                     'type' => 'textbox',
                     'name' => 'featured_listing_price',
-                    'label' => __('Price in ', ATBDP_TEXTDOMAIN) . acadp_get_payment_currency(),
+                    'label' => __('Price in ', ATBDP_TEXTDOMAIN) . atbdp_get_payment_currency(),
                     'description' => __('Set the price you want to charge a user if he/she wants to upgrade his/her listing to featured listing. Note: you can change the currency settings under the gateway settings', ATBDP_TEXTDOMAIN),
                     'default' => 19.99,
                 ),
@@ -196,19 +196,13 @@ class ATBDP_Gateway{
                 ),
                 array(
                     'type' => 'checkbox',
-                    'name' => 'offline_gateways',
-                    'label' => __('Offline Gateways', ATBDP_TEXTDOMAIN),
-                    'description' => __('Select the type of offline payment you want to accept based on your business model or listing type. Default is Bank Transfer.', ATBDP_TEXTDOMAIN),
-                    'items' => apply_filters('atbdp_offline_gateways', array(
+                    'name' => 'active_gateways',
+                    'label' => __('Active Gateways', ATBDP_TEXTDOMAIN),
+                    'description' => __('Check the gateway(s) you would like to use to collect payment from your users. ', ATBDP_TEXTDOMAIN),
+                    'items' => apply_filters('atbdp_active_gateways', array(
                         array(
                             'value' => 'bank_transfer',
-                            'label' => __('Bank Transfer', ATBDP_TEXTDOMAIN),
-
-                        ),
-                        array(
-                            'value' => 'cash_on_delivery',
-                            'label' => __('Cash On Delivery', ATBDP_TEXTDOMAIN),
-
+                            'label' => __('Bank Transfer (Offline Gateway)', ATBDP_TEXTDOMAIN),
                         ),
                     )),
 
@@ -276,6 +270,37 @@ class ATBDP_Gateway{
         );
     }
 
+
+
+    static function gateways_markup()
+    {
+        $active_gateways = get_directorist_option('active_gateways', array());
+        if (empty($active_gateways)) return ''; // if the gateways are empty, vail out.
+        $markup = '<ul>';
+        foreach ($active_gateways as $gw_name){
+                $title = get_directorist_option($gw_name.'_title');
+                $desc = get_directorist_option($gw_name.'_description');
+                $desc = !empty($desc) ? "<p class='text-muted'>{$desc}</p>" : '';
+
+                $format = <<<KAMAL
+                <li class="list-group-item">
+                    <div class="gateway_list"> 
+                        <label for="##GATEWAY##">
+                            <input type="radio" id="##GATEWAY##" name="payment_gateway" value="##GATEWAY##">##LABEL##
+                        </label>
+                    </div>
+                    ##DESC##
+                </li>
+KAMAL;
+                $search = array("##GATEWAY##", "##LABEL##", "##DESC##");
+                $replace = array($gw_name, $title, $desc);
+                $markup  .= str_replace($search, $replace , $format);
+                /*@todo; Add a settings to select a default payment method.*/
+        }
+        $markup .= '</ul>';
+
+        return $markup;
+    }
 
 }
 

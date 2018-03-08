@@ -181,13 +181,14 @@ final class Directorist_Base {
             self::$instance->enquirer       = new ATBDP_Enqueuer;
             self::$instance->metabox        = new ATBDP_Metabox;
             self::$instance->ajax_handler   = new ATBDP_Ajax_Handler;
-            self::$instance->shortcode      = new ATBDP_Shortcode;
             self::$instance->helper         = new ATBDP_Helper;
             self::$instance->listing        = new ATBDP_Listing;
             self::$instance->user           = new ATBDP_User;
             self::$instance->roles          = new ATBDP_Roles;
             self::$instance->gateway        = new ATBDP_Gateway;
             self::$instance->order          = new ATBDP_Order;
+            self::$instance->shortcode      = new ATBDP_Shortcode;
+
 
             // new settings
             new ATBDP_Settings_Manager();
@@ -305,6 +306,8 @@ final class Directorist_Base {
         load_dependencies('all', ATBDP_INC_DIR . 'gateways/');
         /*Load payment related stuff*/
         load_dependencies('all', ATBDP_INC_DIR . 'payments/');
+        load_dependencies('all', ATBDP_INC_DIR . 'checkout/');
+        /*Load payment related stuff*/
         require_once ATBDP_INC_DIR . 'custom-actions.php';
         require_once ATBDP_INC_DIR . 'custom-filters.php';
     }

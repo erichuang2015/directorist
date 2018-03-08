@@ -116,10 +116,6 @@ if(!class_exists('ATBDP_Custom_Post')):
             return $columns;
         }
         public function manage_listing_columns( $column_name, $post_id ) {
-            /* global $ATBDP;
-            $g_info = get_post_meta( $post_id, 'general' , true); // return serialized and encoded string of array value
-            $general_info = (!empty($g_info) ? unserialize( base64_decode( $g_info )) : array());
-            $post_link = admin_url( 'post.php?post='.$post_id.'&action=edit'); */
             /*@TODO; Next time we can add image column too. */
             switch($column_name){
                 case 'atbdp_list_1':

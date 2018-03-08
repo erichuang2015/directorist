@@ -1101,3 +1101,33 @@ if (!function_exists('atbdp_get_paged_num')){
 
 
 }
+
+if (!function_exists('valid_js_nonce')) {
+    /**
+     * It checks if the nonce is set and valid
+     * @return bool it returns true if the nonce is valid and false otherwise
+     */
+    function valid_js_nonce()
+    {
+        if ( !empty($_POST['atbdp_nonce_js']) && (wp_verify_nonce($_POST['atbdp_nonce_js'], 'atbdp_nonce_action_js')))
+            return true;
+        return false;
+    }
+}
+
+if (!function_exists('atbdp_get_featured_settings_array')) {
+    /**
+     * It fetch all the settings related to featured listing.
+     * @return array it returns an array of settings related to featured listings.
+     */
+    function atbdp_get_featured_settings_array()
+    {
+        return array(
+            'active'        => get_directorist_option('enable_featured_listing'),
+            'label'         => get_directorist_option('featured_listing_title'),
+            'desc'          => get_directorist_option('featured_listing_desc'),
+            'price'         => get_directorist_option('featured_listing_price'),
+            'show_ribbon'   => get_directorist_option('show_featured_ribbon'),
+        );
+    }
+}
