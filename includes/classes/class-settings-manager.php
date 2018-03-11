@@ -148,12 +148,36 @@ class ATBDP_Settings_Manager {
                 'title' => __('Email Templates', ATBDP_TEXTDOMAIN),
                 'name' => 'emails_templates',
                 'icon' => 'font-awesome:fa-envelope',
-                'controls' => apply_filters('atbdp_email_settings_controls', array(
-                    'emails_templates' => array(
+                'controls' => apply_filters('atbdp_email_templates_settings_controls', array(
+                    'new_eml_templates' => array(
                         'type' => 'section',
-                        'title' => __('Email Templates', ATBDP_TEXTDOMAIN),
+                        'title' => __('For New Listing', ATBDP_TEXTDOMAIN),
                         'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
-                        'fields' => $this->get_email_template_settings_fields(),
+                        'fields' => $this->get_email_new_tmpl_settings_fields(),
+                    ),
+                    'publish_eml_templates' => array(
+                        'type' => 'section',
+                        'title' => __('For Approved/Published Listings', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'fields' => $this->get_email_pub_tmpl_settings_fields(),
+                    ),
+                    'about_expire_eml_templates' => array(
+                        'type' => 'section',
+                        'title' => __('For About to Expire Listings', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'fields' => $this->email_about_expire_tmpl_settings_fields(),
+                    ),
+                    'expired_eml_templates' => array(
+                        'type' => 'section',
+                        'title' => __('For Expired Listings', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'fields' => $this->email_expired_tmpl_settings_fields(),
+                    ),
+                    'renewal_eml_templates' => array(
+                        'type' => 'section',
+                        'title' => __('For Renewal Listings', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'fields' => $this->email_renewal_tmpl_settings_fields(),
                     ),
                 )),
             ),
@@ -161,33 +185,252 @@ class ATBDP_Settings_Manager {
     }
 
     /**
-     * Get all the settings fields for the email settings section
+     * Get all the settings fields for the new listing email template section
      * @since 3.1.0
      * @return array
      */
-    public function get_email_template_settings_fields()
+    public function get_email_new_tmpl_settings_fields()
     {
-        $nw_list_tmpl = <<<KAMAL
-Dear ***NAME***,
+        // let's define default data template
+        $sub = <<<KAMAL
+[==SITE_NAME==] : Listing "==LISTING_TITLE==" Received
+KAMAL;
 
-This email is to notify you that your listing "***LISTING_TITLE***" has been received and it is under review now. 
+        $tmpl = <<<KAMAL
+Dear ==NAME==,
+
+This email is to notify you that your listing "==LISTING_TITLE==" has been received and it is under review now. 
 It may take up to 24 hours to complete the review.
 
 Thanks,
-The Administrator of ***SITE_NAME***
+The Administrator of ==SITE_NAME==
 KAMAL;
 
-        return apply_filters('atbdp_email_template_settings_fields', array(
+        $ph = <<<KAMAL
+You can use the following keywords/placeholder in any of your email bodies/templates or subjects to output dynamic value. **Usage: place the placeholder name between == and ==**. For Example: use ==SITE_NAME== to output The Your Website Name etc. <br/><br/>
+==NAME== : It outputs The listing owner's display name on the site<br/>
+==USERNAME== : It outputs The listing owner's user name on the site<br/>
+==SITE_NAME== : It outputs your site name<br/>
+==SITE_LINK== : It outputs your site name with link<br/>
+==SITE_URL== : It outputs your site url with link<br/>
+==EXPIRATION_DATE== : It outputs Expiration date<br/>
+==CATEGORY_NAME== : It outputs the category name that is going to expire<br/>
+==RENEWAL_LINK== : It outputs a link to renewal page<br/>
+==LISTING_TITLE== : It outputs the listing's title<br/>
+==LISTING_LINK== : It outputs the listing's title with link<br/>
+==LISTING_URL== : It outputs the listing's url with link<br/>
+==TODAY== : It outputs the current date<br/>
+==NOW== : It outputs the current time<br/><br/>
+Additionally, you can also use HTML tags in your template.
+KAMAL;
+
+
+        return apply_filters('atbdp_email_new__tmpl_settings_fields', array(
+                array(
+                    'type' => 'notebox',
+                    'name' => 'email_placeholder_info',
+                    'label' => __('You can use Placeholders to output dynamic value', ATBDP_TEXTDOMAIN),
+                    'description' => $ph,
+                    'status' => 'info',
+                ),
+                array(
+                    'type' => 'textbox',
+                    'name' => 'email_sub_new_listing',
+                    'label' => __('Email Subject', ATBDP_TEXTDOMAIN),
+                    'description' => __('Edit the subject for sending to the user when a listing is submitted/received.', ATBDP_TEXTDOMAIN),
+                    'default' => $sub,
+                ),
                 array(
                     'type' => 'textarea',
                     'name' => 'email_tmpl_new_listing',
-                    'label' => __('Template for new listing', ATBDP_TEXTDOMAIN),
-                    'description' => __('Edit the template for sending to the user when a listing is submitted/received.', ATBDP_TEXTDOMAIN),
-                    'default' => $nw_list_tmpl,
+                    'label' => __('Email Body', ATBDP_TEXTDOMAIN),
+                    'description' => __('Edit the email template for sending to the user when a listing is submitted/received. HTML content is allowed too.', ATBDP_TEXTDOMAIN),
+                    'default' => $tmpl,
                 ),
+
 
         ));
     }
+
+    /**
+     * Get all the settings fields for the published listing email template section
+     * @since 3.1.0
+     * @return array
+     */
+    public function get_email_pub_tmpl_settings_fields()
+    {
+        // let's define default data
+        $sub = <<<KAMAL
+[==SITE_NAME==] : Listing "==LISTING_TITLE==" published
+KAMAL;
+        $tmpl = <<<KAMAL
+Dear ==NAME==,
+Congratulations! Your listing "==LISTING_TITLE==" has been approved/published. Now it is publicly available at ==LISTING_URL==
+
+Thanks,
+The Administrator of ==SITE_NAME==
+KAMAL;
+
+        return apply_filters('atbdp_email_pub_tmpl_settings_fields', array(
+            array(
+                'type' => 'textbox',
+                'name' => 'email_sub_pub_listing',
+                'label' => __('Email Subject', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the subject for sending to the user when a listing is approved/published.', ATBDP_TEXTDOMAIN),
+                'default' => $sub,
+            ),
+            array(
+                'type' => 'textarea',
+                'name' => 'email_tmpl_approve_listing',
+                'label' => __('Email Body', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the email template for sending to the user when a listing is approved/published. HTML content is allowed too.', ATBDP_TEXTDOMAIN),
+                'default' => $tmpl,
+            ),
+
+
+        ));
+    }
+
+    /**
+     * Get all the settings fields for the renew listing email template section
+     * @since 3.1.0
+     * @return array
+     */
+    public function email_about_expire_tmpl_settings_fields()
+    {
+        // let's define default data
+        $sub = <<<KAMAL
+[==SITE_NAME==] : Your Listing "==LISTING_TITLE==" is about to expire.
+KAMAL;
+        /*@todo; includes the number of days remaining to expire the listing*/
+        $tmpl = <<<KAMAL
+Dear ==NAME==,
+Your listing "==LISTING_TITLE==" is about to expire. You can renew it at ==LISTING_URL==
+
+Thanks,
+The Administrator of ==SITE_NAME==
+KAMAL;
+
+        return apply_filters('atbdp_email_about_expire_tmpl_settings_fields', array(
+            array(
+                'type' => 'slider',
+                'name' => 'email_to_expire_day',
+                'label' => __( 'When to send expire notice', ATBDP_TEXTDOMAIN ),
+                'description' => __( 'Select the days before a listing expires to send an expiration reminder email', ATBDP_TEXTDOMAIN ),
+                'min' => '1',
+                'max' => '120',
+                'step' => '1',
+                'default' => '7',
+                'validation' => 'required',
+            ),
+            array(
+                'type' => 'textbox',
+                'name' => 'email_sub_to_expire_listing',
+                'label' => __('Email Subject', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the subject for sending to the user when a listing is ABOUT TO EXPIRE.', ATBDP_TEXTDOMAIN),
+                'default' => $sub,
+            ),
+            array(
+                'type' => 'textarea',
+                'name' => 'email_tmpl_to_expire_listing',
+                'label' => __('Email Body', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the email template for sending to the user when a listing is ABOUT TO EXPIRE. HTML content is allowed too.', ATBDP_TEXTDOMAIN),
+                'default' => $tmpl,
+            ),
+
+
+        ));
+    }
+
+    /**
+     * Get all the settings fields for the renew listing email template section
+     * @since 3.1.0
+     * @return array
+     */
+    public function email_expired_tmpl_settings_fields()
+    {
+        // let's define default data
+        $sub = <<<KAMAL
+[==SITE_NAME==] : Your Listing "==LISTING_TITLE==" has expired.
+KAMAL;
+        $tmpl = <<<KAMAL
+Dear ==NAME==,
+Your listing "==LISTING_TITLE==" is has expired. You can renew it at ==LISTING_URL==
+
+Thanks,
+The Administrator of ==SITE_NAME==
+KAMAL;
+
+        return apply_filters('atbdp_email_expired_tmpl_settings_fields', array(
+            array(
+                'type' => 'textbox',
+                'name' => 'email_sub_expired_listing',
+                'label' => __('Email Subject', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the subject for sending to the user when a Listing HAS EXPIRED.', ATBDP_TEXTDOMAIN),
+                'default' => $sub,
+            ),
+            array(
+                'type' => 'textarea',
+                'name' => 'email_tmpl_expired_listing',
+                'label' => __('Email Body', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the email template for sending to the user when a Listing HAS EXPIRED. HTML content is allowed too.', ATBDP_TEXTDOMAIN),
+                'default' => $tmpl,
+            ),
+
+        ));
+    }
+
+    /**
+     * Get all the settings fields for the renew listing email template section
+     * @since 3.1.0
+     * @return array
+     */
+    public function email_renewal_tmpl_settings_fields()
+    {
+        // let's define default data
+        $sub = <<<KAMAL
+[==SITE_NAME==] : Your Listing "==LISTING_TITLE==" is about to expire.
+KAMAL;
+        $tmpl = <<<KAMAL
+Dear ==NAME==,
+
+We have noticed that you might have forget to renew your listing "==LISTING_TITLE==" at ==SITE_LINK==. We would to remind you that it expired on ==EXPIRATION_DATE==. But please you don't need to worry.  You can still renew it by clicking this link: ==RENEWAL_LINK==.
+
+Thanks,
+The Administrator of ==SITE_NAME==
+KAMAL;
+
+        return apply_filters('atbdp_email_renewal_tmpl_settings_fields', array(
+            array(
+                'type' => 'slider',
+                'name' => 'email_renewal_day',
+                'label' => __( 'When to send renewal reminder', ATBDP_TEXTDOMAIN ),
+                'description' => __( 'Select the days after a listing expires to send a renewal reminder email', ATBDP_TEXTDOMAIN ),
+                'min' => '1',
+                'max' => '120',
+                'step' => '1',
+                'default' => '7',
+                'validation' => 'required',
+            ),
+            array(
+                'type' => 'textbox',
+                'name' => 'email_sub_to_renewal_listing',
+                'label' => __('Email Subject', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the subject for sending to the user to renew his/her listings.', ATBDP_TEXTDOMAIN),
+                'default' => $sub,
+            ),
+            array(
+                'type' => 'textarea',
+                'name' => 'email_tmpl_to_renewal_listing',
+                'label' => __('Email Body', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the email template for sending to the user to renew his/her listings. HTML content is allowed too.', ATBDP_TEXTDOMAIN),
+                'default' => $tmpl,
+            ),
+
+
+        ));
+    }
+
 
     /**
      * Get all the settings fields for the email settings section
@@ -489,7 +732,7 @@ KAMAL;
     }
 
     /**
-     * @return mixed|void
+     * @return array
      */
     function get_currency_settings_fields(){
         return apply_filters('atbdp_currency_settings_fields', array(
@@ -639,10 +882,17 @@ KAMAL;
                         'default' => __( 'Sorry, No Matched Results Found !', ATBDP_TEXTDOMAIN ),
                     ),
                     array(
+                        'type' => 'toggle',
+                        'name' => 'paginate_search_results',
+                        'label' => __('Paginate Search Result', ATBDP_TEXTDOMAIN),
+                        'description' => __('If you do not want to show pagination on search result page, turn it off.', ATBDP_TEXTDOMAIN),
+                        'default' => 1,
+                    ),
+                    array(
                         'type' => 'slider',
                         'name' => 'search_posts_num',
-                        'label' => __('Number of Search Results', ATBDP_TEXTDOMAIN),
-                        'description' => __( 'Enter how many listings you would like to show on your listing search result page. Eg. 6. Default is 6', ATBDP_TEXTDOMAIN),
+                        'label' => __('Search Results per page', ATBDP_TEXTDOMAIN),
+                        'description' => __( 'Enter how many listings you would like to show per page on your listing search result page. Eg. 6. Default is 6. If pagination is turned off, then this option value will limit the total listings to display', ATBDP_TEXTDOMAIN),
                         'min' => '1',
                         'max' => '100',
                         'step' => '1',
@@ -674,10 +924,18 @@ KAMAL;
                         'default' => atbdp_get_option('all_listing_title', 'atbdp_general'),
                     ),
                     array(
+                        'type' => 'toggle',
+                        'name' => 'paginate_all_listings',
+                        'label' => __('Paginate Listings On "All listings" Page', ATBDP_TEXTDOMAIN),
+                        'description' => __('If you do not want to show pagination on all listings page, turn it off.', ATBDP_TEXTDOMAIN),
+                        'default' => 1,
+                    ),
+
+                    array(
                         'type' => 'slider',
                         'name' => 'all_listing_page_items',
-                        'label' => __('Number of Listings on All listing page', ATBDP_TEXTDOMAIN),
-                        'description' => __( 'Set how many listings you would like to show on the All Listings page. Eg. 6. Default is 6', ATBDP_TEXTDOMAIN),
+                        'label' => __('Listings Per Page on All listing page', ATBDP_TEXTDOMAIN),
+                        'description' => __( 'Set how many listings you would like to show per page on the All Listings page. Eg. 6. Default is 6. If pagination is off, then this number will be the total listings to show.', ATBDP_TEXTDOMAIN),
                         'min' => '1',
                         'max' => '30',
                         'step' => '1',
@@ -776,58 +1034,80 @@ KAMAL;
 
                         ),
 
-                        array(
-                            'type' => 'select',
-                            'name' => 'all_listing_page',
-                            'label' => __( 'Add All Listings Page ID', ATBDP_TEXTDOMAIN ),
-                            'items' => $this->get_pages_vl_arrays(),
-                            'description' => sprintf(__( 'Select your All Listings  page ( where you used %s shortcode ) ID here.', ATBDP_TEXTDOMAIN ), '<strong style="color: #ff4500;">[all_listing]</strong>'),
+                    array(
+                        'type' => 'select',
+                        'name' => 'all_listing_page',
+                        'label' => __( 'Add All Listings Page ID', ATBDP_TEXTDOMAIN ),
+                        'items' => $this->get_pages_vl_arrays(),
+                        'description' => sprintf(__( 'Select your All Listings  page ( where you used %s shortcode ) ID here.', ATBDP_TEXTDOMAIN ), '<strong style="color: #ff4500;">[all_listing]</strong>'),
 
-                            'default' => atbdp_get_option('all_listing_page', 'atbdp_general'),
-                            'validation' => 'required|numeric',
-                        ),
+                        'default' => atbdp_get_option('all_listing_page', 'atbdp_general'),
+                        'validation' => 'required|numeric',
+                    ),
 
-                        array(
-                            'type' => 'select',
-                            'name' => 'user_dashboard',
-                            'label' =>  __( 'Add dashboard page ID', ATBDP_TEXTDOMAIN ),
-                            'items' => $this->get_pages_vl_arrays(),
-                            'description' => sprintf(__( 'Select your add dashboard page ( where you used %s shortcode ) ID here', ATBDP_TEXTDOMAIN ), '<strong style="color: #ff4500;">[user_dashboard]</strong>'),
-                            'default' => atbdp_get_option('user_dashboard', 'atbdp_general'),
-                            'validation' => 'required|numeric',
+                    array(
+                        'type' => 'select',
+                        'name' => 'user_dashboard',
+                        'label' =>  __( 'Add dashboard page ID', ATBDP_TEXTDOMAIN ),
+                        'items' => $this->get_pages_vl_arrays(),
+                        'description' => sprintf(__( 'Select your add dashboard page ( where you used %s shortcode ) ID here', ATBDP_TEXTDOMAIN ), '<strong style="color: #ff4500;">[user_dashboard]</strong>'),
+                        'default' => atbdp_get_option('user_dashboard', 'atbdp_general'),
+                        'validation' => 'required|numeric',
 
-                        ),
+                    ),
 
-                        array(
-                            'type' => 'select',
-                            'name' => 'custom_registration',
-                            'label' =>  __(  'Add registration page ID', ATBDP_TEXTDOMAIN ),
-                            'items' => $this->get_pages_vl_arrays(),
-                            'description' => sprintf(__( 'Select your registration page ( where you used %s  shortcode ) ID here', ATBDP_TEXTDOMAIN ), '<strong style="color: #ff4500;">[custom_registration]</strong>'),
-                            'default' => atbdp_get_option('custom_registration', 'atbdp_general'),
-                            'validation' => 'required|numeric',
+                    array(
+                        'type' => 'select',
+                        'name' => 'custom_registration',
+                        'label' =>  __(  'Add registration page ID', ATBDP_TEXTDOMAIN ),
+                        'items' => $this->get_pages_vl_arrays(),
+                        'description' => sprintf(__( 'Select your registration page ( where you used %s  shortcode ) ID here', ATBDP_TEXTDOMAIN ), '<strong style="color: #ff4500;">[custom_registration]</strong>'),
+                        'default' => atbdp_get_option('custom_registration', 'atbdp_general'),
+                        'validation' => 'required|numeric',
 
-                        ),
+                    ),
 
-                        array(
-                            'type' => 'select',
-                            'name' => 'search_listing',
-                            'label' =>  __( 'Add Listing Search page ID', ATBDP_TEXTDOMAIN ),
-                            'items' => $this->get_pages_vl_arrays(),
-                            'description' => sprintf(__( 'Select your Listing Search page ( where you used %s shortcode ) ID here. This is generally used in a home page.', ATBDP_TEXTDOMAIN ), '<strong style="color: #ff4500;">[search_listing]</strong>'),
-                            'default' => atbdp_get_option('search_listing', 'atbdp_general'),
-                            'validation' => 'required|numeric',
-                        ),
+                    array(
+                        'type' => 'select',
+                        'name' => 'search_listing',
+                        'label' =>  __( 'Add Listing Search page ID', ATBDP_TEXTDOMAIN ),
+                        'items' => $this->get_pages_vl_arrays(),
+                        'description' => sprintf(__( 'Select your Listing Search page ( where you used %s shortcode ) ID here. This is generally used in a home page.', ATBDP_TEXTDOMAIN ), '<strong style="color: #ff4500;">[search_listing]</strong>'),
+                        'default' => atbdp_get_option('search_listing', 'atbdp_general'),
+                        'validation' => 'required|numeric',
+                    ),
 
-                        array(
-                            'type' => 'select',
-                            'name' => 'search_result_page',
-                            'label' =>  __( 'Add Listing Search Result page ID', ATBDP_TEXTDOMAIN ),
-                            'items' => $this->get_pages_vl_arrays(),
-                            'description' => sprintf(__( 'Please Select your Listing Search Result page ( where you used %s shortcode ) ID here. This page is used to show listing search results but this page is generally should be excluded from the menu.', ATBDP_TEXTDOMAIN ),'<strong style="color: #ff4500;">[search_result]</strong>'),
-                            'default' => atbdp_get_option('search_result_page', 'atbdp_general'),
-                            'validation' => 'required|numeric',
-                        ),
+                    array(
+                        'type' => 'select',
+                        'name' => 'search_result_page',
+                        'label' =>  __( 'Add Listing Search Result page ID', ATBDP_TEXTDOMAIN ),
+                        'items' => $this->get_pages_vl_arrays(),
+                        'description' => sprintf(__( 'Please Select your Listing Search Result page ( where you used %s shortcode ) ID here. This page is used to show listing search results but this page generally should be excluded from the menu.', ATBDP_TEXTDOMAIN ),'<strong style="color: #ff4500;">[search_result]</strong>'),
+                        'default' => atbdp_get_option('search_result_page', 'atbdp_general'),
+                        'validation' => 'required|numeric',
+                    ),
+                    array(
+                        'type' => 'select',
+                        'name' => 'checkout_page',
+                        'label' =>  __( 'Add Checkout page ID', ATBDP_TEXTDOMAIN ),
+                        'items' => $this->get_pages_vl_arrays(),
+                        'description' => sprintf(__( 'Please Select your Checkout page ( where you used %s shortcode ) ID here. This page is used to show checkout information but this page generally should be excluded from the menu.', ATBDP_TEXTDOMAIN ),'<strong style="color: #ff4500;">[directorist_checkout]</strong>'),
+                        'default' => '',
+                        'validation' => 'numeric',
+                    ),
+
+                    array(
+                        'type' => 'select',
+                        'name' => 'payment_receipt_page',
+                        'label' =>  __( 'Add Payment/Order Receipt page ID', ATBDP_TEXTDOMAIN ),
+                        'items' => $this->get_pages_vl_arrays(),
+                        'description' => sprintf(__( 'Please Select your Payment/Order Receipt page ( where you used %s shortcode ) ID here. This page is used to show payment receipt information but this page generally should be excluded from the menu.', ATBDP_TEXTDOMAIN ),'<strong style="color: #ff4500;">[payment_receipt]</strong>'),
+                        'default' => '',
+                        'validation' => 'numeric',
+                    ),
+
+
+
             )
         );
     }

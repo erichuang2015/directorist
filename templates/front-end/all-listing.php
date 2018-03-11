@@ -1,21 +1,7 @@
 <?php
-//for pagination
-if ( get_query_var('paged') ) {
-    $paged = get_query_var('paged');
-} elseif ( get_query_var('page') ) {
-    $paged = get_query_var('page');
-} else {
-    $paged = 1;
-}
-
-$args = array(
-        'post_type'=> ATBDP_POST_TYPE,
-        'posts_per_page' => get_directorist_option('all_listing_page_items', 6),
-        'paged' => $paged
-);
-
-$all_listings = new WP_Query($args);
-$all_listing_title = get_directorist_option('all_listing_title', __('All Items', ATBDP_TEXTDOMAIN));
+!empty($args['data']) ? extract($args['data']) : array(); // data array contains all required var.
+$all_listings = !empty($all_listings) ? $all_listings : new WP_Query;
+$all_listing_title = !empty($all_listing_title) ? $all_listing_title : __('All Items', ATBDP_TEXTDOMAIN);
 ?>
 
 
@@ -24,14 +10,19 @@ $all_listing_title = get_directorist_option('all_listing_title', __('All Items',
             <div class="<?php echo is_directoria_active() ? 'container': 'container-fluid'; ?>">
                 <div class="row">
                     <div class="col-md-12">
-
-
                         <div class="header_form_wrapper">
                             <div class="directory_title">
                                 <h3>
                                     <?php echo esc_html($all_listing_title); ?>
                                 </h3>
-                                <p><?php _e('Total Results Found: ', ATBDP_TEXTDOMAIN); echo $all_listings->found_posts; ?></p>
+                                <?php
+                                    _e('Total Listing Found: ', ATBDP_TEXTDOMAIN);
+                                    if ($paginate){
+                                        echo $all_listings->found_posts;
+                                    }else{
+                                        echo count($all_listings->posts);
+                                    }
+                                ?>
                             </div>
                         </div>
                     </div>

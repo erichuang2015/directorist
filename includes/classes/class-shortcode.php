@@ -17,7 +17,7 @@ class ATBDP_Shortcode {
         add_shortcode( 'custom_registration', array( $this, 'user_registration' ) );
 
         add_shortcode( 'user_dashboard', array( $this, 'user_dashboard' ) );
-        add_shortcode('atbdp_checkout', array(new ATBDP_Checkout, 'display_checkout_content'));
+        add_shortcode('directorist_checkout', array(new ATBDP_Checkout, 'display_checkout_content'));
 
 
     }
@@ -31,6 +31,7 @@ class ATBDP_Shortcode {
         }
         $paged = atbdp_get_paged_num();
         $srch_p_num = get_directorist_option('search_posts_num', 6);
+        $paginate = get_directorist_option('paginate_search_results');
         $s_string = sanitize_text_field( $_GET['q'] );// get the searched query
         $in_cat = !empty($_GET['in_cat']) ? sanitize_text_field($_GET['in_cat']) : '';
         $in_loc = !empty($_GET['in_loc']) ? sanitize_text_field($_GET['in_loc']) : '';
@@ -44,6 +45,7 @@ class ATBDP_Shortcode {
             'paged'          => $paged,
             's'              => $s_string,
         );
+        if (!$paginate) $args['no_found_rows'] = true;
 
         $tax_queries=array(); // initiate the tax query var to append to it different tax query
 
@@ -85,7 +87,7 @@ class ATBDP_Shortcode {
         $listings = new WP_Query(apply_filters('atbdp_search_query_args', $args));
 
 
-        $data_for_template = compact('listings', 'in_loc', 'in_cat', 'in_tag', 's_string', 'paged');
+        $data_for_template = compact('listings', 'in_loc', 'in_cat', 'in_tag', 's_string', 'paged', 'paginate');
         ATBDP()->load_template('search-at_biz_dir', array( 'data' => $data_for_template ));
         return ob_get_clean();
     }
@@ -93,7 +95,22 @@ class ATBDP_Shortcode {
     public function all_listing()
     {
         ob_start();
-        ATBDP()->load_template('front-end/all-listing');
+        //for pagination
+        $paged = atbdp_get_paged_num();
+        $paginate = get_directorist_option('paginate_all_listings');
+        $args = array(
+            'post_type'=> ATBDP_POST_TYPE,
+            'post_status'=> 'publish',
+            'posts_per_page' => get_directorist_option('all_listing_page_items', 6),
+            'paged' => $paged
+        );
+        if (!$paginate) $args['no_found_rows'] = true;
+
+        $all_listings = new WP_Query($args);
+        $all_listing_title = get_directorist_option('all_listing_title', __('All Items', ATBDP_TEXTDOMAIN));
+        $data_for_template = compact('all_listings', 'all_listing_title', 'paged', 'paginate');
+
+        ATBDP()->load_template('front-end/all-listing', array('data' => $data_for_template));
         return ob_get_clean();
     }
 

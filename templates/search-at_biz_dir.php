@@ -36,7 +36,16 @@ $in_loc_text = !empty($in_loc) ? sprintf(__(' in "%s" Location', ATBDP_TEXTDOMAI
 
                                         ?>
                                     </h3>
-                                    <p><?php _e('Total Listing Found: ', ATBDP_TEXTDOMAIN); echo $listings->found_posts; ?></p>
+                                    <p>
+                                        <?php
+                                        _e('Total Listing Found: ', ATBDP_TEXTDOMAIN);
+                                        if ($paginate){
+                                            echo $listings->found_posts;
+                                        }else{
+                                            echo count($listings->posts);
+                                        }
+                                        ?>
+                                    </p>
                                 </div>
                             </div>
                         </div>
