@@ -12,7 +12,7 @@
  */
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) die('What the hell are you doing here accessing this file directly');
+defined('ABSPATH') || die( 'Direct access is not allowed.' );
 if (!class_exists('ATBDP_Database')):
 
 abstract class ATBDP_Database {

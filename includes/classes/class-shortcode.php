@@ -17,7 +17,9 @@ class ATBDP_Shortcode {
         add_shortcode( 'custom_registration', array( $this, 'user_registration' ) );
 
         add_shortcode( 'user_dashboard', array( $this, 'user_dashboard' ) );
-        add_shortcode('directorist_checkout', array(new ATBDP_Checkout, 'display_checkout_content'));
+        $checkout = new ATBDP_Checkout;
+        add_shortcode('directorist_checkout', array($checkout, 'display_checkout_content'));
+        add_shortcode('directorist_payment_receipt', array($checkout, 'payment_receipt'));
 
 
     }

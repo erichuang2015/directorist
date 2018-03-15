@@ -1,4 +1,5 @@
 <?php
+/*Template for displaying Checkout form*/
 // prepare all the variables required by the checkout page.
 $form_data = !empty($args['form_data']) ? $args['form_data'] : array();
 $listing_id = !empty($args['listing_id']) ? $args['listing_id'] : 0;
@@ -79,7 +80,7 @@ $symbol = atbdp_currency_symbol($currency);
             <?php wp_nonce_field( 'checkout_action', 'checkout_nonce' ); ?>
             <input type="hidden" name="listing_id" value="<?php echo $listing_id; ?>" />
             <div class="pull-right">
-                <a href="<?php echo ATBDP_Permalink::get_dashboard_page_link(); ?>" class="btn btn-default"><?php _e( 'Cancel', ATBDP_TEXTDOMAIN ); ?></a>
+                <a href="<?php echo ATBDP_Permalink::get_dashboard_page_link(); ?>" class="btn btn-default"><?php _e( 'Not Now', ATBDP_TEXTDOMAIN ); ?></a>
                 <input type="submit" id="atbdp_checkout_submit_btn" class="btn btn-primary" value="<?php _e( 'Pay Now', ATBDP_TEXTDOMAIN ); ?>" />
             </div>
         <?php do_action('atbdp_before_checkout_form_end'); ?>

@@ -198,8 +198,25 @@ class ATBDP_Gateway{
                     'type' => 'checkbox',
                     'name' => 'active_gateways',
                     'label' => __('Active Gateways', ATBDP_TEXTDOMAIN),
-                    'description' => __('Check the gateway(s) you would like to use to collect payment from your users. ', ATBDP_TEXTDOMAIN),
+                    'description' => __('Check the gateway(s) you would like to use to collect payment from your users. A user will be use any of the active gateways during the checkout process ', ATBDP_TEXTDOMAIN),
                     'items' => apply_filters('atbdp_active_gateways', array(
+                        array(
+                            'value' => 'bank_transfer',
+                            'label' => __('Bank Transfer (Offline Gateway)', ATBDP_TEXTDOMAIN),
+                        ),
+                    )),
+
+                    'default' => array(
+                        'bank_transfer',
+                    ),
+                ),
+
+                array(
+                    'type' => 'select',
+                    'name' => 'default_gateway',
+                    'label' => __('Default Gateway', ATBDP_TEXTDOMAIN),
+                    'description' => __('Select the default gateway you would like to show as a selected gateway on the checkout page', ATBDP_TEXTDOMAIN),
+                    'items' => apply_filters('atbdp_default_gateways', array(
                         array(
                             'value' => 'bank_transfer',
                             'label' => __('Bank Transfer (Offline Gateway)', ATBDP_TEXTDOMAIN),
@@ -275,25 +292,27 @@ class ATBDP_Gateway{
     static function gateways_markup()
     {
         $active_gateways = get_directorist_option('active_gateways', array());
+        $default_gw = get_directorist_option('default_gateway', 'bank_transfer');
         if (empty($active_gateways)) return ''; // if the gateways are empty, vail out.
         $markup = '<ul>';
         foreach ($active_gateways as $gw_name){
                 $title = get_directorist_option($gw_name.'_title');
                 $desc = get_directorist_option($gw_name.'_description');
                 $desc = !empty($desc) ? "<p class='text-muted'>{$desc}</p>" : '';
+                $checked = ($gw_name == $default_gw) ? ' checked': '';
 
                 $format = <<<KAMAL
                 <li class="list-group-item">
                     <div class="gateway_list"> 
                         <label for="##GATEWAY##">
-                            <input type="radio" id="##GATEWAY##" name="payment_gateway" value="##GATEWAY##">##LABEL##
+                            <input type="radio" id="##GATEWAY##" name="payment_gateway" value="##GATEWAY##" ##CHECKED##>##LABEL##
                         </label>
                     </div>
                     ##DESC##
                 </li>
 KAMAL;
-                $search = array("##GATEWAY##", "##LABEL##", "##DESC##");
-                $replace = array($gw_name, $title, $desc);
+                $search = array("##GATEWAY##", "##LABEL##", "##DESC##", "##CHECKED##");
+                $replace = array($gw_name, $title, $desc, $checked);
                 $markup  .= str_replace($search, $replace , $format);
                 /*@todo; Add a settings to select a default payment method.*/
         }

@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || die( 'Direct access is not allowed.' );
 
 if ( !class_exists('ATBDP_Custom_Taxonomy') ):
 class ATBDP_Custom_Taxonomy {

@@ -164,7 +164,7 @@ if (!class_exists('ATBDP_Permalink')):
     /**
      * Generate a permalink for Payment receipt page.
      *
-     * @since    3.0.0
+     * @since    3.1.0
      *
      * @param    int       $order_id    Order ID.
      * @return   string                 Payment receipt page URL.
@@ -190,6 +190,36 @@ if (!class_exists('ATBDP_Permalink')):
 
         return apply_filters('atbdp_payment_receipt_page_url', $link);
     }
+
+        /**
+         * Generate a permalink for Checkout page
+         *
+         * @since    3.1.0
+         *
+         * @param    int       $listing_id    Listing ID.
+         * @return   string                   It returns Checkout page URL.
+         */
+        public static function get_checkout_page_link($listing_id) {
+            $link = home_url(); // default url
+            $id = get_directorist_option('checkout_page');
+            if( $id ) {
+                $link = get_permalink( $id );
+
+                if( '' != get_option( 'permalink_structure' ) ) {
+                    $link = user_trailingslashit( trailingslashit( $link ) . 'submit/' . $listing_id );
+                } else {
+                    $link = add_query_arg(
+                        array(
+                            'atbdp_action' => 'submission',
+                            'atbdp_listing_id' => $listing_id
+                        ),
+                        $link
+                    );
+                }
+            }
+
+            return apply_filters('atbdp_checkout_page_url', $link);
+        }
 
     } // end ATBDP_Permalink
 

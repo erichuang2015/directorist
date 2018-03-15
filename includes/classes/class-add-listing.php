@@ -11,7 +11,7 @@
  */
 
 // Exit if accessed directly
-if ( ! defined('ABSPATH') ) { die( ATBDP_ALERT_MSG ); }
+defined('ABSPATH') || die( 'Direct access is not allowed.' );
 
 if (!class_exists('ATBDP_Add_Listing')):
 
@@ -160,6 +160,12 @@ if (!class_exists('ATBDP_Add_Listing')):
                     if (!empty($post_id)){
                         // post inserted successfully,
                         // Redirect to avoid duplicate form submissions
+                        // if monetization on, redirect to checkout page
+// vail if monetization is not active.
+                       if (get_directorist_option('enable_monetization')){
+                           wp_redirect(ATBDP_Permalink::get_checkout_page_link($post_id));
+                           exit;
+                       }
                         wp_redirect(get_permalink($post_id));
                         exit;
                     }else{

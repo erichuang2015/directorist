@@ -199,6 +199,9 @@ final class Directorist_Base {
             /*Initiate Review and Rating Features*/
             self::$instance->review         = new ATBDP_Review_Rating;
 
+            //activate rewrite api
+            new ATBDP_Rewrite;
+
             //map custom capabilities
             add_filter('map_meta_cap', array(self::$instance->roles, 'meta_caps'), 10, 4);
 
@@ -337,7 +340,6 @@ final class Directorist_Base {
 
     public function add_custom_directorist_pages()
     {
-        global $current_user;
         $options = get_option('atbdp_option'); // we are retrieving all of our custom options because it contains all the page options too. and we can filter this array instead of calling get_directorist_option() over and over.
         /*
         Remember: We can not add new option to atbdp_option if there is no key matched. Because VafPress will override it.
@@ -369,6 +371,14 @@ final class Directorist_Base {
                 'title'   => __( 'Registration', ATBDP_TEXTDOMAIN ),
                 'content' => '[custom_registration]'
             ),
+            'checkout_page' => array(
+                'title'   => __( 'Checkout', ATBDP_TEXTDOMAIN ),
+                'content' => '[directorist_checkout]'
+            ),
+            'payment_receipt_page' => array(
+                'title'   => __( 'Payment Receipt', ATBDP_TEXTDOMAIN ),
+                'content' => '[directorist_payment_receipt]'
+            ),
         );
         $new_settings = 0; // lets keep track of new settings so that we do not update option unnecessarily.
         // lets iterate over the array and insert a new page with with the appropriate shortcode if the page id is not available in the option array.
@@ -382,7 +392,6 @@ final class Directorist_Base {
                         'post_title'     => $page_settings['title'],
                         'post_content'   => $page_settings['content'],
                         'post_status'    => 'publish',
-                        'post_author'    => $current_user->ID,
                         'post_type'      => 'page',
                         'comment_status' => 'closed'
                     )
@@ -398,6 +407,8 @@ final class Directorist_Base {
                     $temp_type = ('search_listing' == $op_name) ? 'home-page.php' : 'full'; // look for home template for search_listing page
                     // lets see if we can find any full width template, then use it for the page where our shortcode is used.
                     foreach ($page_templates as $slug => $name) {
+                        // checkout page and payment receipt page looks better on non full-width template, so skip them.
+                        if (in_array($op_name, array('checkout_page', 'payment_receipt_page'))) break;
                         if (strpos($slug, $temp_type)){
                             $custom_template = $slug;
                             break;

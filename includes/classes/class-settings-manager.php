@@ -131,6 +131,7 @@ class ATBDP_Settings_Manager {
     public function get_email_settings_submenus()
     {
         return apply_filters('atbdp_email_settings_submenus', array(
+            /*Submenu 1*/
             array(
                 'title' => __('Email General', ATBDP_TEXTDOMAIN),
                 'name' => 'emails_general',
@@ -144,6 +145,7 @@ class ATBDP_Settings_Manager {
                     ),
                 )),
             ),
+            /*Submenu 2*/
             array(
                 'title' => __('Email Templates', ATBDP_TEXTDOMAIN),
                 'name' => 'emails_templates',
@@ -175,9 +177,27 @@ class ATBDP_Settings_Manager {
                     ),
                     'renewal_eml_templates' => array(
                         'type' => 'section',
-                        'title' => __('For Renewal Listings', ATBDP_TEXTDOMAIN),
+                        'title' => __('For Renewal Listings (Reminder)', ATBDP_TEXTDOMAIN),
                         'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
                         'fields' => $this->email_renewal_tmpl_settings_fields(),
+                    ),
+                    'new_order_created' => array(
+                        'type' => 'section',
+                        'title' => __('For New Order (Created)', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'fields' => $this->email_new_order_tmpl_settings_fields(),
+                    ),
+                    'offline_new_order_created' => array(
+                        'type' => 'section',
+                        'title' => __('For New Order (Created using Offline Bank Transfer)', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'fields' => $this->email_offline_new_order_tmpl_settings_fields(),
+                    ),
+                    'completed_order_created' => array(
+                        'type' => 'section',
+                        'title' => __('For Completed Order', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'fields' => $this->email_completed_order_tmpl_settings_fields(),
                     ),
                 )),
             ),
@@ -205,23 +225,28 @@ It may take up to 24 hours to complete the review.
 Thanks,
 The Administrator of ==SITE_NAME==
 KAMAL;
-
+        //create small var to highlight important texts
+        $c='<span style="color:#c71585;">'; //color start
+        $e = '</span>'; // end color
         $ph = <<<KAMAL
-You can use the following keywords/placeholder in any of your email bodies/templates or subjects to output dynamic value. **Usage: place the placeholder name between == and ==**. For Example: use ==SITE_NAME== to output The Your Website Name etc. <br/><br/>
-==NAME== : It outputs The listing owner's display name on the site<br/>
-==USERNAME== : It outputs The listing owner's user name on the site<br/>
-==SITE_NAME== : It outputs your site name<br/>
-==SITE_LINK== : It outputs your site name with link<br/>
-==SITE_URL== : It outputs your site url with link<br/>
-==EXPIRATION_DATE== : It outputs Expiration date<br/>
-==CATEGORY_NAME== : It outputs the category name that is going to expire<br/>
-==RENEWAL_LINK== : It outputs a link to renewal page<br/>
-==LISTING_TITLE== : It outputs the listing's title<br/>
-==LISTING_LINK== : It outputs the listing's title with link<br/>
-==LISTING_URL== : It outputs the listing's url with link<br/>
-==TODAY== : It outputs the current date<br/>
-==NOW== : It outputs the current time<br/><br/>
-Additionally, you can also use HTML tags in your template.
+You can use the following keywords/placeholder in any of your email bodies/templates or subjects to output dynamic value. **Usage: place the placeholder name between $c == $e and $c == $e **. For Example: use **{$c}==SITE_NAME=={$e}** to output The Your Website Name etc. <br/><br/>
+**{$c}==NAME=={$e}** : It outputs The listing owner's display name on the site<br/>
+**{$c}==USERNAME=={$e}** : It outputs The listing owner's user name on the site<br/>
+**{$c}==SITE_NAME=={$e}** : It outputs your site name<br/>
+**{$c}==SITE_LINK=={$e}** : It outputs your site name with link<br/>
+**{$c}==SITE_URL=={$e}** : It outputs your site url with link<br/>
+**{$c}==EXPIRATION_DATE=={$e}** : It outputs Expiration date<br/>
+**{$c}==CATEGORY_NAME=={$e}** : It outputs the category name that is going to expire<br/>
+**{$c}==RENEWAL_LINK=={$e}** : It outputs a link to renewal page<br/>
+**{$c}==LISTING_TITLE=={$e}** : It outputs the listing's title<br/>
+**{$c}==LISTING_LINK=={$e}** : It outputs the listing's title with link<br/>
+**{$c}==LISTING_URL=={$e}** : It outputs the listing's url with link<br/>
+**{$c}==ORDER_ID=={$e}** : It outputs the order id. It should be used for order related email only<br/>
+**{$c}==ORDER_RECEIPT_URL=={$e}** : It outputs a link to the order receipt page. It should be used for order related email only<br/>
+**{$c}==ORDER_DETAILS=={$e}** : It outputs order detailsc. It should be used for order related email only<br/>
+**{$c}==TODAY=={$e}** : It outputs the current date<br/>
+**{$c}==NOW=={$e}** : It outputs the current time<br/><br/>
+**Additionally, you can also use HTML tags in your template.**
 KAMAL;
 
 
@@ -229,9 +254,9 @@ KAMAL;
                 array(
                     'type' => 'notebox',
                     'name' => 'email_placeholder_info',
-                    'label' => __('You can use Placeholders to output dynamic value', ATBDP_TEXTDOMAIN),
+                    'label' => $c.__('You can use Placeholders to output dynamic value', ATBDP_TEXTDOMAIN).$e,
                     'description' => $ph,
-                    'status' => 'info',
+                    'status' => 'normal',
                 ),
                 array(
                     'type' => 'textbox',
@@ -394,7 +419,7 @@ KAMAL;
         $tmpl = <<<KAMAL
 Dear ==NAME==,
 
-We have noticed that you might have forget to renew your listing "==LISTING_TITLE==" at ==SITE_LINK==. We would to remind you that it expired on ==EXPIRATION_DATE==. But please you don't need to worry.  You can still renew it by clicking this link: ==RENEWAL_LINK==.
+We have noticed that you might have forget to renew your listing "==LISTING_TITLE==" at ==SITE_LINK==. We would to remind you that it expired on ==EXPIRATION_DATE==. But please don't worry.  You can still renew it by clicking this link: ==RENEWAL_LINK==.
 
 Thanks,
 The Administrator of ==SITE_NAME==
@@ -424,6 +449,159 @@ KAMAL;
                 'name' => 'email_tmpl_to_renewal_listing',
                 'label' => __('Email Body', ATBDP_TEXTDOMAIN),
                 'description' => __('Edit the email template for sending to the user to renew his/her listings. HTML content is allowed too.', ATBDP_TEXTDOMAIN),
+                'default' => $tmpl,
+            ),
+
+
+        ));
+    }
+
+
+    /**
+     * Get all the settings fields for the new order email template section
+     * @since 3.1.0
+     * @return array
+     */
+    public function email_new_order_tmpl_settings_fields()
+    {
+        // let's define default data
+        $sub = <<<KAMAL
+[==SITE_NAME==] : Your Order (#==ORDER_ID==) Received.
+KAMAL;
+        $tmpl = <<<KAMAL
+Dear ==NAME==,
+
+Thank you very much for your order.
+This email is to notify you that your order (#==ORDER_ID==) has been received. You can check your order details and progress by clicking the link below.
+
+Order Details Page: ==ORDER_RECEIPT_URL==
+
+Your order summery:
+==ORDER_DETAILS==
+
+
+NB. You need to be logged in your account to access the order details page.
+
+Thanks,
+The Administrator of ==SITE_NAME==
+KAMAL;
+
+        return apply_filters('atbdp_new_order_tmpl_settings_fields', array(
+            array(
+                'type' => 'textbox',
+                'name' => 'email_sub_new_order',
+                'label' => __('Email Subject', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the subject for sending to the user when an order is created.', ATBDP_TEXTDOMAIN),
+                'default' => $sub,
+            ),
+            array(
+                'type' => 'textarea',
+                'name' => 'email_tmpl_new_order',
+                'label' => __('Email Body', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the email template for sending to the user when an order is created.', ATBDP_TEXTDOMAIN),
+                'default' => $tmpl,
+            ),
+
+
+        ));
+    }
+
+
+    /**
+     * Get all the settings fields for the offline new order email template section
+     * @since 3.1.0
+     * @return array
+     */
+    public function email_offline_new_order_tmpl_settings_fields()
+    {
+        // let's define default data
+        $sub = <<<KAMAL
+[==SITE_NAME==] : Your Order (#==ORDER_ID==) Received.
+KAMAL;
+        $default_instruction = get_directorist_option('bank_transfer_instruction');
+        $tmpl = <<<KAMAL
+Dear ==NAME==,
+
+Thank you very much for your order.
+This email is to notify you that your order (#==ORDER_ID==) has been received. 
+
+$default_instruction
+
+You can check your order details and progress by clicking the link below.
+Order Details Page: ==ORDER_RECEIPT_URL==
+
+Your order summery:
+==ORDER_DETAILS==
+
+
+NB. You need to be logged in your account to access the order details page.
+
+Thanks,
+The Administrator of ==SITE_NAME==
+KAMAL;
+
+        return apply_filters('atbdp_offline_new_order_tmpl_settings_fields', array(
+            array(
+                'type' => 'textbox',
+                'name' => 'email_sub_offline_new_order',
+                'label' => __('Email Subject', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the subject for sending to the user when an order is created using offline payment like bank transfer.', ATBDP_TEXTDOMAIN),
+                'default' => $sub,
+            ),
+            array(
+                'type' => 'textarea',
+                'name' => 'email_tmpl_offline_new_order',
+                'label' => __('Email Body', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the email template for sending to the user when an order is created using offline payment like bank transfer.', ATBDP_TEXTDOMAIN),
+                'default' => $tmpl,
+            ),
+
+
+        ));
+    }
+
+    /**
+     * Get all the settings fields for the offline new order email template section
+     * @since 3.1.0
+     * @return array
+     */
+    public function email_completed_order_tmpl_settings_fields()
+    {
+        // let's define default data
+        $sub = <<<KAMAL
+[==SITE_NAME==] : Congratulation! Your Order (#==ORDER_ID==) Completed.
+KAMAL;
+        $tmpl = <<<KAMAL
+Dear ==NAME==,
+
+Congratulation! This email is to notify you that your order (#==ORDER_ID==) has been completed. 
+
+You can check your order details by clicking the link below.
+Order Details Page: ==ORDER_RECEIPT_URL==
+
+Your order summery:
+==ORDER_DETAILS==
+
+
+NB. You need to be logged in your account to access the order details page.
+
+Thanks,
+The Administrator of ==SITE_NAME==
+KAMAL;
+
+        return apply_filters('atbdp_completed_order_tmpl_settings_fields', array(
+            array(
+                'type' => 'textbox',
+                'name' => 'email_sub_completed_order',
+                'label' => __('Email Subject', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the subject for sending to the user when an order is completed', ATBDP_TEXTDOMAIN),
+                'default' => $sub,
+            ),
+            array(
+                'type' => 'textarea',
+                'name' => 'email_tmpl_completed_order',
+                'label' => __('Email Body', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the email template for sending to the user when an order is completed.', ATBDP_TEXTDOMAIN),
                 'default' => $tmpl,
             ),
 
@@ -1101,7 +1279,7 @@ KAMAL;
                         'name' => 'payment_receipt_page',
                         'label' =>  __( 'Add Payment/Order Receipt page ID', ATBDP_TEXTDOMAIN ),
                         'items' => $this->get_pages_vl_arrays(),
-                        'description' => sprintf(__( 'Please Select your Payment/Order Receipt page ( where you used %s shortcode ) ID here. This page is used to show payment receipt information but this page generally should be excluded from the menu.', ATBDP_TEXTDOMAIN ),'<strong style="color: #ff4500;">[payment_receipt]</strong>'),
+                        'description' => sprintf(__( 'Please Select your Payment/Order Receipt page ( where you used %s shortcode ) ID here. This page is used to show order receipt information but this page generally should be excluded from the menu.', ATBDP_TEXTDOMAIN ),'<strong style="color: #ff4500;">[directorist_payment_receipt]</strong>'),
                         'default' => '',
                         'validation' => 'numeric',
                     ),

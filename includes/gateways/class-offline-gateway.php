@@ -100,7 +100,7 @@ KAMAL;
                 ),
                 array(
                     'type' => 'textarea',
-                    'name' => 'bank_information',
+                    'name' => 'bank_transfer_instruction',
                     'label' => __('Bank Information', ATBDP_TEXTDOMAIN),
                     'description' => __('Enter your bank information below so that use can make payment directly to your bank account.', ATBDP_TEXTDOMAIN),
                     'default' => $bank_account,

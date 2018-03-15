@@ -4,7 +4,7 @@
     // cash the nonce
     var nonce = $('#checkout_nonce').val();
     $( '.atbdp_checkout_item_field' ).on( 'change', function() {
-        console.log('field changed');
+        //console.log('field changed');
         var total_amount = 0,
             item   = 0;
         //calculate the amount from all the checkbox and the radio inputs that are checked.
@@ -12,8 +12,8 @@
             total_amount += parseFloat( $( this ).data('price') );
             ++item;
         });
-        console.log(total_amount);
-        console.log(item);
+        /*console.log(total_amount);
+        console.log(item);*/
 
         //$( '#atbdp_checkout_total_amount' ).html( "<span class='atbdp_ajax_loading'></span>" );
         $( '#directorist_payment_gateways, #atbdp_checkout_submit_btn' ).show();

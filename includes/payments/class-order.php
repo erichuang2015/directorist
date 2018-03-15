@@ -477,4 +477,55 @@ class ATBDP_Order {
 
     }
 
+    /**
+     * It returns order details in html format
+     * @param int $order_id The order ID
+     * @return string
+     */
+    public static function get_order_details($order_id)
+    {
+        $c_position = get_directorist_option('payment_currency_position');
+        $currency = atbdp_get_payment_currency();
+        $symbol = atbdp_currency_symbol($currency);
+        $order_items = apply_filters( 'atbdp_order_items', array(), $order_id ); // this is the hook that an extension can hook to, to add new items on checkout page.eg. plan
+
+        $featured = get_post_meta( $order_id, '_featured', true );
+        if( $featured ) {
+            $order_items[] = atbdp_get_featured_settings_array();
+        }
+
+        ob_start();
+        ?>
+        <table border="0" cellspacing="0" cellpadding="7" style="border:1px solid #CCC;">
+            <tr style="background-color:#F0F0F0;">
+                <th style="border-right:1px solid #CCC; border-bottom:1px solid #CCC; text-align:left;"><?php _e( 'Item(s)', ATBDP_TEXTDOMAIN ); ?></th>
+                <th style="border-bottom:1px solid #CCC;"><?php printf( __( 'Price [%s]', ATBDP_TEXTDOMAIN ), $currency ); ?></th>
+            </tr>
+            <?php foreach( $order_items as $order ) : ?>
+                <tr>
+                    <td style="border-right:1px solid #CCC; border-bottom:1px solid #CCC;">
+                        <h3><?php echo $order['label']; ?></h3>
+                        <?php if( isset( $order['desc'] ) ) echo $order['desc']; ?>
+                    </td>
+                    <td style="border-bottom:1px solid #CCC;">
+                        <?php echo atbdp_format_payment_amount( $order['price'] ); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <tr>
+                <td style="border-right:1px solid #CCC; text-align:right; vertical-align:middle;">
+                    <?php printf( __( 'Total amount [%s]', ATBDP_TEXTDOMAIN ), $currency ); ?>
+                </td>
+                <td>
+                    <?php
+                    $amount = get_post_meta( $order_id, '_amount', true );
+                    echo atbdp_format_payment_amount( $amount );
+                    ?>
+                </td>
+            </tr>
+        </table>
+        <?php
+        return ob_get_clean();
+    }
+
 }

@@ -31,7 +31,7 @@ class ATBDP_Checkout
 
     public function __construct()
     {
-
+        add_action('init', array($this, 'buffer_to_fix_redirection'));
     }
 
     /**
@@ -54,34 +54,18 @@ class ATBDP_Checkout
      */
     public function display_checkout_content()
     {
-        // vail out, if user is not logged in. No need to run further code
-        if (!is_user_logged_in()) {
-            // user not logged in;
-            $error_message = sprintf(__('You need to be logged in to view the content of this page. You can login %s.', ATBDP_TEXTDOMAIN), "<a href='" . wp_login_url() . "'> " . __('Here', ATBDP_TEXTDOMAIN) . "</a>");
-            ?>
-            <section class="directory_wrapper single_area">
-                <div class="<?php echo is_directoria_active() ? 'container' : ' container-fluid'; ?>">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <?php ATBDP()->helper->show_login_message($error_message); ?>
-                        </div>
-                    </div>
-                </div> <!--ends container-fluid-->
-            </section>
-            <?php
-            return;
-        }
+        // vail out showing a friendly-message, if user is not logged in. No need to run further code
+        if (!atbdp_is_user_logged_in()) return null;
+        ob_start();
         // vail if monetization is not active.
         if (! get_directorist_option('enable_monetization')) { return __('Monetization is not active on this site. if you are an admin, you can enable it from the settings panel.', ATBDP_TEXTDOMAIN);}
         wp_enqueue_script( 'atbdp_checkout_script' );
-        ob_start();
         // user logged in & monetization is active, so lets continue
         // get the listing id from the url query var
-        //$listing_id = get_query_var('atbdp_listing_id'); // we will use get_query_var when we will use url rewriting
-        $listing_id = !empty($_GET['atbdp_listing_id']) ? $_GET['atbdp_listing_id']: 0; // temporary solution
+        $listing_id = get_query_var('atbdp_listing_id');
         // vail if the id is empty or post type is not our post type.
         if ( empty($listing_id) || (!empty($listing_id) && ATBDP_POST_TYPE != get_post_type($listing_id)) ) {
-            return __('Sorry, Something went wrong. Please try again.', ATBDP_TEXTDOMAIN);
+            return __('Sorry, Something went wrong. Listing ID is missing. Please try again.', ATBDP_TEXTDOMAIN);
         }
 
         // if the checkout form is submitted, then process placing order
@@ -111,6 +95,10 @@ class ATBDP_Checkout
                         'price' => $price,
                 );
             }
+
+            // if data is empty then vail,
+            if (empty($form_data)) { return __('Sorry, Nothing is available to buy. Please try again.', ATBDP_TEXTDOMAIN); }
+
             // pass the data using a data var, so that we can add to it more item later.
             $data = array(
                     'form_data' => $form_data,
@@ -120,6 +108,45 @@ class ATBDP_Checkout
             ATBDP()->load_template('front-end/checkout-form', $data);
         }
 
+        return ob_get_clean();
+    }
+
+    /**
+     * @return string
+     */
+    public function payment_receipt()
+    {
+        if (!atbdp_is_user_logged_in()) return null; // vail out showing a friendly-message, if user is not logged in.
+        //content of order receipt should be outputted here.
+        $order_id = (int) get_query_var('atbdp_order_id');
+        if (empty($order_id)) { return __('Sorry! No order id has been provided.', ATBDP_TEXTDOMAIN); }
+
+        $data = apply_filters('atbdp_payment_receipt_data', array(), $order_id);
+        $order = get_post($order_id); // we need that order to use its time
+        $meta = get_post_meta($order_id);
+        $data = array_merge($data, array(
+            'order' => $order,
+            'order_id' => $order_id,
+            'o_metas' => $meta,
+        ));
+        // we need to provide payment receipt shortcode with the order details array as we passed in the order checkout form page.
+        $order_items = apply_filters( 'atbdp_order_items', array(), $order_id ); // this is the hook that an extension can hook to, to add new items on checkout page.eg. plan
+        // let's add featured listing data if the order has featured listing in it
+        $featured_active = get_directorist_option('enable_featured_listing');
+        if ($featured_active && !empty($meta['_featured'])){
+            $title = get_directorist_option('featured_listing_title', __('Featured', ATBDP_TEXTDOMAIN));
+            $desc = get_directorist_option('featured_listing_desc');
+            $price = get_directorist_option('featured_listing_price');
+            $order_items[] = array(
+                'title' => $title,
+                'desc' => $desc,
+                'price' => $price,
+            );
+        }
+        $data['order_items'] = $order_items;
+
+        ob_start();
+        ATBDP()->load_template('front-end/payment-receipt', array('data'=> $data));
         return ob_get_clean();
     }
 
@@ -155,15 +182,6 @@ class ATBDP_Checkout
             if (!empty($data['feature'])) {
                 update_post_meta($order_id, '_featured', 1);
                 //lets add the settings of featured listing to the order details
-                /*
-             array(
-                    'active'        => get_directorist_option('enable_featured_listing'),
-                    'label'         => get_directorist_option('featured_listing_title'),
-                    'desc'          => get_directorist_option('featured_listing_desc'),
-                    'price'         => get_directorist_option('featured_listing_price'),
-                    'show_ribbon'   => get_directorist_option('show_featured_ribbon'),
-        );
-                */
                 $order_details[] = atbdp_get_featured_settings_array();
             }
             // now lets calculate the total price of all order item's price
@@ -185,7 +203,7 @@ class ATBDP_Checkout
             update_post_meta( $order_id, '_payment_status', 'created' );
 
             // @todo; notify admin that an order has been placed, add settings to control this notification
-            //atbdp_email_admin_order_created( $listing_id, $order_id );
+            ATBDP_Email::notify_admin_order_created( $listing_id, $order_id );
             $this->process_payment($amount, $gateway, $order_id, $listing_id, $data);
         }
 
@@ -214,7 +232,7 @@ class ATBDP_Checkout
                 // let's redirect the user to the payment receipt page.
                 $redirect_url = ATBDP_Permalink::get_payment_receipt_page_link( $order_id );
                 wp_redirect( $redirect_url );
-                exit;
+                exit();
             } else {
                 /*@todo; Notify owner based on admin settings*/
                 //atbdp_email_listing_owner_order_created( $listing_id, $order_id );
@@ -273,6 +291,17 @@ class ATBDP_Checkout
 
         //atbdp_email_listing_owner_order_completed( $order_data['ID'] );
         //atbdp_email_admin_payment_received( $order_data['ID'] );
+    }
+
+    /**
+     * It starts output buffering if the checkout form has been submitted in order to fix redirection problem.
+     */
+    public function buffer_to_fix_redirection()
+    {
+        // if the checkout form is submitted, then init buffering to solve redirection problem because of header already sent
+        if ('POST' == $_SERVER['REQUEST_METHOD'] && ATBDP()->helper->verify_nonce( $this->nonce, $this->nonce_action )){
+            ob_start();
+        }
     }
 
 } // ends class

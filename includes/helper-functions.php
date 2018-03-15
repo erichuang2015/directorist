@@ -293,11 +293,12 @@ if (!function_exists('get_directorist_option')){
     /**
      * It retrieves an option from the database if it exists and returns false if it is not exist.
      * It is a custom function to get the data of custom setting page
-     * @param string $name The name of the option we would like to get. Eg. map_api_key
-     * @param mixed $default    Default value for the option key if the option does not have value then default will be returned
+     * @param string $name          The name of the option we would like to get. Eg. map_api_key
+     * @param mixed $default        Default value for the option key if the option does not have value then default will be returned
+     * @param bool $force_default   Whether to use default value when database return anything other than NULL such as '', false etc
      * @return mixed    It returns the value of the $name option if it exists in the option $group in the database, false otherwise.
      */
-    function get_directorist_option($name, $default=''){
+    function get_directorist_option($name, $default=false, $force_default = false){
         // at first get the group of options from the database.
         // then check if the data exists in the array and if it exists then return it
         // if not, then return false
@@ -307,8 +308,13 @@ if (!function_exists('get_directorist_option')){
         $v = (array_key_exists($name, $options))
             ? $v =  $options[sanitize_key($name)]
             : null;
-
-        return (isset($v) && '' != $v ) ? $v : $default; // we need to add '&& '' != $v' this because sometimes we may need some default when db returns empty string. And even if we need '' string then we can get it without specifying the default value.
+        // use default only when the value of the $v is NULL
+        if (is_null($v)) { return $default; }
+        if ($force_default){
+            // use the default value even if the value of $v is falsy value returned from the database
+             if(empty($v)) { return $default; }
+        }
+        return (isset($v) ) ? $v : $default; // return the data if it is anything but NULL.
     }
 }
 
@@ -1129,5 +1135,39 @@ if (!function_exists('atbdp_get_featured_settings_array')) {
             'price'         => get_directorist_option('featured_listing_price'),
             'show_ribbon'   => get_directorist_option('show_featured_ribbon'),
         );
+    }
+}
+
+if (!function_exists('atbdp_only_logged_in_user')){
+
+    /**
+     * It informs a user to logged in and returns false if the user is not logged in.
+     * if a user is not logged in.
+     * @param string $message
+     * @return bool It returns true if a user is logged in and false otherwise. Besides, it display a message to non-logged in users
+     */
+    function atbdp_is_user_logged_in($message=''){
+        if (!is_user_logged_in()) {
+            // user not logged in;
+            $error_message = (empty($message))
+                ? sprintf(
+                    __('You need to be logged in to view the content of this page. You can login %s.', ATBDP_TEXTDOMAIN),
+                    "<a href='" . wp_login_url() . "'> " . __('Here', ATBDP_TEXTDOMAIN) . "</a>"
+                )
+                : $message;
+            ?>
+            <section class="directory_wrapper single_area">
+                <div class="<?php echo is_directoria_active() ? 'container' : ' container-fluid'; ?>">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?php ATBDP()->helper->show_login_message($error_message); ?>
+                        </div>
+                    </div>
+                </div> <!--ends container-fluid-->
+            </section>
+            <?php
+            return false;
+        }
+        return true;
     }
 }

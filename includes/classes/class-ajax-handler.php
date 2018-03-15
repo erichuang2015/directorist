@@ -1,5 +1,5 @@
 <?php
-if ( ! defined('ABSPATH') ) { die( ATBDP_ALERT_MSG ); }
+defined('ABSPATH') || die( 'Direct access is not allowed.' );
 
 if(!class_exists('ATBDP_Ajax_Handler')):
 
