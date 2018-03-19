@@ -153,6 +153,14 @@ final class Directorist_Base {
     public $order;
 
     /**
+     * ATBDP_Email Object.
+     *
+     * @var ATBDP_Email
+     * @since 3.1.0
+     */
+    public $email;
+
+    /**
      * Main Directorist_Base Instance.
      *
      * Insures that only one instance of Directorist_Base exists in memory at any one
@@ -188,6 +196,7 @@ final class Directorist_Base {
             self::$instance->gateway        = new ATBDP_Gateway;
             self::$instance->order          = new ATBDP_Order;
             self::$instance->shortcode      = new ATBDP_Shortcode;
+            self::$instance->email          = new ATBDP_Email;
 
 
             // new settings
@@ -209,7 +218,6 @@ final class Directorist_Base {
             // display related listings
             add_action('atbdp_after_single_listing', array(self::$instance, 'show_related_listing'));
             //review and rating
-/*            add_action('atbdp_after_listing_tagline', array(self::$instance, 'show_review_after_tagliine')); // show rating after the tagline of related listing*/
             add_action('atbdp_after_listing_tagline', array(self::$instance, 'show_review_after_tagliine')); // show rating after the tagline of the normal post on single page and also the search result page.
             add_action('atbdp_after_map', array(self::$instance, 'show_review'));
             // Attempt to create listing related custom pages with plugin's custom shortcode to give user best experience.
@@ -220,9 +228,16 @@ final class Directorist_Base {
             }
             // init offline gateway
             new ATBDP_Offline_Gateway;
+            //testing email
+           //add_action('init', array(self::$instance, 'testEmail'));
         }
 
         return self::$instance;
+    }
+
+    public function testEmail()
+    {
+        $this->email->notify_admin_order_created(1672, 1673);
     }
 
     /**

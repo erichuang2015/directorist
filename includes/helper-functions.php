@@ -1066,13 +1066,14 @@ if (!function_exists('is_business_hour_active')){
     }
 }
 
-if (!function_exists('is_empty_array')){
+if (!function_exists('is_empty_v')){
     /**
-     * It checks the given array is empty
-     * @param array $value The array of query args
-     * @return bool It returns true if the array is empty, and false otherwise.
+     * It checks if the value of the given data ( array or string etc ) is empty
+     * @param array $value The value to check if it is empty
+     * @return bool It returns true if the value of the given data is empty, and false otherwise.
      */
-    function is_empty_array($value) {
+    function is_empty_v($value) {
+        if (!is_array($value)) return empty($value);
         foreach($value as $key => $val) {
             if (!empty($val))
                 return false;

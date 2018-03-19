@@ -36,6 +36,8 @@ class ATBDP_Order {
 
         add_filter( 'manage_edit-atbdp_orders_sortable_columns', array($this, 'get_sortable_columns') );
 
+        add_filter( 'post_row_actions', array($this, 'set_payment_receipt_link'), 10, 2 );
+
     }
 
     /**
@@ -88,7 +90,8 @@ class ATBDP_Order {
 
     /**
      * Add/Remove custom bulk actions to the select menus.
-     *
+     * @todo; In future we may use add_action('bulk_actions-{screen_id}', 'my_bulk_action') when we will stop supporting WP < 4.7.
+     * @see http://wpengineer.com/2803/create-your-own-bulk-actions/
      * @since    3.1.0
      * @access   public
      */
@@ -112,8 +115,9 @@ class ATBDP_Order {
                 jQuery(document).ready(function() {
                     for( var key in atbdp_bulk_actions ) {
                         if( atbdp_bulk_actions.hasOwnProperty( key ) ) {
-                            jQuery('<option>').val( key ).text( atbdp_bulk_actions[ key ] ).appendTo('select[name="action"]');
-                            jQuery('<option>').val( key ).text( atbdp_bulk_actions[ key ] ).appendTo('select[name="action2"]');
+                            var $option = jQuery('<option>').val( key ).text( atbdp_bulk_actions[ key ] );
+                            $option.appendTo('select[name="action"]');
+                            $option.appendTo('select[name="action2"]');
                         }
                     }
 
@@ -452,13 +456,10 @@ class ATBDP_Order {
      * @return array
      */
     public function sort_columns( $vars ) {
-
         // Check if we're viewing the 'atbdp_orders' post type
         if( isset( $vars['post_type'] ) && 'atbdp_orders' == $vars['post_type'] ) {
-
             // Check if 'orderby' is set to 'amount'
             if ( isset( $vars['orderby'] ) && 'amount' == $vars['orderby'] ) {
-
                 // Merge the query vars with our custom variables.
                 $vars = array_merge(
                     $vars,
@@ -467,14 +468,9 @@ class ATBDP_Order {
                         'orderby'  => 'meta_value_num'
                     )
                 );
-
             }
-
-
         }
-
         return $vars;
-
     }
 
     /**
@@ -484,6 +480,7 @@ class ATBDP_Order {
      */
     public static function get_order_details($order_id)
     {
+        if (empty($order_id)) return __('No Order ID Provided', ATBDP_TEXTDOMAIN);
         $c_position = get_directorist_option('payment_currency_position');
         $currency = atbdp_get_payment_currency();
         $symbol = atbdp_currency_symbol($currency);
@@ -526,6 +523,19 @@ class ATBDP_Order {
         </table>
         <?php
         return ob_get_clean();
+    }
+
+    /**
+     * It sets the view link of the order to the payment receipt page on the front end where the shortcode of payment receipt has been used.
+     *
+     * @param array     $actions        The array of post actions
+     * @param WP_Post   $post           The current post post
+     * @return array    $actions        It returns the array of post actions after modifying the order view link
+     */
+    public function set_payment_receipt_link($actions, WP_Post $post ) {
+        if ( $post->post_type != 'atbdp_orders' ) return $actions;
+        $actions['view'] = sprintf("<a href='%s'>%s</a>", ATBDP_Permalink::get_payment_receipt_page_link($post->ID), __('View', ATBDP_TEXTDOMAIN));
+        return $actions;
     }
 
 }

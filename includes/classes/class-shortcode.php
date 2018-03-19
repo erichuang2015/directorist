@@ -82,7 +82,7 @@ class ATBDP_Shortcode {
 
         }
 
-        if (!is_empty_array($tax_queries)){
+        if (!is_empty_v($tax_queries)){
             $args['tax_query'] = $tax_queries;
         }
 

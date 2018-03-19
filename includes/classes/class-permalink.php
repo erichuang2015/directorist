@@ -96,7 +96,7 @@ if (!class_exists('ATBDP_Permalink')):
 
         global $wp;
         $link = home_url($wp->request);
-        if (!is_empty_array($query_args)){
+        if (!is_empty_v($query_args)){
             $link = home_url(add_query_arg($query_args, $wp->request));
         }
 

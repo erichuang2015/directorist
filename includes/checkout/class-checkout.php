@@ -203,7 +203,7 @@ class ATBDP_Checkout
             update_post_meta( $order_id, '_payment_status', 'created' );
 
             // @todo; notify admin that an order has been placed, add settings to control this notification
-            ATBDP_Email::notify_admin_order_created( $listing_id, $order_id );
+            ATBDP()->email->notify_admin_order_created( $listing_id, $order_id );
             $this->process_payment($amount, $gateway, $order_id, $listing_id, $data);
         }
 
@@ -223,9 +223,7 @@ class ATBDP_Checkout
         if( $amount > 0 ) {
             if( 'bank_transfer' == $gateway ) {
                 update_post_meta( $order_id, '_transaction_id', wp_generate_password( 15, false ) );
-                /*@todo; Notify owner based on admin settings*/
-                //atbdp_email_listing_owner_order_created_offline( $listing_id, $order_id );
-
+                ATBDP()->email->notify_owner_order_created($order_id, $order_id, true);
                 //hook for developer
                 do_action('atbdp_offline_order_created', $order_id, $listing_id);
                 // admin will mark the order completed manually once he get the payment on his bank.
@@ -234,8 +232,7 @@ class ATBDP_Checkout
                 wp_redirect( $redirect_url );
                 exit();
             } else {
-                /*@todo; Notify owner based on admin settings*/
-                //atbdp_email_listing_owner_order_created( $listing_id, $order_id );
+                ATBDP()->email->notify_owner_order_created($order_id, $order_id);
                 /**
                  * fires 'atbdp_process_gateway_name_payment', it helps extensions and other payment plugin to process the payment
                  * atbdp_orders post has all the required information in its meta data like listing id and featured data etc.
@@ -251,7 +248,7 @@ class ATBDP_Checkout
             }
         } else {
             /*@todo; Notify owner based on admin settings that order CREATED*/
-            //atbdp_email_listing_owner_order_created( $listing_id, $order_id );
+            ATBDP()->email->notify_owner_order_created($order_id, $order_id);
             /*complete Free listing Order */
             $this->complete_free_order(
                     array(

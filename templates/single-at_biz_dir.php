@@ -126,7 +126,7 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
                     </div>
                     <?php
                     // if business hour is active then add the following markup...
-                    if ( is_business_hour_active() && $enable_bh_on_page && (!is_empty_array($business_hours) || !empty($enable247hour)) ) {
+                    if ( is_business_hour_active() && $enable_bh_on_page && (!is_empty_v($business_hours) || !empty($enable247hour)) ) {
                     ?>
                     <div class="row"><!-- we need to add a row when business hour extension is active in order to divide the width in two columns-->
                         <div class="col-md-5">
@@ -159,7 +159,8 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
                                         <li><span class="info_title"><?php _e('Address', ATBDP_TEXTDOMAIN); ?></span><span class="info"><?= esc_html($address); ?></span></li>
                                     <?php }?>
 
-                                    <?php if (!empty($phone)) { ?>
+                                    <?php
+                                    if (!is_empty_v($phone)) { ?>
                                         <!-- In Future, We will have to use a loop to print more than 1 number-->
                                         <li><span class="info_title"><?php _e('Phone', ATBDP_TEXTDOMAIN); ?></span><span class="info"><?= esc_html( $phone[0]); ?></span></li>
                                     <?php }?>
@@ -188,7 +189,7 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
                                 <?php } ?>
                             </div>  <!--ends .directory_contact_area -->
                             <!--We need to close the row and col div when we have business hour enabled. We used negative checking so that they can show by default if the setting is not set by the user after adding the plugin.-->
-                            <?php if ( is_business_hour_active() && $enable_bh_on_page && (!is_empty_array($business_hours) || !empty($enable247hour)) ) {
+                            <?php if ( is_business_hour_active() && $enable_bh_on_page && (!is_empty_v($business_hours) || !empty($enable247hour)) ) {
                             ?>
                         </div> <!--ends. .col-md-7 wrapper before contact information-->
                     </div> <!-- ends .row-->
