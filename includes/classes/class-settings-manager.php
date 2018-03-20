@@ -131,7 +131,7 @@ class ATBDP_Settings_Manager {
     public function get_email_settings_submenus()
     {
         return apply_filters('atbdp_email_settings_submenus', array(
-            /*Submenu 1*/
+            /*Submenu : Email General*/
             array(
                 'title' => __('Email General', ATBDP_TEXTDOMAIN),
                 'name' => 'emails_general',
@@ -145,7 +145,7 @@ class ATBDP_Settings_Manager {
                     ),
                 )),
             ),
-            /*Submenu 2*/
+            /*Submenu : Email Templates*/
             array(
                 'title' => __('Email Templates', ATBDP_TEXTDOMAIN),
                 'name' => 'emails_templates',
@@ -163,6 +163,12 @@ class ATBDP_Settings_Manager {
                         'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
                         'fields' => $this->get_email_pub_tmpl_settings_fields(),
                     ),
+                    'edited_eml_templates' => array(
+                        'type' => 'section',
+                        'title' => __('For Edited Listings', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'fields' => $this->get_email_edit_tmpl_settings_fields(),
+                    ),
                     'about_expire_eml_templates' => array(
                         'type' => 'section',
                         'title' => __('For About to Expire Listings', ATBDP_TEXTDOMAIN),
@@ -177,9 +183,15 @@ class ATBDP_Settings_Manager {
                     ),
                     'renewal_eml_templates' => array(
                         'type' => 'section',
-                        'title' => __('For Renewal Listings (Reminder)', ATBDP_TEXTDOMAIN),
+                        'title' => __('For Renewal Listings (Remind to Renew)', ATBDP_TEXTDOMAIN),
                         'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
                         'fields' => $this->email_renewal_tmpl_settings_fields(),
+                    ),
+                    'renewed_eml_templates' => array(
+                        'type' => 'section',
+                        'title' => __('For Renewed Listings (After Renewed)', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'fields' => $this->email_renewed_tmpl_settings_fields(),
                     ),
                     'new_order_created' => array(
                         'type' => 'section',
@@ -212,22 +224,21 @@ class ATBDP_Settings_Manager {
     public function get_email_new_tmpl_settings_fields()
     {
         // let's define default data template
-        $sub = <<<KAMAL
-[==SITE_NAME==] : Listing "==LISTING_TITLE==" Received
-KAMAL;
+        $sub = __('[==SITE_NAME==] : Listing "==LISTING_TITLE==" Received', ATBDP_TEXTDOMAIN);
 
-        $tmpl = <<<KAMAL
+        $tmpl = __("
 Dear ==NAME==,
 
-This email is to notify you that your listing "==LISTING_TITLE==" has been received and it is under review now. 
+This email is to notify you that your listing '==LISTING_TITLE==' has been received and it is under review now. 
 It may take up to 24 hours to complete the review.
 
 Thanks,
 The Administrator of ==SITE_NAME==
-KAMAL;
+", ATBDP_TEXTDOMAIN);
         //create small var to highlight important texts
         $c='<span style="color:#c71585;">'; //color start
         $e = '</span>'; // end color
+        /*@todo; make this instruction translatable later*/
         $ph = <<<KAMAL
 You can use the following keywords/placeholder in any of your email bodies/templates or subjects to output dynamic value. **Usage: place the placeholder name between $c == $e and $c == $e **. For Example: use **{$c}==SITE_NAME=={$e}** to output The Your Website Name etc. <br/><br/>
 **{$c}==NAME=={$e}** : It outputs The listing owner's display name on the site<br/>
@@ -237,8 +248,8 @@ You can use the following keywords/placeholder in any of your email bodies/templ
 **{$c}==SITE_URL=={$e}** : It outputs your site url with link<br/>
 **{$c}==EXPIRATION_DATE=={$e}** : It outputs Expiration date<br/>
 **{$c}==CATEGORY_NAME=={$e}** : It outputs the category name that is going to expire<br/>
-**{$c}==RENEWAL_LINK=={$e}** : It outputs a link to renewal page<br/>
 **{$c}==LISTING_ID=={$e}** : It outputs the listing's ID<br/>
+**{$c}==RENEWAL_LINK=={$e}** : It outputs a link to renewal page<br/>
 **{$c}==LISTING_TITLE=={$e}** : It outputs the listing's title<br/>
 **{$c}==LISTING_LINK=={$e}** : It outputs the listing's title with link<br/>
 **{$c}==LISTING_URL=={$e}** : It outputs the listing's url with link<br/>
@@ -286,16 +297,14 @@ KAMAL;
     public function get_email_pub_tmpl_settings_fields()
     {
         // let's define default data
-        $sub = <<<KAMAL
-[==SITE_NAME==] : Listing "==LISTING_TITLE==" published
-KAMAL;
-        $tmpl = <<<KAMAL
+        $sub = __('[==SITE_NAME==] : Listing "==LISTING_TITLE==" published', ATBDP_TEXTDOMAIN);
+        $tmpl = __("
 Dear ==NAME==,
-Congratulations! Your listing "==LISTING_TITLE==" has been approved/published. Now it is publicly available at ==LISTING_URL==
+Congratulations! Your listing '==LISTING_TITLE==' has been approved/published. Now it is publicly available at ==LISTING_URL==
 
 Thanks,
 The Administrator of ==SITE_NAME==
-KAMAL;
+", ATBDP_TEXTDOMAIN);
 
         return apply_filters('atbdp_email_pub_tmpl_settings_fields', array(
             array(
@@ -307,13 +316,46 @@ KAMAL;
             ),
             array(
                 'type' => 'textarea',
-                'name' => 'email_tmpl_approve_listing',
+                'name' => 'email_tmpl_pub_listing',
                 'label' => __('Email Body', ATBDP_TEXTDOMAIN),
                 'description' => __('Edit the email template for sending to the user when a listing is approved/published. HTML content is allowed too.', ATBDP_TEXTDOMAIN),
                 'default' => $tmpl,
             ),
+        ));
+    }
 
+    /**
+     * Get all the settings fields for the edited listing email template section
+     * @since 3.1.0
+     * @return array
+     */
+    public function get_email_edit_tmpl_settings_fields()
+    {
+        // let's define default data
+        $sub = __('[==SITE_NAME==] : Listing "==LISTING_TITLE==" Edited', ATBDP_TEXTDOMAIN);
+        $tmpl = __("
+Dear ==NAME==,
+Congratulations! Your listing '==LISTING_TITLE==' has been edited. It is publicly available at ==LISTING_URL==
 
+Thanks,
+The Administrator of ==SITE_NAME==
+", ATBDP_TEXTDOMAIN);
+
+        return apply_filters('atbdp_email_edit_tmpl_settings_fields', array(
+            array(
+                'type' => 'textbox',
+                'name' => 'email_sub_edit_listing',
+                'label' => __('Email Subject', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the subject for sending to the user when a listing is edited.', ATBDP_TEXTDOMAIN),
+                'default' => $sub,
+            ),
+            array(
+                'type' => 'textarea',
+                'name' => 'email_tmpl_edit_listing',
+                'label' => __('Email Body', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the email template for sending to the user when a listing is edited. HTML content is allowed too.', ATBDP_TEXTDOMAIN),
+                'default' => $tmpl,
+            ),
         ));
     }
 
@@ -325,17 +367,15 @@ KAMAL;
     public function email_about_expire_tmpl_settings_fields()
     {
         // let's define default data
-        $sub = <<<KAMAL
-[==SITE_NAME==] : Your Listing "==LISTING_TITLE==" is about to expire.
-KAMAL;
+        $sub = __('[==SITE_NAME==] : Your Listing "==LISTING_TITLE==" is about to expire.', ATBDP_TEXTDOMAIN);
         /*@todo; includes the number of days remaining to expire the listing*/
-        $tmpl = <<<KAMAL
+        $tmpl = __("
 Dear ==NAME==,
-Your listing "==LISTING_TITLE==" is about to expire. You can renew it at ==LISTING_URL==
+Your listing '==LISTING_TITLE==' is about to expire. It will expire on ==EXPIRATION_DATE==. You can renew it at ==LISTING_URL==
 
 Thanks,
 The Administrator of ==SITE_NAME==
-KAMAL;
+", ATBDP_TEXTDOMAIN);
 
         return apply_filters('atbdp_email_about_expire_tmpl_settings_fields', array(
             array(
@@ -363,8 +403,6 @@ KAMAL;
                 'description' => __('Edit the email template for sending to the user when a listing is ABOUT TO EXPIRE. HTML content is allowed too.', ATBDP_TEXTDOMAIN),
                 'default' => $tmpl,
             ),
-
-
         ));
     }
 
@@ -376,16 +414,14 @@ KAMAL;
     public function email_expired_tmpl_settings_fields()
     {
         // let's define default data
-        $sub = <<<KAMAL
-[==SITE_NAME==] : Your Listing "==LISTING_TITLE==" has expired.
-KAMAL;
-        $tmpl = <<<KAMAL
+        $sub = __("[==SITE_NAME==] : Your Listing '==LISTING_TITLE==' has expired.",ATBDP_TEXTDOMAIN);
+        $tmpl = __("
 Dear ==NAME==,
-Your listing "==LISTING_TITLE==" is has expired. You can renew it at ==LISTING_URL==
+Your listing '==LISTING_TITLE==' has expired on ==EXPIRATION_DATE==. You can renew it at ==LISTING_URL==
 
 Thanks,
 The Administrator of ==SITE_NAME==
-KAMAL;
+",ATBDP_TEXTDOMAIN);
 
         return apply_filters('atbdp_email_expired_tmpl_settings_fields', array(
             array(
@@ -414,17 +450,15 @@ KAMAL;
     public function email_renewal_tmpl_settings_fields()
     {
         // let's define default data
-        $sub = <<<KAMAL
-[==SITE_NAME==] : Your Listing "==LISTING_TITLE==" is about to expire.
-KAMAL;
-        $tmpl = <<<KAMAL
+        $sub = __('[==SITE_NAME==] : A Reminder to Renew your listing "==LISTING_TITLE=="', ATBDP_TEXTDOMAIN);
+        $tmpl = __("
 Dear ==NAME==,
 
-We have noticed that you might have forget to renew your listing "==LISTING_TITLE==" at ==SITE_LINK==. We would to remind you that it expired on ==EXPIRATION_DATE==. But please don't worry.  You can still renew it by clicking this link: ==RENEWAL_LINK==.
+We have noticed that you might have forget to renew your listing '==LISTING_TITLE==' at ==SITE_LINK==. We would to remind you that it expired on ==EXPIRATION_DATE==. But please don't worry.  You can still renew it by clicking this link: ==RENEWAL_LINK==.
 
 Thanks,
 The Administrator of ==SITE_NAME==
-KAMAL;
+", ATBDP_TEXTDOMAIN);
 
         return apply_filters('atbdp_email_renewal_tmpl_settings_fields', array(
             array(
@@ -457,6 +491,46 @@ KAMAL;
         ));
     }
 
+    /**
+     * Get all the settings fields for the renewed listing email template section
+     * @since 3.1.0
+     * @return array
+     */
+    public function email_renewed_tmpl_settings_fields()
+    {
+        // let's define default data
+        $sub = __('[==SITE_NAME==] : Your Listing "==LISTING_TITLE==" Has Renewed', ATBDP_TEXTDOMAIN);
+        $tmpl = __("
+Dear ==NAME==,
+
+Congratulations!
+Your listing '==LISTING_LINK==' with the ID #==LISTING_ID== has been renewed successfully at ==SITE_LINK==.
+Your listing is now publicly viewable at ==LISTING_URL==
+
+Thanks,
+The Administrator of ==SITE_NAME==
+", ATBDP_TEXTDOMAIN);
+
+        return apply_filters('atbdp_email_renewed_tmpl_settings_fields', array(
+            array(
+                'type' => 'textbox',
+                'name' => 'email_sub_renewed_listing',
+                'label' => __('Email Subject', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the subject for sending to the user his/her listings has renewed successfully.', ATBDP_TEXTDOMAIN),
+                'default' => $sub,
+            ),
+            array(
+                'type' => 'textarea',
+                'name' => 'email_tmpl_renewed_listing',
+                'label' => __('Email Body', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the email template for sending to the user his/her listings has renewed successfully. HTML content is allowed too.', ATBDP_TEXTDOMAIN),
+                'default' => $tmpl,
+            ),
+
+
+        ));
+    }
+
 
     /**
      * Get all the settings fields for the new order email template section
@@ -466,10 +540,8 @@ KAMAL;
     public function email_new_order_tmpl_settings_fields()
     {
         // let's define default data
-        $sub = <<<KAMAL
-[==SITE_NAME==] : Your Order (#==ORDER_ID==) Received.
-KAMAL;
-        $tmpl = <<<KAMAL
+        $sub = __('[==SITE_NAME==] : Your Order (#==ORDER_ID==) Received.', ATBDP_TEXTDOMAIN);
+        $tmpl = __("
 Dear ==NAME==,
 
 Thank you very much for your order.
@@ -485,7 +557,7 @@ NB. You need to be logged in your account to access the order details page.
 
 Thanks,
 The Administrator of ==SITE_NAME==
-KAMAL;
+", ATBDP_TEXTDOMAIN);
 
         return apply_filters('atbdp_new_order_tmpl_settings_fields', array(
             array(
@@ -516,17 +588,14 @@ KAMAL;
     public function email_offline_new_order_tmpl_settings_fields()
     {
         // let's define default data
-        $sub = <<<KAMAL
-[==SITE_NAME==] : Your Order (#==ORDER_ID==) Received.
-KAMAL;
-        $default_instruction = get_directorist_option('bank_transfer_instruction');
-        $tmpl = <<<KAMAL
+        $sub = __('[==SITE_NAME==] : Your Order (#==ORDER_ID==) Received.', ATBDP_TEXTDOMAIN);
+        $tmpl = sprintf(__("
 Dear ==NAME==,
 
 Thank you very much for your order.
 This email is to notify you that your order (#==ORDER_ID==) has been received. 
 
-$default_instruction
+%s
 
 You can check your order details and progress by clicking the link below.
 Order Details Page: ==ORDER_RECEIPT_URL==
@@ -539,7 +608,7 @@ NB. You need to be logged in your account to access the order details page.
 
 Thanks,
 The Administrator of ==SITE_NAME==
-KAMAL;
+", ATBDP_TEXTDOMAIN), get_directorist_option('bank_transfer_instruction'));
 
         return apply_filters('atbdp_offline_new_order_tmpl_settings_fields', array(
             array(
@@ -569,10 +638,10 @@ KAMAL;
     public function email_completed_order_tmpl_settings_fields()
     {
         // let's define default data
-        $sub = <<<KAMAL
-[==SITE_NAME==] : Congratulation! Your Order (#==ORDER_ID==) Completed.
-KAMAL;
-        $tmpl = <<<KAMAL
+        $sub = __('[==SITE_NAME==] : Congratulation! Your Order (#==ORDER_ID==) Completed.', ATBDP_TEXTDOMAIN);
+
+
+        $tmpl = __("
 Dear ==NAME==,
 
 Congratulation! This email is to notify you that your order (#==ORDER_ID==) has been completed. 
@@ -588,7 +657,7 @@ NB. You need to be logged in your account to access the order details page.
 
 Thanks,
 The Administrator of ==SITE_NAME==
-KAMAL;
+", ATBDP_TEXTDOMAIN);
 
         return apply_filters('atbdp_completed_order_tmpl_settings_fields', array(
             array(
@@ -717,8 +786,9 @@ KAMAL;
             'listing_submitted',
             'payment_received',
             'listing_published',
-            'listing_nearly_expired',
+            'listing_to_expire',
             'listing_expired',
+            'remind_to_renew',
             'listing_renewed',
             'order_completed',
             'listing_edited',
@@ -784,13 +854,17 @@ KAMAL;
     {
        return apply_filters('atbdp_only_user_notifiable_events', array(
                 array(
-                    'value' => 'listing_nearly_expired',
-                    'label' => __('Listing Expired', ATBDP_TEXTDOMAIN),
+                    'value' => 'listing_to_expire',
+                    'label' => __('Listing nearly Expired', ATBDP_TEXTDOMAIN),
                 ),
                 array(
                     'value' => 'listing_expired',
                     'label' => __('Listing Expired', ATBDP_TEXTDOMAIN),
                 ),
+               array(
+                   'value' => 'remind_to_renew',
+                   'label' => __('Remind to renew', ATBDP_TEXTDOMAIN),
+               ),
                 array(
                     'value' => 'listing_renewed',
                     'label' => __('Listing Renewed', ATBDP_TEXTDOMAIN),

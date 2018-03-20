@@ -285,9 +285,8 @@ class ATBDP_Checkout
         do_action( 'atbdp_order_completed', $order_data['ID'] );
 
         // @todo; send notifications to user and admin based on the admin settings
-
-        //atbdp_email_listing_owner_order_completed( $order_data['ID'] );
-        //atbdp_email_admin_payment_received( $order_data['ID'] );
+        ATBDP()->email->notify_owner_order_completed($order_data['ID'], $order_data['listing_id']);
+        ATBDP()->email->notify_admin_order_completed( $order_data['ID'], $order_data['listing_id'] );
     }
 
     /**
