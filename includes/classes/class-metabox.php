@@ -17,6 +17,7 @@ class ATBDP_Metabox {
 
 
             add_action( 'edit_post', array($this, 'save_post_meta'), 10, 2);
+            add_action('post_submitbox_misc_actions', array($this, 'post_submitbox_meta'));
 
 
         }
@@ -54,12 +55,37 @@ class ATBDP_Metabox {
         ATBDP()->load_template('add-listing', compact('listing_info') );
     }
 
-    public function listing_gallery( $post )
+    /**
+     * @param $post
+     */
+    public function listing_gallery($post )
     {
         $lf= get_post_meta($post->ID, '_listing_info', true);
         $listing_info= (!empty($lf)) ? aazztech_enc_unserialize($lf) : array();
         $attachment_ids= (!empty($listing_info['attachment_id'])) ? $listing_info['attachment_id'] : array();
         ATBDP()->load_template('media-upload', compact('attachment_ids') );
+    }
+
+    /**
+     * It outputs expiration date and featured checkbox custom field on the submit box metabox.
+     * @param WP_Post $post
+     */
+    public function post_submitbox_meta($post)
+    {
+        if(ATBDP_POST_TYPE !=$post->post_type) return; // vail if it is not our post type
+        // show expiration date and featured listing.
+        $f_active               = get_directorist_option('enable_featured_listing');
+        $never_expire           = get_post_meta($post->ID, '_never_expire', true);
+        $expiry_date            = get_post_meta($post->ID, '_expiry_date', true);
+        if (!empty($expiry_date)){
+            $expiry_date = atbdp_parse_mysql_date($expiry_date);
+        }
+        $featured               = get_post_meta($post->ID, '_featured', true);
+        $listing_status         = get_post_meta($post->ID, '_listing_status', true);
+        $default_expire_in_days = get_directorist_option('listing_expire_in_days');
+        // load the meta fields
+        $data = compact('f_active', 'never_expire', 'expiry_date', 'featured', 'listing_status', 'default_expire_in_days');
+        ATBDP()->load_template('meta-partials/expiration-featured-fields', array('data'=> $data));
     }
 
 
@@ -90,9 +116,34 @@ class ATBDP_Metabox {
      */
     public function save_post_meta( $post_id, $post ) {
         if ( ! $this->passSecurity($post_id, $post) )  return;
-        $listing_info = (!empty($_POST['listing'])) ? aazztech_enc_serialize($_POST['listing']) : aazztech_enc_serialize(array());
+        $p = $_POST; // save some character
+        $exp_dt = $p['exp_date']; // get expiry date
+        $never_expire = !empty($p['never_expire'])? (int) $p['never_expire'] : 0;
+        $featured = !empty($p['featured'])? (int) $p['featured'] : 0;
+        $listing_status = !empty($p['listing_status'])? sanitize_text_field($p['listing_status']) : 'post_status';
+        $listing_info = (!empty($p['listing'])) ? aazztech_enc_serialize($p['listing']) : aazztech_enc_serialize(array());
+        //prepare expiry date
+        if (!empty($exp_dt)){
+            $exp_dt = array(
+                'year'  => (int) $exp_dt['aa'],
+                'month' => (int) $exp_dt['mm'],
+                'day'   => (int) $exp_dt['jj'],
+                'hour'  => (int) $exp_dt['hh'],
+                'min'   => (int) $exp_dt['mn']
+            );
+            $exp_dt = get_date_in_mysql_format($exp_dt);
+        }else{
+            $exp_dt = calc_listing_expiry_date();
+        }
+
         // save the meta data to the database
         update_post_meta( $post_id, '_listing_info', $listing_info );
+        update_post_meta( $post_id, '_expiry_date', $exp_dt );
+        update_post_meta( $post_id, '_never_expire', $never_expire );
+        update_post_meta( $post_id, '_featured', $featured );
+        update_post_meta( $post_id, '_listing_status', $listing_status );
+
+
     }
 
 

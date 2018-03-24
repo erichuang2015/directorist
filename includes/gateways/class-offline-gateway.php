@@ -60,7 +60,7 @@ class ATBDP_Offline_Gateway {
     public function get_offline_gateway_settings_fields()
     {
         $bank_account = <<<KAMAL
-Please make your payment directly to our bank account and use your ORDER ID as a Reference. Our bank account information is given below.
+Please make your payment directly to our bank account and use your ORDER ID (#==ORDER_ID==) as a Reference. Our bank account information is given below.
 
 Account details :
 ------------------

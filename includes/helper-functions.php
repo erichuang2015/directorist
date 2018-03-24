@@ -1172,3 +1172,126 @@ if (!function_exists('atbdp_only_logged_in_user')){
         return true;
     }
 }
+
+if (!function_exists('atbdp_get_months')){
+    /**
+     * Get an array of translatable month names
+     * @since    3.1.0
+     * @return array
+     */
+    function atbdp_get_months(){
+        return array(
+            __( "Jan", ATBDP_TEXTDOMAIN ),
+            __( "Feb", ATBDP_TEXTDOMAIN ),
+            __( "Mar", ATBDP_TEXTDOMAIN ),
+            __( "Apr", ATBDP_TEXTDOMAIN ),
+            __( "May", ATBDP_TEXTDOMAIN ),
+            __( "Jun", ATBDP_TEXTDOMAIN ),
+            __( "Jul", ATBDP_TEXTDOMAIN ),
+            __( "Aug", ATBDP_TEXTDOMAIN ),
+            __( "Sep", ATBDP_TEXTDOMAIN ),
+            __( "Oct", ATBDP_TEXTDOMAIN ),
+            __( "Nov", ATBDP_TEXTDOMAIN ),
+            __( "Dec", ATBDP_TEXTDOMAIN )
+        );
+    }
+}
+
+if (!function_exists('calc_listing_expiry_date')){
+    /**
+     * Calculate listing expiry date from the given date
+     *
+     * @since    3.1.0
+     *
+     * @param    string   $start_date    Date from which the expiry date should be calculated.
+     * @return   string   $date          It returns expiry date in the mysql date format
+     */
+    function calc_listing_expiry_date( $start_date = NULL ) {
+
+        $exp_days = get_directorist_option('listing_expire_in_days', 999, 999);
+        // Current time
+        $start_date = !empty($start_date) ? $start_date : current_time( 'mysql' );
+        // Calculate new date
+        $date = new DateTime( $start_date );
+        $date->add( new DateInterval( "P{$exp_days}D" ) ); // set the interval in days
+        return $date->format( 'Y-m-d H:i:s' );
+
+    }
+}
+
+if (!function_exists('get_date_in_mysql_format')){
+    /**
+     * It converts a date array to MySQL date format (Y-m-d H:i:s).
+     *
+     * @since    3.1.0
+     *
+     * @param    array    $date    Array of date values.
+        eg. array(
+                'year'  => 0,
+                'month' => 0,
+                'day'   => 0,
+                'hour'  => 0,
+                'min'   => 0,
+                'sec'   => 0
+        );
+     * @return   string   $date    Formatted MySQL date string.
+     */
+    function get_date_in_mysql_format( $date ) {
+
+        $defaults = array(
+            'year'  => 0,
+            'month' => 0,
+            'day'   => 0,
+            'hour'  => 0,
+            'min'   => 0,
+            'sec'   => 0
+        );
+        $date = wp_parse_args($date, $defaults  );
+
+        $year = (int) $date['year'];
+        $year = str_pad( $year, 4, '0', STR_PAD_RIGHT );
+
+        $month = (int) $date['month'];
+        $month = max( 1, min( 12, $month ) );
+
+        $day = (int) $date['day'];
+        $day = max( 1, min( 31, $day ) );
+
+        $hour = (int) $date['hour'];
+        $hour = max( 1, min( 24, $hour ) );
+
+        $min = (int) $date['min'];
+        $min = max( 0, min( 59, $min ) );
+
+        $sec = (int) $date['sec'];
+        $sec = max( 0, min( 59, $sec ) );
+
+        return sprintf( '%04d-%02d-%02d %02d:%02d:%02d', $year, $month, $day, $hour, $min, $sec );
+
+    }
+}
+
+if (!function_exists('atbdp_parse_mysql_date')){
+    /**
+     * Parse MySQL date format.
+     *
+     * @since    3.1.0
+     *
+     * @param    string    $date    MySQL date string.
+     * @return   array     $date    Array of date values.
+     */
+    function atbdp_parse_mysql_date( $date ) {
+
+        $date = preg_split( '([^0-9])', $date );
+
+        return array(
+            'year'  => $date[0],
+            'month' => $date[1],
+            'day'   => $date[2],
+            'hour'  => $date[3],
+            'min'   => $date[4],
+            'sec'   => $date[5]
+        );
+
+    }
+}

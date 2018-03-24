@@ -237,7 +237,7 @@ final class Directorist_Base {
 
     public function testEmail()
     {
-        $this->email->notify_admin_order_created(1672, 1673);
+        $this->email->notify_admin_order_created( 1673,1672);
     }
 
     /**
@@ -338,13 +338,17 @@ final class Directorist_Base {
 
     /**
      * It  loads a template file from the Default template directory.
+     * @todo; Improve this method in future so that it lets user/developers to change/override any templates this plugin uses
      * @param string $name Name of the file that should be loaded from the template directory.
      * @param array $args Additional arguments that should be passed to the template file for rendering dynamic  data.
+     * @param bool $return_path Whether to return the path instead of including it
+     * @return string|void
      */
-    public function load_template($name, $args = array() ){
-        $ATBDP = ATBDP();
-        global $post, $ATBDP;
-        include(ATBDP_TEMPLATES_DIR.$name.'.php');
+    public function load_template($name, $args = array(), $return_path = false ){
+        global $post;
+        $path = ATBDP_TEMPLATES_DIR.$name.'.php';
+        if ($return_path) return $path;
+        include ($path);
     }
 
     public static function prepare_plugin()

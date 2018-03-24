@@ -51,11 +51,14 @@ class ATBDP_Email {
             '==LISTING_URL=='           => sprintf( '<a href="%s">%s</a>', $listing_url, $listing_url ),
             '==ORDER_ID=='              => $order_id,
             '==ORDER_RECEIPT_URL=='     => ATBDP_Permalink::get_payment_receipt_page_link($order_id),
-            '==ORDER_DETAILS=='         => ATBDP_Order::get_order_details( $order_id ),
+            //'==ORDER_DETAILS=='         => ATBDP_Order::get_order_details( $order_id ),
             '==TODAY=='                 => date_i18n( $date_format, $current_time ),
             '==NOW=='                   => date_i18n( $date_format . ' ' . $time_format, $current_time ),
         );
-        return strtr($content, $find_replace);
+        $c = nl2br(strtr($content, $find_replace));
+        // we do not want to use br for line break in the order details markup. so we removed that from bulk replacement.
+        return str_replace('==ORDER_DETAILS==', ATBDP_Order::get_order_details( $order_id ), $c);
+
     }
 
     /**
@@ -271,12 +274,12 @@ This email is sent automatically for information purpose only. Please do not res
      * It notifies the listing owner via email when his order is created
      *
      * @since 3.1.0
-     * @param int $listing_id   The listing ID
      * @param int $order_id     The Order ID
+     * @param int $listing_id   The listing ID
      * @param bool $offline     Whether the order is made using online payment or offline payment
      * @return bool Whether the message was sent successfully or not.
      */
-    public function notify_owner_order_created($listing_id, $order_id, $offline=false)
+    public function notify_owner_order_created($order_id, $listing_id, $offline=false)
     {
         if (get_directorist_option('disable_email_notification')) return false;
         if(! in_array( 'order_created', get_directorist_option('notify_user', array()) ) ) return false;
@@ -286,7 +289,7 @@ This email is sent automatically for information purpose only. Please do not res
         $sub = $this->replace_in_content(get_directorist_option("email_sub_{$offline}_new_order"), $order_id, $listing_id, $user);
         $body = $this->replace_in_content(get_directorist_option("email_tmpl_{$offline}_new_order"), $order_id, $listing_id, $user);
 
-        return $this->send_mail( $user->user_email, $sub, nl2br($body), $this->get_email_headers() );
+        return $this->send_mail( $user->user_email, $sub, $body, $this->get_email_headers() );
     }
 
     /**
@@ -304,7 +307,7 @@ This email is sent automatically for information purpose only. Please do not res
         $user = $this->get_owner($listing_id);
         $sub = $this->replace_in_content(get_directorist_option('email_sub_completed_order'), $order_id, $listing_id, $user);
         $body = $this->replace_in_content(get_directorist_option('email_tmpl_completed_order'), $order_id, $listing_id, $user);
-        return $this->send_mail( $user->user_email, $sub, nl2br($body), $this->get_email_headers() );
+        return $this->send_mail( $user->user_email, $sub, $body, $this->get_email_headers() );
     }
     /**
      * It notifies the listing owner via email when his listing is received
@@ -321,7 +324,7 @@ This email is sent automatically for information purpose only. Please do not res
         $sub  = $this->replace_in_content(get_directorist_option("email_sub_new_listing"), null, $listing_id, $user);
         $body = $this->replace_in_content(get_directorist_option("email_tmpl_new_listing"), null, $listing_id, $user);
 
-        return $this->send_mail( $user->user_email, $sub, nl2br($body), $this->get_email_headers() );
+        return $this->send_mail( $user->user_email, $sub, $body, $this->get_email_headers() );
     }
 
     /**
@@ -339,7 +342,7 @@ This email is sent automatically for information purpose only. Please do not res
         $sub  = $this->replace_in_content(get_directorist_option("email_sub_pub_listing"), null, $listing_id, $user);
         $body = $this->replace_in_content(get_directorist_option("email_tmpl_pub_listing"), null, $listing_id, $user);
 
-        return $this->send_mail( $user->user_email, $sub, nl2br($body), $this->get_email_headers() );
+        return $this->send_mail( $user->user_email, $sub, $body, $this->get_email_headers() );
     }
 
     /**
@@ -357,7 +360,7 @@ This email is sent automatically for information purpose only. Please do not res
         $sub  = $this->replace_in_content(get_directorist_option("email_sub_edit_listing"), null, $listing_id, $user);
         $body = $this->replace_in_content(get_directorist_option("email_tmpl_edit_listing"), null, $listing_id, $user);
 
-        return $this->send_mail( $user->user_email, $sub, nl2br($body), $this->get_email_headers() );
+        return $this->send_mail( $user->user_email, $sub, $body, $this->get_email_headers() );
     }
 
     /**
@@ -375,7 +378,7 @@ This email is sent automatically for information purpose only. Please do not res
         $sub  = $this->replace_in_content(get_directorist_option("email_sub_to_expire_listing"), null, $listing_id, $user);
         $body = $this->replace_in_content(get_directorist_option("email_tmpl_to_expire_listing"), null, $listing_id, $user);
 
-        return $this->send_mail( $user->user_email, $sub, nl2br($body), $this->get_email_headers() );
+        return $this->send_mail( $user->user_email, $sub, $body, $this->get_email_headers() );
     }
 
     /**
@@ -393,7 +396,7 @@ This email is sent automatically for information purpose only. Please do not res
         $sub  = $this->replace_in_content(get_directorist_option("email_sub_expired_listing"), null, $listing_id, $user);
         $body = $this->replace_in_content(get_directorist_option("email_tmpl_expired_listing"), null, $listing_id, $user);
 
-        return $this->send_mail( $user->user_email, $sub, nl2br($body), $this->get_email_headers() );
+        return $this->send_mail( $user->user_email, $sub, $body, $this->get_email_headers() );
     }
 
     /**
@@ -412,7 +415,7 @@ This email is sent automatically for information purpose only. Please do not res
         $sub  = $this->replace_in_content(get_directorist_option("email_sub_to_renewal_listing"), null, $listing_id, $user);
         $body = $this->replace_in_content(get_directorist_option("email_tmpl_to_renewal_listing"), null, $listing_id, $user);
 
-        return $this->send_mail( $user->user_email, $sub, nl2br($body), $this->get_email_headers() );
+        return $this->send_mail( $user->user_email, $sub, $body, $this->get_email_headers() );
     }
 
     /**
@@ -430,18 +433,18 @@ This email is sent automatically for information purpose only. Please do not res
         $sub  = $this->replace_in_content(get_directorist_option("email_sub_renewed_listing"), null, $listing_id, $user);
         $body = $this->replace_in_content(get_directorist_option("email_tmpl_renewed_listing"), null, $listing_id, $user);
 
-        return $this->send_mail( $user->user_email, $sub, nl2br($body), $this->get_email_headers() );
+        return $this->send_mail( $user->user_email, $sub, $body, $this->get_email_headers() );
     }
 
     /**
      * It notifies admin via email when an order is created
      *
      * @since 3.1.0
-     * @param int $listing_id
-     * @param int $order_id
+     * @param int $listing_id   The listing ID
+     * @param int $order_id     The order ID
      * @return bool Whether the email was sent successfully or not.
      */
-    public function notify_admin_order_created($listing_id, $order_id)
+    public function notify_admin_order_created($order_id, $listing_id)
     {
         /*@todo; think if it is better to assign disabled_email_notification to the class prop*/
         if (get_directorist_option('disable_email_notification')) return false; //vail if email notification is off
@@ -450,7 +453,7 @@ This email is sent automatically for information purpose only. Please do not res
         $sub = $this->replace_in_content($s, $order_id);
 
         $t = $this->get_order_created_admin_tmpl(); // get the email template & replace order_receipt placeholder in it
-        $body = str_replace('==ORDER_RECEIPT_URL', admin_url( "edit.php?post_type=atbdp_orders" ), $t); /*@todo; MAYBE ?? it would be good if there is a dedicated page for viewing the payment receipt by the admin regardless the order_receipt shortcode is used or not.*/
+        $body = str_replace('==ORDER_RECEIPT_URL==', admin_url( "edit.php?post_type=atbdp_orders" ), $t); /*@todo; MAYBE ?? it would be good if there is a dedicated page for viewing the payment receipt by the admin regardless the order_receipt shortcode is used or not.*/
         return $this->send_mail( $this->get_admin_email_list(), $sub, $this->replace_in_content($body, $order_id, $listing_id), $this->get_email_headers() );
 
     }
@@ -469,10 +472,10 @@ This email is sent automatically for information purpose only. Please do not res
         if (get_directorist_option('disable_email_notification')) return false;
         if( ! in_array( 'order_completed', get_directorist_option('notify_admin', array()) ) ) return false;
         $s = __( '[==SITE_NAME==] Payment Notification : Order #==ORDER_ID== Completed', ATBDP_TEXTDOMAIN );
-        $sub = $this->replace_in_content($s);
+        $sub = $this->replace_in_content($s, $order_id);
 
         $t = $this->get_order_completed_admin_tmpl(); // get the email template & replace order_receipt placeholder in it
-        $body = str_replace('==ORDER_RECEIPT_URL', admin_url( "edit.php?post_type=atbdp_orders" ), $t);
+        $body = str_replace('==ORDER_RECEIPT_URL==', admin_url( "edit.php?post_type=atbdp_orders" ), $t);
         return $this->send_mail( $this->get_admin_email_list(), $sub, $this->replace_in_content($body, $order_id, $listing_id), $this->get_email_headers() );
     }
 

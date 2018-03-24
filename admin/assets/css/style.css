@@ -261,3 +261,44 @@ ADMIN SIDE STYLE
 li.vp-current a.vp-js-menu-dropdown.vp-menu-dropdown {
 	background-color: rgba(108, 185, 234, 0.18823529411764706);
 }
+
+/*Add style for expiration meta box*/
+#atbdp-timestamp{
+	padding: 2px 0 1px 0;
+	display: inline !important;
+	height: auto !important;
+}
+#atbdp-timestamp:before {
+	content: "\f145";
+	position: relative;
+	top: -1px;
+	font: normal 20px/1 dashicons;
+	speak: none;
+	display: inline-block;
+	margin-left: -1px;
+	padding-right: 3px;
+	vertical-align: top;
+	-webkit-font-smoothing: antialiased;
+}
+
+#atbdp-timestamp-wrap select {
+	height: 21px;
+	line-height: 14px;
+	padding: 0;
+	vertical-align: top;
+	font-size: 12px;
+}
+
+#atbdp-jj,  #atbdp-mn {
+	width: 2em;
+}
+#atbdp-hh{
+	width: 2.5em;
+}
+#atbdp-aa{
+	width: 3.2em;
+}
+#atbdp-aa, #atbdp-jj, #atbdp-hh, #atbdp-mn {
+	padding: 1px;
+	font-size: 12px;
+}

@@ -46,6 +46,7 @@ $all_listing_title = !empty($all_listing_title) ? $all_listing_title : __('All I
                         extract($info);
                         // get only one parent or high level term object
                         $single_parent = ATBDP()->taxonomy->get_one_high_level_term(get_the_ID(), ATBDP_CATEGORY);
+                        $featured = get_post_meta(get_the_ID(), '_featured', true);
                         ?>
 
                         <div class="col-md-4 col-sm-6">
@@ -81,10 +82,11 @@ $all_listing_title = !empty($all_listing_title) ? $all_listing_title : __('All I
                                             ?>
                                           
                                         </div>
-
+                                        <!--it is better to show the gen info if we have data-->
+                                        <?php if (!empty($single_parent) || !empty($address)) { ?>
                                         <div class="general_info">
                                             <ul>
-                                                <!--Category Icons should be replaced later -->
+                                                <?php if (!empty($single_parent)){ ?>
                                                 <li>
                                                     <p class="info_title"><?php _e('Category:', ATBDP_TEXTDOMAIN);?></p>
                                                     <p class="directory_tag">
@@ -100,15 +102,19 @@ $all_listing_title = !empty($all_listing_title) ? $all_listing_title : __('All I
                                                         </span>
                                                     </p>
                                                 </li>
+                                                <?php } if (!empty($address)){ ?>
                                                 <li><p class="info_title"><?php _e('Location:', ATBDP_TEXTDOMAIN);?>
-                                                    <span><?= !empty($address) ? esc_html(stripslashes($address)) : ''; ?></span>
+                                                    <span><?= esc_html(stripslashes($address)); ?></span>
                                                     </p>
                                                 </li>
+                                            <?php } ?>
                                             </ul>
                                         </div>
+                                        <?php } ?>
+
 
                                         <div class="read_more_area">
-                                            <a class="btn btn-default" href="<?= get_post_permalink(get_the_ID()); ?>"><?php _e('Read More', ATBDP_TEXTDOMAIN); ?></a>
+                                            <a class="btn btn-default" href="<?= get_post_permalink(get_the_ID()); ?>"><?php _e('Read More', ATBDP_TEXTDOMAIN); ?></a> <?php echo ($featured) ? '<span>'.esc_html__('Featured', ATBDP_TEXTDOMAIN).'</span>' : ''; ?>
                                         </div>
                                     </div>
                                 </article>

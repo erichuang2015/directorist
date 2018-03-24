@@ -99,6 +99,7 @@ class ATBDP_Order {
 
         global $post_type;
         if( 'atbdp_orders' == $post_type ) {
+
             ?>
             <script type="text/javascript">
                 var atbdp_bulk_actions = <?php echo json_encode( atbdp_get_payment_bulk_actions() ); ?>;
@@ -111,13 +112,12 @@ class ATBDP_Order {
                  'set_to_cancelled' => __( "Set Status to Cancelled", ATBDP_TEXTDOMAIN ),
                  'set_to_refunded'  => __( "Set Status to Refunded", ATBDP_TEXTDOMAIN )
                  );*/
-
                 jQuery(document).ready(function() {
                     for( var key in atbdp_bulk_actions ) {
                         if( atbdp_bulk_actions.hasOwnProperty( key ) ) {
                             var $option = jQuery('<option>').val( key ).text( atbdp_bulk_actions[ key ] );
-                            $option.appendTo('select[name="action"]');
-                            $option.appendTo('select[name="action2"]');
+                            $option.appendTo('#bulk-action-selector-top','#bulk-action-selector-bottom');
+                            //$option.appendTo('#bulk-action-selector-bottom');
                         }
                     }
 
@@ -182,10 +182,10 @@ class ATBDP_Order {
         global $pagenow, $post_type;
 
         if( 'edit.php' == $pagenow && 'atbdp_orders' == $post_type ) {
-            $st= !empty($_GET['payment_status']) ? $_GET['payment_status']: '';
+            $st= !empty($_GET['_payment_status']) ? $_GET['_payment_status']: '';
             // Filter by post meta "payment_status"
             if( '' != $st && 'all' != $st ) {
-                $query->query_vars['meta_key'] = 'payment_status';
+                $query->query_vars['meta_key'] = '_payment_status';
                 $query->query_vars['meta_value'] = sanitize_key( $st );
             }
 
@@ -247,8 +247,8 @@ class ATBDP_Order {
 
                 $featured = get_post_meta( $post_id, '_featured', true ); // is this listing featured ?
                 if( $featured ) {
-                    $f_list_label = get_directorist_option( 'featured_listing_label' );
-                    echo "<div># {$f_list_label} </div>";
+                    $f_title = get_directorist_option( 'featured_listing_title' );
+                    echo "<div>({$f_title})</div>";
                 }
                 break;
             case 'amount' :
@@ -379,7 +379,7 @@ class ATBDP_Order {
      */
     public function update_payment_status( $action, $post_id ) {
 
-        $old_status = get_post_meta( $post_id, 'payment_status', true );
+        $old_status = get_post_meta( $post_id, '_payment_status', true );
 
         $new_status = str_replace( 'set_to_', '', $action );
         $new_status = sanitize_key( $new_status );
@@ -391,25 +391,25 @@ class ATBDP_Order {
         $non_complete_statuses = array( 'created', 'pending', 'failed', 'cancelled', 'refunded' );
 
         // If the order has featured
-        $featured = get_post_meta( $post_id, 'featured', true );
+        $featured = get_post_meta( $post_id, '_featured', true );
+        $listing_id = get_post_meta( $post_id, '_listing_id', true );
 
         if( ! empty( $featured ) ) {
-            $listing_id = get_post_meta( $post_id, 'listing_id', true );
 
             if( 'completed' == $old_status && in_array( $new_status, $non_complete_statuses ) ) {
-                update_post_meta( $listing_id, 'featured', 0 );
+                update_post_meta( $listing_id, '_featured', 0 );
             } else if( in_array( $old_status, $non_complete_statuses ) && 'completed' == $new_status ) {
-                update_post_meta( $listing_id, 'featured', 1 );
+                update_post_meta( $listing_id, '_featured', 1 );
             }
         }
 
         // Update new status
-        update_post_meta( $post_id, 'payment_status', $new_status );
+        update_post_meta( $post_id, '_payment_status', $new_status );
 
         // Email listing owner when his/her set to completed
         if( in_array( $old_status, $non_complete_statuses ) && 'completed' == $new_status ) {
-            /*@todo; send and email to the listing owner telling him that his listing order has been completed.*/
-            //atbdp_email_listing_owner_order_completed( $post_id );
+            ATBDP()->email->notify_owner_order_completed($post_id, $listing_id);
+            ATBDP()->email->notify_admin_order_completed($post_id, $listing_id);
         }
 
         return true;

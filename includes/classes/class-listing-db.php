@@ -31,6 +31,14 @@ class ATBDP_Listing_DB {
         return false;
     }
 
+    public function get_listing_order_by_featured()
+    {
+        $args = array(
+            'post_type' => ATBDP_POST_TYPE,
+            'post_per_page'=>-1
+        );
+    }
+
     /**
      * It returns all the listing of the given user or the current user if no user id is passed.
      * @param int $user_id [optional] The id of the user. Default is current user id.

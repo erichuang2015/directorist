@@ -638,13 +638,13 @@ The Administrator of ==SITE_NAME==
     public function email_completed_order_tmpl_settings_fields()
     {
         // let's define default data
-        $sub = __('[==SITE_NAME==] : Congratulation! Your Order (#==ORDER_ID==) Completed.', ATBDP_TEXTDOMAIN);
+        $sub = __('[==SITE_NAME==] : Congratulation! Your Order #==ORDER_ID== Completed.', ATBDP_TEXTDOMAIN);
 
 
         $tmpl = __("
 Dear ==NAME==,
 
-Congratulation! This email is to notify you that your order (#==ORDER_ID==) has been completed. 
+Congratulation! This email is to notify you that your order #==ORDER_ID== has been completed. 
 
 You can check your order details by clicking the link below.
 Order Details Page: ==ORDER_RECEIPT_URL==
@@ -1190,6 +1190,17 @@ The Administrator of ==SITE_NAME==
         $e_r_list = atbdp_get_option('enable_rel_listing', 'atbdp_general', 'yes');
 
         return apply_filters('atbdp_listings_settings_fields', array(
+                    array(
+                        'type' => 'slider',
+                        'name' => 'listing_expire_in_days',
+                        'label' => __('Default Listing Expires in Days', ATBDP_TEXTDOMAIN),
+                        'description' => __( 'After how many days you would like to expire a listing by default ? Set it to 0 to keep it alive forever.', ATBDP_TEXTDOMAIN ),
+                        'min' => '0',
+                        'max' => '730',
+                        'step' => '1',
+                        'default' => 365,
+                        'validation' => 'numeric',
+                    ),
                     array(
                         'type' => 'textbox',
                         'name' => 'all_listing_title',

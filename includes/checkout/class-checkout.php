@@ -203,7 +203,7 @@ class ATBDP_Checkout
             update_post_meta( $order_id, '_payment_status', 'created' );
 
             // @todo; notify admin that an order has been placed, add settings to control this notification
-            ATBDP()->email->notify_admin_order_created( $listing_id, $order_id );
+            ATBDP()->email->notify_admin_order_created( $order_id, $listing_id );
             $this->process_payment($amount, $gateway, $order_id, $listing_id, $data);
         }
 
