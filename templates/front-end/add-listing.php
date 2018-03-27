@@ -136,6 +136,7 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
                                 <select name="tax_input[at_biz_dir-category][]" class="form-control directory_field" id="at_biz_dir-category" multiple="multiple">
                                     <option value=""><?= __('Select a Category', ATBDP_TEXTDOMAIN); ?></option>
                                     <?php
+                                    /*@todo; mark the category selected*/
                                     foreach ($categories as $category) {
                                         echo "<option id='atbdp_category' value='$category->term_id'>$category->name</option>";
                                     }

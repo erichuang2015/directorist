@@ -70,8 +70,8 @@ class ATBDP_Checkout
 
         // if the checkout form is submitted, then process placing order
         if ('POST' == $_SERVER['REQUEST_METHOD'] && ATBDP()->helper->verify_nonce( $this->nonce, $this->nonce_action )){
-            $this->create_order($listing_id, $_POST);
             // Process the order
+            $this->create_order($listing_id, $_POST);
         }else{
             // Checkout form is not submitted, so show the content of the checkout items here
             $form_data = apply_filters( 'atbdp_checkout_form_data', array(), $listing_id ); // this is the hook that an extension can hook to, to add new items on checkout page.eg. plan
@@ -168,8 +168,7 @@ class ATBDP_Checkout
         ) );
         // if order is created successfully then process the order
         if ($order_id){
-            // Hook for developer
-            do_action( 'atbdp_order_created', $order_id, $listing_id );
+
             /*@todo; Find a better way to search for a order with a given ID*/
             /*wp_update_post(array(
                 'ID'=> (int) $order_id,
@@ -197,13 +196,14 @@ class ATBDP_Checkout
 
 
             // save required data as order post meta
-            update_post_meta($order_id, '_listing_id', $listing_id);
-            update_post_meta($order_id, '_amount', $amount);
+            update_post_meta( $order_id, '_listing_id', $listing_id);
+            update_post_meta( $order_id, '_amount', $amount);
             update_post_meta( $order_id, '_payment_gateway', $gateway );
             update_post_meta( $order_id, '_payment_status', 'created' );
 
             // @todo; notify admin that an order has been placed, add settings to control this notification
-            ATBDP()->email->notify_admin_order_created( $order_id, $listing_id );
+            // Hook for developer
+            do_action( 'atbdp_order_created', $order_id, $listing_id );
             $this->process_payment($amount, $gateway, $order_id, $listing_id, $data);
         }
 
@@ -223,16 +223,14 @@ class ATBDP_Checkout
         if( $amount > 0 ) {
             if( 'bank_transfer' == $gateway ) {
                 update_post_meta( $order_id, '_transaction_id', wp_generate_password( 15, false ) );
-                ATBDP()->email->notify_owner_order_created($order_id, $order_id, true);
                 //hook for developer
-                do_action('atbdp_offline_order_created', $order_id, $listing_id);
+                do_action('atbdp_offline_payment_created', $order_id, $listing_id);
                 // admin will mark the order completed manually once he get the payment on his bank.
                 // let's redirect the user to the payment receipt page.
                 $redirect_url = ATBDP_Permalink::get_payment_receipt_page_link( $order_id );
                 wp_redirect( $redirect_url );
                 exit();
             } else {
-                ATBDP()->email->notify_owner_order_created($order_id, $order_id);
                 /**
                  * fires 'atbdp_process_gateway_name_payment', it helps extensions and other payment plugin to process the payment
                  * atbdp_orders post has all the required information in its meta data like listing id and featured data etc.
@@ -248,7 +246,6 @@ class ATBDP_Checkout
             }
         } else {
             /*@todo; Notify owner based on admin settings that order CREATED*/
-            ATBDP()->email->notify_owner_order_created($order_id, $order_id);
             /*complete Free listing Order */
             $this->complete_free_order(
                     array(
@@ -282,11 +279,8 @@ class ATBDP_Checkout
         }
 
         // Order has been completed. Let's fire a hook for a developer to extend if they wish
-        do_action( 'atbdp_order_completed', $order_data['ID'] );
+        do_action( 'atbdp_order_completed', $order_data['ID'], $order_data['listing_id']);
 
-        // @todo; send notifications to user and admin based on the admin settings
-        ATBDP()->email->notify_owner_order_completed($order_data['ID'], $order_data['listing_id']);
-        ATBDP()->email->notify_admin_order_completed( $order_data['ID'], $order_data['listing_id'] );
     }
 
     /**

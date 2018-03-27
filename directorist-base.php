@@ -228,17 +228,13 @@ final class Directorist_Base {
             }
             // init offline gateway
             new ATBDP_Offline_Gateway;
-            //testing email
-           //add_action('init', array(self::$instance, 'testEmail'));
+            // Init Cron jobs to run some periodic tasks
+            new ATBDP_Cron;
         }
 
         return self::$instance;
     }
 
-    public function testEmail()
-    {
-        $this->email->notify_admin_order_created( 1673,1672);
-    }
 
     /**
      * Throw error on object clone.

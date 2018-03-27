@@ -2,6 +2,39 @@
 !empty($args['data']) ? extract($args['data']) : array(); // data array contains all required var.
 $all_listings = !empty($all_listings) ? $all_listings : new WP_Query;
 $all_listing_title = !empty($all_listing_title) ? $all_listing_title : __('All Items', ATBDP_TEXTDOMAIN);
+// testing
+$send_before_days_date = date( 'Y-m-d H:i:s', strtotime( "+3 days" ) );
+var_dump($send_before_days_date);
+// Define the query
+$args = array(
+    'post_type'      => ATBDP_POST_TYPE,
+    'posts_per_page' => -1,
+    'post_status'    => 'publish',
+    'meta_query'     => array(
+        //'relation'    => 'AND',
+        /*array(
+            'key'	  => '_listing_status',
+            'value'	  => 'post_status',
+            'compare' => '='
+        ),*/
+        /*array(
+            'key'	  => '_expiry_date',
+            'value'	  => $send_before_days_date,
+            'compare' => '<',
+            'type'    => 'DATETIME'
+        ),*/
+        array(
+            'key'	  => '_never_expire',
+            //'value'	  => 0,
+
+            'compare' => 'NOT EXISTS',
+        )
+    )
+);
+
+$listings  = new WP_Query( $args );
+var_dump('dumping our posts');
+var_dump($listings->posts);
 ?>
 
 
@@ -37,6 +70,8 @@ $all_listing_title = !empty($all_listing_title) ? $all_listing_title : __('All I
                 <?php if ( $all_listings->have_posts() ) {
                     while ( $all_listings->have_posts() ) { $all_listings->the_post(); ?>
                         <?php
+                        //var_dump(get_post_meta(get_the_ID()));
+
                         /*RATING RELATED STUFF STARTS*/
                         $reviews = ATBDP()->review->db->count(array('post_id' => get_the_ID()));
                         $average = ATBDP()->review->get_average(get_the_ID());

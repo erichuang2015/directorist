@@ -75,7 +75,7 @@ if (!class_exists('ATBDP_Permalink')):
 
 
     /**
-     * It returns the link to the custom search archive page of ATBDP
+     * It returns the link to the add listing page
      * @return string
      */
     public static function get_add_listing_page_link()
@@ -85,6 +85,20 @@ if (!class_exists('ATBDP_Permalink')):
         if( $id ) $link = get_permalink( $id );
         return apply_filters('atbdp_add_listing_page_url', $link );
     }
+
+        /**
+         * It returns the link to the custom edit listing page
+         * @param int $listing_id Listing ID
+         * @since 3.1.0
+         * @return string
+         */
+        public static function get_edit_listing_page_link($listing_id)
+        {
+            $link = home_url();
+            $id = get_directorist_option('add_listing_page');
+            if( $id ) $link = add_query_arg('listing_id', $listing_id, get_permalink( $id ));
+            return apply_filters('atbdp_edit_listing_page_url', $link );
+        }
 
 
     /**

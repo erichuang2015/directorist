@@ -82,8 +82,7 @@ $u_address= get_user_meta($uid, 'address', true);
                                                     </div> <!--ends .content_upper-->
 
                                                     <div class="db_btn_area">
-                                                        <!--@TODO; get the add listing page url from plugin option-->
-                                                        <a href="<?= esc_url(site_url('add-listing/?listing_id='. $post->ID)); ?>" id="edit_listing" class="directory_edit_btn btn btn-default"><?php _e('Edit Listing', ATBDP_TEXTDOMAIN); ?></a>
+                                                        <a href="<?= esc_url(ATBDP_Permalink::get_edit_listing_page_link($post->ID)); ?>" id="edit_listing" class="directory_edit_btn btn btn-default"><?php _e('Edit Listing', ATBDP_TEXTDOMAIN); ?></a>
                                                         <a href="#" id="remove_listing" data-listing_id="<?= $post->ID; ?>" class="directory_remove_btn btn btn-default"><?php _e('Delete', ATBDP_TEXTDOMAIN); ?></a>
                                                     </div> <!--ends .db_btn_area-->
                                                 </div> <!--ends .article_content-->

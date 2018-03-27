@@ -7,6 +7,43 @@ if ( !class_exists('ATBDP_Email') ):
 class ATBDP_Email {
     /*@todo; later make all admin email template customization by setting page just like user email templates*/
 
+
+    public function __construct()
+    {
+        /*Fire up emails when a listing is inserted in the front end*/
+        add_action('atbdp_listing_inserted', array($this, 'notify_admin_listing_submitted'));
+        add_action('atbdp_listing_inserted', array($this, 'notify_owner_listing_submitted'));
+        /*Fire up emails for updated/edited listings */
+        add_action('atbdp_listing_updated', array($this, 'notify_admin_listing_edited'));
+        add_action('atbdp_listing_updated', array($this, 'notify_owner_listing_edited'));
+        /*Fire up emails for created order*/
+        add_action('atbdp_order_created', array($this, 'notify_admin_order_created'), 10, 2);
+        add_action('atbdp_order_created', array($this, 'notify_owner_order_created'), 10, 2);
+        /*Offline Payment Made*/
+        add_action('atbdp_offline_payment_created', array($this, 'notify_owner_offline_payment_created'), 10, 2);
+        /*Fire up email for Completed Orders*/
+        add_action('atbdp_order_completed', array($this, 'notify_owner_order_completed'), 10, 2);
+        add_action('atbdp_order_completed', array($this, 'notify_admin_order_completed'), 10, 2);
+        /*Fire up email for renewal notification*/
+        add_action('atbdp_status_updated_to_renewal', array($this, 'notify_owner_listing_to_expire'));
+        /*Fire up email for expired listings*/
+        add_action('atbdp_listing_expired', array($this, 'notify_owner_listing_expired'));
+        //@todo; send admin a notification too for expired listings.
+        add_action('atbdp_send_renewal_reminder', array($this, 'notify_owner_to_renew'));
+
+
+    }
+
+    /**
+     * It notifies user when an offline payment made
+     * @param int $order_id     Order id
+     * @param int $listing_id   Listing ID
+     */
+    public function notify_owner_offline_payment_created($order_id, $listing_id)
+    {
+        $this->notify_owner_order_created($order_id, $listing_id, true);
+    }
+
     /**
      * It replaces predefined placeholders in the given content.
      *
@@ -20,10 +57,18 @@ class ATBDP_Email {
      */
     public function replace_in_content($content, $order_id=0, $listing_id=0, $user=null)
     {
-        /*@todo; we can check for order id or listing id if provided or not in order to limit db query for option value*/
-        $listing_id         = (int) get_post_meta( $order_id, 'listing_id', true );
-        $post_author_id     = get_post_field( 'post_author', $listing_id );
-        $user               = get_userdata( $post_author_id );
+        if (empty($listing_id)){
+            $listing_id         = (int) get_post_meta( $order_id, 'listing_id', true );
+        }
+        if (empty($user)){
+            $post_author_id     = get_post_field( 'post_author', $listing_id );
+            $user               = get_userdata( $post_author_id );
+        }else{
+            if (! $user instanceof WP_User){
+                $user               = get_userdata( (int) $user );
+            }
+        }
+
         $site_name          = get_option('blogname');
         $site_url           = site_url();
         $l_title            = get_the_title( $listing_id );

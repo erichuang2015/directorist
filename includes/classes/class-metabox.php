@@ -74,15 +74,17 @@ class ATBDP_Metabox {
     {
         if(ATBDP_POST_TYPE !=$post->post_type) return; // vail if it is not our post type
         // show expiration date and featured listing.
+        $expire_in_days = get_directorist_option('listing_expire_in_days');
         $f_active               = get_directorist_option('enable_featured_listing');
         $never_expire           = get_post_meta($post->ID, '_never_expire', true);
-        $expiry_date            = get_post_meta($post->ID, '_expiry_date', true);
-        if (!empty($expiry_date)){
-            $expiry_date = atbdp_parse_mysql_date($expiry_date);
-        }
+        $never_expire = !empty($never_expire) ? (int) $never_expire : (empty($expire_in_days) ? 1 : 0);
+
+        $e_d            = get_post_meta($post->ID, '_expiry_date', true);
+        $e_d            = !empty($e_d) ? $e_d : calc_listing_expiry_date();
+        $expiry_date = atbdp_parse_mysql_date($e_d);
+
         $featured               = get_post_meta($post->ID, '_featured', true);
         $listing_status         = get_post_meta($post->ID, '_listing_status', true);
-        $default_expire_in_days = get_directorist_option('listing_expire_in_days');
         // load the meta fields
         $data = compact('f_active', 'never_expire', 'expiry_date', 'featured', 'listing_status', 'default_expire_in_days');
         ATBDP()->load_template('meta-partials/expiration-featured-fields', array('data'=> $data));
@@ -116,14 +118,16 @@ class ATBDP_Metabox {
      */
     public function save_post_meta( $post_id, $post ) {
         if ( ! $this->passSecurity($post_id, $post) )  return;
+        $expire_in_days = get_directorist_option('listing_expire_in_days');
         $p = $_POST; // save some character
         $exp_dt = $p['exp_date']; // get expiry date
-        $never_expire = !empty($p['never_expire'])? (int) $p['never_expire'] : 0;
+        // if the posted data has info about never_expire, then use it, otherwise, use the data from the settings.
+        $never_expire = !empty($p['never_expire']) ? (int) $p['never_expire'] : (empty($expire_in_days) ? 1 : 0);
         $featured = !empty($p['featured'])? (int) $p['featured'] : 0;
         $listing_status = !empty($p['listing_status'])? sanitize_text_field($p['listing_status']) : 'post_status';
         $listing_info = (!empty($p['listing'])) ? aazztech_enc_serialize($p['listing']) : aazztech_enc_serialize(array());
-        //prepare expiry date
-        if (!empty($exp_dt)){
+        //prepare expiry date, if we receive complete expire date from the submitted post, then use it, else use the default data
+        if (!is_empty_v($exp_dt) && !empty($exp_dt['aa'])){
             $exp_dt = array(
                 'year'  => (int) $exp_dt['aa'],
                 'month' => (int) $exp_dt['mm'],
@@ -133,7 +137,7 @@ class ATBDP_Metabox {
             );
             $exp_dt = get_date_in_mysql_format($exp_dt);
         }else{
-            $exp_dt = calc_listing_expiry_date();
+            $exp_dt = calc_listing_expiry_date(); // get the expiry date in mysql date format using the default expiration date.
         }
 
         // save the meta data to the database

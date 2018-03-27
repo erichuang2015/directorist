@@ -1194,12 +1194,72 @@ The Administrator of ==SITE_NAME==
                         'type' => 'slider',
                         'name' => 'listing_expire_in_days',
                         'label' => __('Default Listing Expires in Days', ATBDP_TEXTDOMAIN),
-                        'description' => __( 'After how many days you would like to expire a listing by default ? Set it to 0 to keep it alive forever.', ATBDP_TEXTDOMAIN ),
+                        'description' => __( 'Set how many days after publishing a listing, you would like to expire a listing by default ? Set it to 0 to keep it alive forever.', ATBDP_TEXTDOMAIN ),
                         'min' => '0',
                         'max' => '730',
                         'step' => '1',
                         'default' => 365,
                         'validation' => 'numeric',
+                    ),
+                    array(
+                        'type' => 'toggle',
+                        'name' => 'can_renew_listing',
+                        'label' => __('Can User Renew Listing?', ATBDP_TEXTDOMAIN),
+                        'description' => __('Here ON means users can renew their listings. OFF means users can not renew their listings. Default is ON.', ATBDP_TEXTDOMAIN),
+                        'default' => 1,
+                    ),
+                    array(
+                        'type' => 'slider',
+                        'name' => 'delete_expired_listings_after',
+                        'label' => __('Delete Expired Listings After (days) of Expiration', ATBDP_TEXTDOMAIN),
+                        'description' => __( 'Set how many days after the expiration of a listing you would like the listings gets deleted. Set it 0 to delete expired listings immediately.', ATBDP_TEXTDOMAIN ),
+                        'min' => '0',
+                        'max' => '180',
+                        'step' => '1',
+                        'default' => 15,
+                        'validation' => 'numeric',
+                    ),
+                    array(
+                        'type' => 'select',
+                        'name' => 'new_listing_status',
+                        'label' => __( 'New Listing\'s Default Status', ATBDP_TEXTDOMAIN ),
+                        'items' => array(
+                            array(
+                                'value' => 'publish',
+                                'label' => __('Published', ATBDP_TEXTDOMAIN),
+                            ),
+                            array(
+                                'value' => 'pending',
+                                'label' => __('Pending', ATBDP_TEXTDOMAIN),
+                            ),
+                        ),
+                        'description' => __( 'Select the Default Listing Status for new listing', ATBDP_TEXTDOMAIN ),
+
+                        'default' => array(
+                            'value' => 'publish',
+                            'label' => __('Published', ATBDP_TEXTDOMAIN),
+                        ),
+                    ),
+                    array(
+                        'type' => 'select',
+                        'name' => 'edit_listing_status',
+                        'label' => __( 'Edited Listing\'s Default Status', ATBDP_TEXTDOMAIN ),
+                        'items' => array(
+                            array(
+                                'value' => 'publish',
+                                'label' => __('Published', ATBDP_TEXTDOMAIN),
+                            ),
+                            array(
+                                'value' => 'pending',
+                                'label' => __('Pending', ATBDP_TEXTDOMAIN),
+                            ),
+                        ),
+                        'description' => __( 'Select the Default Listing Status for Edited listing', ATBDP_TEXTDOMAIN ),
+
+                        'default' => array(
+                            'value' => 'publish',
+                            'label' => __('Published', ATBDP_TEXTDOMAIN),
+                        ),
                     ),
                     array(
                         'type' => 'textbox',
