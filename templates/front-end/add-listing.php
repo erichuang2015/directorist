@@ -1,6 +1,8 @@
 <?php
-if (!empty($_REQUEST['listing_id'])) {
-    $p_id = absint($_REQUEST['listing_id']);
+
+$id = get_query_var('atbdp_listing_id');
+if (!empty($id)) {
+    $p_id = absint($id);
     $listing  = get_post( $p_id ); //@TODO; ADD security to prevent user from editing other posts from front end and backend (except admin)
     // kick the user out if he tries to edit the listing of other user
     if ($listing->post_author != get_current_user_id() && !current_user_can('edit_others_at_biz_dirs')){

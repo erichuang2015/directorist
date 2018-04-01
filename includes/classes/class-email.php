@@ -77,7 +77,8 @@ class ATBDP_Email {
         $date_format        = get_option( 'date_format' );
         $time_format        = get_option( 'time_format' );
         $current_time       = current_time( 'timestamp' );
-        $exp_date           = ''; // @todo; add expiration date later
+        $exp_date           = get_post_meta($listing_id, '_expiry_date', true);
+        $never_exp           = get_post_meta($listing_id, '_never_expire', true);
         $renewal_link       = ''; // @todo; add renewal link later
         $cat_name           = ''; // @todo; add cat name later
         $find_replace =  array(
@@ -86,7 +87,7 @@ class ATBDP_Email {
             '==SITE_NAME=='             => $site_name,
             '==SITE_LINK=='             => sprintf( '<a href="%s">%s</a>', $site_url, $site_name ),
             '==SITE_URL=='              => sprintf( '<a href="%s">%s</a>', $site_url, $site_url ),
-            '==EXPIRATION_DATE=='       => $exp_date,
+            '==EXPIRATION_DATE=='       => ! empty( $never_exp ) ? __( 'Never Expires', ATBDP_POST_TYPE ) : date_i18n( $date_format, strtotime( $exp_date ) ),
             '==CATEGORY_NAME=='         => $cat_name,
             '==RENEWAL_LINK=='          => $renewal_link,
             '==LISTING_ID=='            => $listing_id,
@@ -455,7 +456,6 @@ This email is sent automatically for information purpose only. Please do not res
     {
         if (get_directorist_option('disable_email_notification')) return false;
         if(! in_array( 'remind_to_renew', get_directorist_option('notify_user', array()) ) ) return false;
-        /*@todo; calculate when to send renewal reminder based on the setting and the listing exp date*/
         $user = $this->get_owner($listing_id);
         $sub  = $this->replace_in_content(get_directorist_option("email_sub_to_renewal_listing"), null, $listing_id, $user);
         $body = $this->replace_in_content(get_directorist_option("email_tmpl_to_renewal_listing"), null, $listing_id, $user);

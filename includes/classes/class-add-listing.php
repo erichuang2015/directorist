@@ -39,6 +39,7 @@ if (!class_exists('ATBDP_Add_Listing')):
             // show the attachment of the current users only
             add_filter( 'ajax_query_attachments_args', array($this, 'show_current_user_attachments'), 10, 1 );
             add_action ('wp_loaded', array($this, 'add_listing_to_db'));
+            add_action('parse_query', array($this, 'parse_query')); // do stuff likes editing, renewing, favorite etc in this hook
 
         }
 
@@ -92,7 +93,7 @@ if (!class_exists('ATBDP_Add_Listing')):
                     );
 
 
-                    // is it update post ?
+                    // is it update post ? @todo; change listing_id to atbdp_listing_id later for consistency with rewrite tags
                     if (!empty($_POST['listing_id'])){
                         $is_new_listing = false;
                         $is_edit_listing = true;
@@ -212,12 +213,32 @@ if (!class_exists('ATBDP_Add_Listing')):
 
         }
 
+
+        /**
+         * It helps to perform different db related action to the listing
+         *
+         * @since 3.1.0
+         * @param WP_Query $query
+         */
+        public function parse_query($query)
+        {
+            $action = $query->get('atbdp_action');
+            $id = $query->get('atbdp_listing_id');
+            if (!empty($action) && !empty($id)){
+                // handle renewing the listing
+                if ('renew' == $action){
+                    $this->renew_listing($id);
+                }
+            }
+        }
+
+
         /**
          * It renews the given listing
          * @since 3.1.0
          * @param $listing_id
          */
-        public function renew_listing($listing_id)
+        private function renew_listing($listing_id)
         {
             // Hook for developers
             do_action( 'atbdp_before_renewal', $listing_id );
@@ -225,7 +246,8 @@ if (!class_exists('ATBDP_Add_Listing')):
             //for listing package extensions...
             $has_paid_submission = apply_filters( 'atbdp_has_paid_submission', 0, $listing_id, 'submission' );
             //@todo; should we also check for monetization activation? during processing checkout, is it okey to update listing status?? Test.
-            if( $has_paid_submission ) {
+            $active_monetization = get_directorist_option('enable_monetization');
+            if( $has_paid_submission && $active_monetization) {
                 $redirect_url = ATBDP_Permalink::get_checkout_page_link( $listing_id );
                 wp_redirect($redirect_url);
                 exit;
@@ -252,12 +274,7 @@ if (!class_exists('ATBDP_Add_Listing')):
             }
             update_post_meta( $listing_id, '_expiry_date', $expiry_date );
             update_post_meta( $listing_id, '_listing_status', 'post_status' );
-
-            // redirect to checkout if monetization is active.
-            if (get_directorist_option('enable_monetization')){
-                wp_redirect(ATBDP_Permalink::get_checkout_page_link($listing_id));
-                exit;
-            }
+            //@todo; Show notification on the user page after renewing.
             wp_redirect(add_query_arg('renew', 'success', ATBDP_Permalink::get_dashboard_page_link()));
             exit;
 

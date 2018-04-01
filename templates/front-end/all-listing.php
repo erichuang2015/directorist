@@ -3,38 +3,45 @@
 $all_listings = !empty($all_listings) ? $all_listings : new WP_Query;
 $all_listing_title = !empty($all_listing_title) ? $all_listing_title : __('All Items', ATBDP_TEXTDOMAIN);
 // testing
-$send_before_days_date = date( 'Y-m-d H:i:s', strtotime( "+3 days" ) );
+$send_before_days_date = date( 'Y-m-d H:i:s', strtotime( "+6 days" ) );
 var_dump($send_before_days_date);
 // Define the query
+$dt = '2018-04-07 09:24:00';
 $args = array(
     'post_type'      => ATBDP_POST_TYPE,
     'posts_per_page' => -1,
     'post_status'    => 'publish',
     'meta_query'     => array(
         //'relation'    => 'AND',
-        /*array(
+        array(
             'key'	  => '_listing_status',
             'value'	  => 'post_status',
-            'compare' => '='
-        ),*/
+        ),
         /*array(
             'key'	  => '_expiry_date',
-            'value'	  => $send_before_days_date,
-            'compare' => '<',
+            //$dt            : '2018-04-3 09:24:00';
+            // post has time : '2018-04-07 09:24:00'
+            'value'	  => $dt,
+            'compare' => '<=', // it actually means that _expiry_date <= $dt;
             'type'    => 'DATETIME'
         ),*/
         array(
             'key'	  => '_never_expire',
-            //'value'	  => 0,
-
-            'compare' => 'NOT EXISTS',
-        )
+            'value'	  => 0,
+        ),
+        // if we are querying post to send notification to the user, then it is good to leave the post that that has send notification meta
     )
 );
-
 $listings  = new WP_Query( $args );
-var_dump('dumping our posts');
-var_dump($listings->posts);
+var_dump('dumping our posts' );
+var_dump( $listings->posts );
+var_dump($send_before_days_date);
+var_dump($dt);
+foreach ($listings->posts as $list) {
+    var_dump( 'Post ID :     '. $list->ID );
+    var_dump( get_post_meta( $list->ID, '_expiry_date', true ) );
+
+}
 ?>
 
 
@@ -82,6 +89,8 @@ var_dump($listings->posts);
                         // get only one parent or high level term object
                         $single_parent = ATBDP()->taxonomy->get_one_high_level_term(get_the_ID(), ATBDP_CATEGORY);
                         $featured = get_post_meta(get_the_ID(), '_featured', true);
+                        var_dump(get_the_ID());
+                        var_dump(get_post_meta(get_the_ID()));
                         ?>
 
                         <div class="col-md-4 col-sm-6">

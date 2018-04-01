@@ -38,6 +38,15 @@ class ATBDP_Rewrite {
         }
 
 
+        // Edit Listing/Renew Listing/Delete listings etc
+        $id = get_directorist_option('add_listing_page');
+        if( $id  ) {
+            $link = str_replace( $home, '', get_permalink( $id ) );
+            $link = trim( $link, '/' );
+
+            add_rewrite_rule( "$link/([^/]+)/([0-9]{1,})/?$", 'index.php?page_id='.$id.'&atbdp_action=$matches[1]&atbdp_listing_id=$matches[2]', 'top' );
+        }
+
 
         // Rewrite tags (Making custom query var available throughout the application
         // WordPress by default does not understand the unknown query vars. It needs to be registered with WP for using it.

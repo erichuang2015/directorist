@@ -96,7 +96,14 @@ if (!class_exists('ATBDP_Permalink')):
         {
             $link = home_url();
             $id = get_directorist_option('add_listing_page');
-            if( $id ) $link = add_query_arg('listing_id', $listing_id, get_permalink( $id ));
+            if( $id ) {
+                $link = get_permalink( $id );
+                if( '' != get_option( 'permalink_structure' ) ) {
+                    $link = user_trailingslashit( trailingslashit( $link )  . 'edit/' . $listing_id );
+                } else {
+                    $link = add_query_arg( array( 'atbdp_action' => 'edit', 'atbdp_listing_id ' => $listing_id ), $link );
+                }
+            }
             return apply_filters('atbdp_edit_listing_page_url', $link );
         }
 
@@ -233,6 +240,23 @@ if (!class_exists('ATBDP_Permalink')):
             }
 
             return apply_filters('atbdp_checkout_page_url', $link);
+        }
+
+        public static function get_renewal_page_link($listing_id)
+        {
+            $link = home_url();
+            $id = get_directorist_option('add_listing_page');
+
+            if( $id ) {
+                $link = get_permalink( $id );
+                if( '' != get_option( 'permalink_structure' ) ) {
+                    $link = user_trailingslashit( trailingslashit( $link )  . 'renew/' . $listing_id );
+                } else {
+                    $link = add_query_arg( array( 'atbdp_action' => 'renew', 'atbdp_listing_id ' => $listing_id ), $link );
+                }
+            }
+
+            return $link;
         }
 
     } // end ATBDP_Permalink
