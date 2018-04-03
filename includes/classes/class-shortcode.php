@@ -111,17 +111,23 @@ class ATBDP_Shortcode {
         $featured_active = get_directorist_option('enable_featured_listing');
         //var_dump($featured_active);
         if ($featured_active){
-            /*$meta_queries[] = array(
+            $meta_queries[] = array(
                 'key'     => '_featured',
                 'type'    => 'NUMERIC',
                 'compare' => 'EXISTS',
-            );*/
-            $args['meta_key'] = '_featured';
+            );
+            /*$meta_queries[] = array(
+                'key'     => '_featured',
+                'type'    => 'NUMERIC',
+                'compare' => 'NOT EXISTS',
+            );
+            $meta_queries['relation'] = 'OR';*/
+            /*$args['meta_key'] = '_featured';
             $args['meta_value'] =1 ;
-            $args['meta_type'] = 'NUMERIC';
+            $args['meta_type'] = 'NUMERIC';*/
             $args['orderby']  = array(
                 'meta_value_num' => 'DESC',
-                'date'           => 'ASC',
+                //'date'           => 'ASC',
             );
         }
         if (!is_empty_v($meta_queries)){

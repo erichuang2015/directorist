@@ -130,11 +130,11 @@ if (!function_exists('padded_var_dump')):
     /**
      * It dumps data to the screen in a div that has margin left 200px.
      * It is good for dumping data in WordPress dashboard
-     * @param $data
      */
-    function padded_var_dump($data){
+    function padded_var_dump(){
         echo "<div style='margin-left: 200px;'>";
-        var_dump($data);
+        $args = func_get_args();
+        if (count($args)) foreach ($args as $a) { var_dump($a); }
         echo "</div>";
     }
 endif;

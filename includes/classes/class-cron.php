@@ -19,7 +19,9 @@ class ATBDP_Cron {
     {
         //init wp schedule
         //add_action('init', array($this, 'schedule_events')); // for testing on local host use init hook
-
+        add_action('init', function (){
+            $this->update_renewal_status();
+        });
     }
 
     /**
@@ -43,6 +45,7 @@ class ATBDP_Cron {
         if( ! wp_next_scheduled( 'directorist_hourly_scheduled_events' ) ) {
             wp_schedule_event( time(), 'five_seconds', 'directorist_hourly_scheduled_events' );
         }
+
 
         // run the schedules events
         add_action('directorist_hourly_scheduled_events', array($this, 'hourly_scheduled_events'));
@@ -79,9 +82,11 @@ class ATBDP_Cron {
 
         $can_renew       = get_directorist_option('can_renew_listing');
         $renew_email_threshold = get_directorist_option('email_to_expire_day'); // before how many days of expiration, a renewal message should be sent
-
+        //var_dump('user can renew', $can_renew);
+        //var_dump(' email threshold', $renew_email_threshold);
         if( $can_renew && $renew_email_threshold > 0 ) {
             $renew_email_threshold_date = date( 'Y-m-d H:i:s', strtotime( "+{$renew_email_threshold} days" ) );
+            //padded_var_dump('threadhold date', $renew_email_threshold_date);
 
             // Define the query
             $args = array(
@@ -97,6 +102,7 @@ class ATBDP_Cron {
                         'key'	  => '_expiry_date',
                         'value'	  => $renew_email_threshold_date,
                         'compare' => '<=',
+                        // _expiry_date > $renew_email_threshold_date,     '2018-04-15 09:24:00' < '2018-04-09 12:57:27'. eg. expiry date can not be greater than renewal threshold because threshold is the future date. expiration date should be equal to future date or less.
                         'type'    => 'DATETIME'
                     ),
                     array(
@@ -107,11 +113,14 @@ class ATBDP_Cron {
             );
 
             $listings  = new WP_Query( $args ); // get all the post that has post_status only and update their status and fire an email
+            //padded_var_dump($listings->posts);
             if ($listings->found_posts){
                 foreach ($listings->posts as $listing){
+                    //padded_var_dump('Status: '. get_post_meta($listing->ID, '_listing_status', true));
+                    //padded_var_dump('ID : '.$listing->ID . ' Expire Date : '.get_post_meta($listing->ID, '_expiry_date', true));
                     update_post_meta( $listing->ID, '_listing_status', 'renewal' );
                     // hook for dev.
-                    do_action('atbdp_status_updated_to_renewal');
+                    do_action('atbdp_status_updated_to_renewal', $listing->ID);
                 }
 
             }

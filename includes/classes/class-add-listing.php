@@ -237,19 +237,22 @@ if (!class_exists('ATBDP_Add_Listing')):
          * It renews the given listing
          * @since 3.1.0
          * @param $listing_id
+         * @return mixed
          */
         private function renew_listing($listing_id)
         {
+            $can_renew = get_directorist_option('can_renew_listing');
+            if (!$can_renew) return false;// vail if renewal option is turned off on the site.
             // Hook for developers
             do_action( 'atbdp_before_renewal', $listing_id );
             update_post_meta( $listing_id, '_featured', 0 ); // delete featured
             //for listing package extensions...
-            $has_paid_submission = apply_filters( 'atbdp_has_paid_submission', 0, $listing_id, 'submission' );
-            //@todo; should we also check for monetization activation? during processing checkout, is it okey to update listing status?? Test.
+            $has_paid_submission = apply_filters( 'atbdp_has_paid_submission', 0, $listing_id, 'renew' );
+
             $active_monetization = get_directorist_option('enable_monetization');
             if( $has_paid_submission && $active_monetization) {
-                $redirect_url = ATBDP_Permalink::get_checkout_page_link( $listing_id );
-                wp_redirect($redirect_url);
+                // if paid submission enabled/triggered by an extension, redirect to the checkout page and let that handle it, and vail out.
+                wp_safe_redirect(ATBDP_Permalink::get_checkout_page_link( $listing_id ));
                 exit;
             }
 
@@ -272,17 +275,33 @@ if (!class_exists('ATBDP_Add_Listing')):
                 $old_expiry_date = get_post_meta( $listing_id, '_expiry_date', true );
                 $expiry_date = calc_listing_expiry_date( $old_expiry_date );
             }
+            // update related post metas
             update_post_meta( $listing_id, '_expiry_date', $expiry_date );
             update_post_meta( $listing_id, '_listing_status', 'post_status' );
-            //@todo; Show notification on the user page after renewing.
-            wp_redirect(add_query_arg('renew', 'success', ATBDP_Permalink::get_dashboard_page_link()));
-            exit;
 
+            $exp_days = get_directorist_option('listing_expire_in_days', 999, 999);
+            if ($exp_days <= 0) { update_post_meta($listing_id, '_never_expire', 1);
+            }else{ update_post_meta($listing_id, '_never_expire', 0); }
+            do_action( 'atbdp_after_renewal', $listing_id );
+
+
+            $featured_active = get_directorist_option('enable_featured_listing');
+            $has_paid_submission = apply_filters( 'atbdp_has_paid_submission', $featured_active, $listing_id, 'renew' );
+            if( $has_paid_submission && $active_monetization) {
+                $r_url = ATBDP_Permalink::get_checkout_page_link( $listing_id );
+            }else{
+                //@todo; Show notification on the user page after renewing.
+               $r_url = add_query_arg('renew', 'success', ATBDP_Permalink::get_dashboard_page_link());
+            }
+            // hook for dev
+            do_action( 'atbdp_before_redirect_after_renewal', $listing_id );
+            wp_safe_redirect($r_url);
+            exit;
 
         }
 
 
-    }
+    } // ends ATBDP_Add_Listing
 
 
 endif;

@@ -58,7 +58,7 @@ class ATBDP_Email {
     public function replace_in_content($content, $order_id=0, $listing_id=0, $user=null)
     {
         if (empty($listing_id)){
-            $listing_id         = (int) get_post_meta( $order_id, 'listing_id', true );
+            $listing_id         = (int) get_post_meta( $order_id, '_listing_id', true );
         }
         if (empty($user)){
             $post_author_id     = get_post_field( 'post_author', $listing_id );
@@ -79,7 +79,7 @@ class ATBDP_Email {
         $current_time       = current_time( 'timestamp' );
         $exp_date           = get_post_meta($listing_id, '_expiry_date', true);
         $never_exp           = get_post_meta($listing_id, '_never_expire', true);
-        $renewal_link       = ''; // @todo; add renewal link later
+        $renewal_link       = ATBDP_Permalink::get_renewal_page_link($listing_id); // @todo; add renewal link later
         $cat_name           = ''; // @todo; add cat name later
         $find_replace =  array(
             '==NAME=='                  => !empty($user->display_name) ? $user->display_name : '' ,
@@ -87,7 +87,7 @@ class ATBDP_Email {
             '==SITE_NAME=='             => $site_name,
             '==SITE_LINK=='             => sprintf( '<a href="%s">%s</a>', $site_url, $site_name ),
             '==SITE_URL=='              => sprintf( '<a href="%s">%s</a>', $site_url, $site_url ),
-            '==EXPIRATION_DATE=='       => ! empty( $never_exp ) ? __( 'Never Expires', ATBDP_POST_TYPE ) : date_i18n( $date_format, strtotime( $exp_date ) ),
+            '==EXPIRATION_DATE=='       => ! empty( $never_exp ) ? __( 'Never Expires', ATBDP_TEXTDOMAIN ) : date_i18n( $date_format, strtotime( $exp_date ) ),
             '==CATEGORY_NAME=='         => $cat_name,
             '==RENEWAL_LINK=='          => $renewal_link,
             '==LISTING_ID=='            => $listing_id,
@@ -418,6 +418,7 @@ This email is sent automatically for information purpose only. Please do not res
      */
     public function notify_owner_listing_to_expire($listing_id)
     {
+        if (empty($listing_id)) return false;
         if (get_directorist_option('disable_email_notification')) return false;
         if(! in_array( 'listing_to_expire', get_directorist_option('notify_user', array()) ) ) return false;
         $user = $this->get_owner($listing_id);

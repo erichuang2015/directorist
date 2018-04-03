@@ -371,7 +371,7 @@ The Administrator of ==SITE_NAME==
         /*@todo; includes the number of days remaining to expire the listing*/
         $tmpl = __("
 Dear ==NAME==,
-Your listing '==LISTING_TITLE==' is about to expire. It will expire on ==EXPIRATION_DATE==. You can renew it at ==LISTING_URL==
+Your listing '==LISTING_TITLE==' is about to expire. It will expire on ==EXPIRATION_DATE==. You can renew it at ==RENEWAL_LINK==
 
 Thanks,
 The Administrator of ==SITE_NAME==
@@ -417,7 +417,7 @@ The Administrator of ==SITE_NAME==
         $sub = __("[==SITE_NAME==] : Your Listing '==LISTING_TITLE==' has expired.",ATBDP_TEXTDOMAIN);
         $tmpl = __("
 Dear ==NAME==,
-Your listing '==LISTING_TITLE==' has expired on ==EXPIRATION_DATE==. You can renew it at ==LISTING_URL==
+Your listing '==LISTING_TITLE==' has expired on ==EXPIRATION_DATE==. You can renew it at ==RENEWAL_LINK==
 
 Thanks,
 The Administrator of ==SITE_NAME==
@@ -964,7 +964,7 @@ The Administrator of ==SITE_NAME==
                     'label' => __( 'Google Map API key', ATBDP_TEXTDOMAIN ),
                     'description' => sprintf(__( 'You need to enter your google map api key in order to display google map. You can find your map api key and detailed information %s. or you can search in google', ATBDP_TEXTDOMAIN ), '<a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank"> <strong style="color: red;">here</strong> </a>'),
                     'default' => atbdp_get_option('map_api_key', 'atbdp_general'),
-                    'validation' => 'required',
+                    'validation' => 'alphanumeric',
                 ),
 
                 array(
@@ -976,7 +976,15 @@ The Administrator of ==SITE_NAME==
                     'max' => '22',
                     'step' => '1',
                     'default' => '16',
-                    'validation' => 'required',
+
+                ),
+                array(
+                    'type' => 'toggle',
+                    'name' => 'disable_map',
+                    'label' => __( 'Hide Google MAP on the front-end website', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Set it On to hide the map on the website. Set it Off, to show the map on your website ', ATBDP_TEXTDOMAIN ),
+                    'default' => 0,
+                    'validation' => 'numeric',
                 ),
 
                 array(

@@ -6,7 +6,6 @@ extract($data);
 $c_position = get_directorist_option('payment_currency_position');
 $currency = atbdp_get_payment_currency();
 $symbol = atbdp_currency_symbol($currency);
-
 ?>
 <div class="directorist directory_wrapper single_area">
     <div class="container-fluid">
@@ -16,7 +15,7 @@ $symbol = atbdp_currency_symbol($currency);
         // show the user instruction for banking gatewayy
         if( isset( $o_metas['_payment_gateway'] ) && 'bank_transfer' == $o_metas['_payment_gateway'][0] && 'created' == $o_metas['_payment_status'][0] ) {
             $ins = get_directorist_option('bank_transfer_instruction');
-            echo !empty($ins) ? '<p>'.nl2br($ins).'</p>' : '';
+            echo !empty($ins) ? '<p>'.ATBDP()->email->replace_in_content($ins, @$order_id, @$o_metas['_listing_id'][0]).'</p>' : '';
         }
         ?>
 
@@ -48,8 +47,13 @@ $symbol = atbdp_currency_symbol($currency);
                         <td><?php _e( 'Date', ATBDP_TEXTDOMAIN ); ?></td>
                         <td>
                             <?php
-                            $date = !empty($order) ? strtotime( $order->post_date ) : '';
-                            echo date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $date );
+                            echo !empty($order) ?
+                                date_i18n(
+                                        get_option( 'date_format' ) . ' ' . get_option( 'time_format' )
+                                        , strtotime( $order->post_date )
+                                )
+                                : '';
+
                             ?>
                         </td>
                     </tr>
@@ -62,7 +66,7 @@ $symbol = atbdp_currency_symbol($currency);
                         <td><?php _e( 'Payment Method', ATBDP_TEXTDOMAIN ); ?></td>
                         <td>
                             <?php
-                            $gateway = $o_metas['_payment_gateway'][0];
+                            $gateway = !empty($o_metas['_payment_gateway'][0]) ? $o_metas['_payment_gateway'][0] : 'unknown';
                             if( 'free' == $gateway ) {
                                 _e( 'Free Listing', ATBDP_TEXTDOMAIN );
                             } else {
@@ -77,7 +81,7 @@ $symbol = atbdp_currency_symbol($currency);
                         <td><?php _e( 'Payment Status', ATBDP_TEXTDOMAIN ); ?></td>
                         <td>
                             <?php
-                            $status = isset( $o_metas['_payment_status'] ) ? $o_metas['_payment_status'][0] : 'created';
+                            $status = isset( $o_metas['_payment_status'] ) ? $o_metas['_payment_status'][0] : 'Invalid';
                             echo atbdp_get_payment_status_i18n( $status );
                             ?>
                         </td>

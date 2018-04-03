@@ -105,52 +105,80 @@ if(!class_exists('ATBDP_Custom_Post')):
 
 
         public function add_new_listing_columns($columns){
+            $featured_active = get_directorist_option('enable_featured_listing');
             $columns = array();
             $columns['cb']   = '<input type="checkbox" />';
             $columns['title']   = __('Listing Name', ATBDP_TEXTDOMAIN);
-            $columns['atbdp_list_2']   = __('Location', ATBDP_TEXTDOMAIN);
-            $columns['atbdp_list_3']   = __('Categories', ATBDP_TEXTDOMAIN);
-            $columns['atbdp_list_4']   = __('Author', ATBDP_TEXTDOMAIN);
-            $columns['date']   = __('Created at', ATBDP_TEXTDOMAIN);
+            $columns['atbdp_location']   = __('Location', ATBDP_TEXTDOMAIN);
+            $columns['atbdp_category']   = __('Categories', ATBDP_TEXTDOMAIN);
+            $columns['atbdp_author']   = __('Author', ATBDP_TEXTDOMAIN);
+            $columns['atbdp_status']   = __('Status', ATBDP_TEXTDOMAIN);
+            if ($featured_active){
+                $columns['atbdp_featured']   = __('Featured', ATBDP_TEXTDOMAIN);
+
+            }
+            $columns['atbdp_expiry_date']   = __('Expires on', ATBDP_TEXTDOMAIN);
+            $columns['atbdp_date']   = __('Created on', ATBDP_TEXTDOMAIN);
             return $columns;
         }
         public function manage_listing_columns( $column_name, $post_id ) {
             /*@TODO; Next time we can add image column too. */
+            $date_format = get_option('date_format');
+            $time_format = get_option('time_format');
             switch($column_name){
-                case 'atbdp_list_1':
-                    break;
-                case 'atbdp_list_2':
+                case 'atbdp_location':
                     $terms = wp_get_post_terms( $post_id, ATBDP_LOCATION );
                     if (!empty( $terms ) && is_array( $terms )){
                         foreach ( $terms as $term ){
                             // link the tax term to the search page with custom query string so that plugin can show correct data from database
                             ?>
                             <a href="<?= ATBDP_Permalink::get_location_archive( $term); ?>">
-                                <span class="fa <?= get_cat_icon( $term->term_id ); ?>" aria-hidden="true" ></span>
-                                <p><?= $term->name; ?></p>
+                                <?= $term->name; ?>
                             </a>
                             <?php
                         }
                     }
                     break;
-                case 'atbdp_list_3':
+                case 'atbdp_category':
                     $cats = wp_get_post_terms( $post_id, ATBDP_CATEGORY );
                     if (!empty( $cats ) && is_array( $cats )){
                         foreach ( $cats as $c ) {
                     ?>
                     <a href="<?= ATBDP_Permalink::get_category_archive( $c ); ?>">
-                        <span class="fa <?= get_cat_icon( $c->term_id ); ?>" aria-hidden="true"></span>
-                        <p><?= $c->name; ?></p>
+                        <i class="fa <?= get_cat_icon( $c->term_id ); ?>" aria-hidden="true"></i>
+                        <?= $c->name; ?>
                     </a>
                     <?php
                         }
                     }
                     break;
-                case 'atbdp_list_4':
+                default:
+                    break;
+                case 'atbdp_author':
                     the_author_posts_link();
                     break;
 
-                default:
+                case 'atbdp_status':
+                    $sts = get_post_meta( $post_id, '_listing_status', true );
+
+                    echo ( empty( $sts ) || 'post_status' == $sts ) ? get_post_status( $post_id ) : $sts;
+                    break;
+
+                case 'atbdp_featured':
+                    $featured = get_post_meta($post_id, '_featured', true);
+                    echo !empty($featured) ? '<i class="fa fa-check-circle"></i>' : '<i class="fa fa-times-circle"></i>';
+                    break;
+
+                case 'atbdp_expiry_date':
+                    $exp_date           = get_post_meta($post_id, '_expiry_date', true);
+                    $never_exp           = get_post_meta($post_id, '_never_expire', true);
+                    echo ! empty( $never_exp ) ? __( 'Never Expires', ATBDP_TEXTDOMAIN ) :  date_i18n( "$date_format @  $time_format" , strtotime( $exp_date ) );
+                    break;
+                case 'atbdp_date':
+                    $t = strtotime(get_the_time( 'U', $post_id ));
+                    echo date_i18n( $date_format , $t );
+                    printf(__(' ( %s ago )', ATBDP_TEXTDOMAIN), human_time_diff($t, time()));
+
                     break;
 
             }
@@ -158,7 +186,7 @@ if(!class_exists('ATBDP_Custom_Post')):
 
         public function make_sortable_column( $columns)
         {
-            $columns['atbdp_list_4'] = 'author';
+            $columns['atbdp_author'] = 'author';
             return $columns;
 
         }

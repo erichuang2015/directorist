@@ -8,8 +8,8 @@ $avatar= get_user_meta($uid, 'avatar', true);
 $u_phone= get_user_meta($uid, 'phone', true);
 $u_pro_pic= get_user_meta($uid, 'pro_pic', true);
 $u_address= get_user_meta($uid, 'address', true);
-
-
+$date_format = get_option( 'date_format' );
+$featured_active = get_directorist_option('enable_featured_listing');
 
 
 ?>
@@ -82,9 +82,51 @@ $u_address= get_user_meta($uid, 'address', true);
                                                     </div> <!--ends .content_upper-->
 
                                                     <div class="db_btn_area">
+                                                        <?php
+                                                            $lstatus = get_post_meta($post->ID, '_listing_status', true);
+                                                            $featured = get_post_meta($post->ID, '_featured', true);
+
+                                                        // If the listing needs renewal then there is no need to show promote button
+                                                            if ('renewal' == $lstatus || 'expired' == $lstatus){
+                                                                $can_renew = get_directorist_option('can_renew_listing');
+                                                                if (!$can_renew) return false;// vail if renewal option is turned off on the site.
+                                                                ?>
+                                                                <a href="<?= esc_url(ATBDP_Permalink::get_renewal_page_link($post->ID)) ?>"
+                                                                   id="directorist-renew" data-listing_id="<?= $post->ID; ?>"
+                                                                   class="directory_btn btn btn-default">
+                                                                    <?php _e('Renew', ATBDP_TEXTDOMAIN); ?>
+                                                                </a>
+                                                                <!--@todo; add expiration and renew date-->
+                                                       <?php }else{
+                                                                // show promotions if the featured is available
+                                                                // featured available but the listing is not featured, show promotion button
+                                                                if ($featured_active && empty($featured)){
+                                                                    ?>
+                                                                    <a href="<?= esc_url(ATBDP_Permalink::get_checkout_page_link($post->ID)) ?>"
+                                                                       id="directorist-promote" data-listing_id="<?= $post->ID; ?>"
+                                                                       class="directory_btn btn btn-default">
+                                                                        <?php _e('Promote', ATBDP_TEXTDOMAIN); ?>
+                                                                    </a>
+                                                                <?php }
+                                                            } ?>
+
                                                         <a href="<?= esc_url(ATBDP_Permalink::get_edit_listing_page_link($post->ID)); ?>" id="edit_listing" class="directory_edit_btn btn btn-default"><?php _e('Edit Listing', ATBDP_TEXTDOMAIN); ?></a>
                                                         <a href="#" id="remove_listing" data-listing_id="<?= $post->ID; ?>" class="directory_remove_btn btn btn-default"><?php _e('Delete', ATBDP_TEXTDOMAIN); ?></a>
                                                     </div> <!--ends .db_btn_area-->
+
+                                                    <div class="listing-meta db_btn_area">
+                                                        <?php
+                                                        $exp_date           = get_post_meta($post->ID, '_expiry_date', true);
+                                                        $never_exp           = get_post_meta($post->ID, '_never_expire', true);
+                                                        $exp_text = ! empty( $never_exp ) ? __( 'Never Expires', ATBDP_TEXTDOMAIN ) :  date_i18n( $date_format, strtotime( $exp_date ) ); ?>
+                                                        <p><?php printf(__('Expiration: %s', ATBDP_TEXTDOMAIN), $exp_text); ?></p>
+                                                        <p><?php printf(__('Listing Status: %s', ATBDP_TEXTDOMAIN), get_post_status_object($post->post_status)->label); ?></p>
+                                                        <?php if ($featured_active){
+                                                            $f_status = !empty($featured) ? __('Yes', ATBDP_TEXTDOMAIN) : __('No', ATBDP_TEXTDOMAIN);
+                                                            ?>
+                                                            <p><?php printf(__('Is this Featured: %s', ATBDP_TEXTDOMAIN), $f_status); ?></p>
+                                                        <?php } ?>
+                                                    </div>
                                                 </div> <!--ends .article_content-->
                                             </article> <!--ends article-->
                                         </div> <!--ends .single_directory_post-->

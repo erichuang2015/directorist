@@ -302,3 +302,14 @@ li.vp-current a.vp-js-menu-dropdown.vp-menu-dropdown {
 	padding: 1px;
 	font-size: 12px;
 }
+
+/*Back end listing page*/
+.column-atbdp_featured i{
+    font-size: 21px;
+}
+.column-atbdp_featured i.fa.fa-check-circle{
+    color: green;
+}
+.column-atbdp_featured i.fa.fa-times-circle{
+    color: red;
+}

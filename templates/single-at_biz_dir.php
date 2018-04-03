@@ -36,6 +36,7 @@ $info_content .= $image ; // add the image if available
 $info_content .= "<address> {$ad} </address>";
 $info_content .= "<a href='http://www.google.com/maps/place/{$manual_lat},{$manual_lng}' target='_blank'> ".__('View On Google Maps', ATBDP_TEXTDOMAIN)."</a></div>";
 $map_zoom_level = get_directorist_option('map_zoom_level', 16);
+$disable_map = get_directorist_option('disable_map');
 
 ?>
 
@@ -197,8 +198,10 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
 
                     <?php
                     /*@todo; add a settings to toggle the display of map for individual listing or all listings.*/
-                    if (!empty($manual_lat) && !empty($manual_lng)){
-                        echo '<div id="gmap"></div>';
+                    if (!$disable_map){
+                        if (!empty($manual_lat) && !empty($manual_lng)){
+                            echo '<div id="gmap"></div>';
+                        }
                     } ?>
                     <!--Google map section-->
 
