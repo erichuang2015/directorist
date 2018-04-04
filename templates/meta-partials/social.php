@@ -39,37 +39,7 @@ $social_info = (array_key_exists('social_info', $args)) ? $args['social_info'] :
                     <?php
                 }
 
-            } else {
-                ?>
-                <div class="row  atbdp_social_field_wrapper" id="socialID-0">
-                    <div class="col-md-3 col-sm-12">
-                        <div class="form-group">
-                            <select name="listing[social][0][id]" id="atbdp_social" class="form-control">
-                                <?php foreach (ATBDP()->helper->social_links() as $nameID => $socialName) { ?>
-                                    <option value='<?= esc_attr($nameID); ?>'> <?= esc_html($socialName); ?></option>;
-                                <?php } ?>
-                            </select>
-                        </div>
-
-                    </div>
-                    <div class="col-md-6 col-sm-12">
-                        <div class="form-group">
-                            <input type="url" name="listing[social][0][url]" id="atbdp_s_link" class="form-control directory_field atbdp_social_input"
-                                   value="" placeholder="eg. http://example.com" required="">
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-12">
-
-                        <div class="form-group">
-                            <span data-id="0" class="removeSocialField dashicons dashicons-trash"
-                                  title="Remove this item"></span>
-                            <span class="adl-move-icon dashicons dashicons-move"></span>
-                        </div>
-                    </div>
-                </div> <!--ends .row and .atbdp_social_field_wrapper-->
-                <?php
-            }
-            ?>
+            }?>
         </div> <!--    ends .social_info_sortable_container    -->
 <div class="row">
     <div class="col-md-12">

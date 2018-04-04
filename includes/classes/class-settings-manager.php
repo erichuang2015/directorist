@@ -964,7 +964,6 @@ The Administrator of ==SITE_NAME==
                     'label' => __( 'Google Map API key', ATBDP_TEXTDOMAIN ),
                     'description' => sprintf(__( 'You need to enter your google map api key in order to display google map. You can find your map api key and detailed information %s. or you can search in google', ATBDP_TEXTDOMAIN ), '<a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank"> <strong style="color: red;">here</strong> </a>'),
                     'default' => atbdp_get_option('map_api_key', 'atbdp_general'),
-                    'validation' => 'alphanumeric',
                 ),
 
                 array(
@@ -981,10 +980,40 @@ The Administrator of ==SITE_NAME==
                 array(
                     'type' => 'toggle',
                     'name' => 'disable_map',
-                    'label' => __( 'Hide Google MAP on the front-end website', ATBDP_TEXTDOMAIN ),
-                    'description' => __( 'Set it On to hide the map on the website. Set it Off, to show the map on your website ', ATBDP_TEXTDOMAIN ),
+                    'label' => __( 'Disable Google Map', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Set it ON to disable Google map on your website. If you leave it off, then you or your user can disable google map on individual listing too.', ATBDP_TEXTDOMAIN ),
                     'default' => 0,
-                    'validation' => 'numeric',
+                ),
+                array(
+                    'type' => 'toggle',
+                    'name' => 'disable_sharing',
+                    'label' => __( 'Disable Social Sharing links', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Set it ON to disable Social Sharing links on a Single Listing Details Page.', ATBDP_TEXTDOMAIN ),
+                    'default' => 0,
+                ),
+
+                array(
+                    'type' => 'toggle',
+                    'name' => 'disable_submit_listing_widget',
+                    'label' => __( 'Disable "Submit Your Item" Widget', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Set it ON to disable "Submit New Item Widget" on a Single Listing Details page.', ATBDP_TEXTDOMAIN ),
+                    'default' => 0,
+                ),
+
+                array(
+                    'type' => 'toggle',
+                    'name' => 'disable_widget_login',
+                    'label' => __( 'Disable Login Form Inside "Submit Your Item" Widget', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Set it ON to disable the Login Form inside "Submit New Item Widget" on a Single Listing Details page.', ATBDP_TEXTDOMAIN ),
+                    'default' => 0,
+                ),
+
+                array(
+                    'type' => 'toggle',
+                    'name' => 'disable_contact_info',
+                    'label' => __( 'Disable Contact Information', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Set it ON to disable Contact Information on a Single Listing Details page.', ATBDP_TEXTDOMAIN ),
+                    'default' => 0,
                 ),
 
                 array(

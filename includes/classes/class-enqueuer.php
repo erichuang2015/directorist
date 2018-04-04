@@ -40,8 +40,21 @@ class ATBDP_Enqueuer {
         global $typenow;
 
         if ( ATBDP_POST_TYPE == $typenow ) {
-            // get the map api from the user settings
-            $map_api_key = get_directorist_option('map_api_key'); // eg. zaSyBtTwA-Y_X4OMsIsc9WLs7XEqavZ3ocQLQ
+            // make a list of dependency of admin script and then add to this list some other scripts using different conditions to handle different situation.
+            $admin_scripts_dependency = array(
+                'jquery',
+                'wp-color-picker',
+                'sweetalert',
+                'select2script',
+            );
+            $disable_map = get_directorist_option('disable_map');
+            if (!$disable_map){
+                // get the map api from the user settings
+                $map_api_key = get_directorist_option('map_api_key'); // eg. zaSyBtTwA-Y_X4OMsIsc9WLs7XEqavZ3ocQLQ
+                //Google map needs to be enqueued from google server with a valid API key. So, it is not possible to store map js file locally as this file will be unique for all users based on their MAP API key.
+                wp_register_script( 'atbdp-google-map-admin', '//maps.googleapis.com/maps/api/js?key='.$map_api_key.'&libraries=places', false, ATBDP_VERSION, true );
+                $admin_scripts_dependency[] = 'atbdp-google-map-admin';
+            }
 
             //Register all styles for the admin pages
             /*Public Common Asset: */
@@ -62,17 +75,8 @@ class ATBDP_Enqueuer {
             wp_register_script( 'select2script', ATBDP_PUBLIC_ASSETS . 'js/select2.min.js', array( 'jquery' ), ATBDP_VERSION, true );
 
 
-            //Google map needs to be enqueued from google server with a valid API key. So, it is not possible to store map js file locally as this file will be unique for all users based on their MAP API key.
 
-            wp_register_script( 'atbdp-google-map-admin', '//maps.googleapis.com/maps/api/js?key='.$map_api_key.'&libraries=places', false, ATBDP_VERSION, true );
-            // make a list of dependency of admin script and then add to this list some other scripts using different conditions to handle different situation.
-            $admin_scripts_dependency = array(
-                'jquery',
-                'atbdp-google-map-admin',
-                'wp-color-picker',
-                'sweetalert',
-                'select2script',
-            );
+
 
             wp_register_script( 'atbdp-admin-script', ATBDP_ADMIN_ASSETS . 'js/main.js', $admin_scripts_dependency , ATBDP_VERSION, true );
 
@@ -94,7 +98,7 @@ class ATBDP_Enqueuer {
             /* Enqueue all scripts */
             //wp_enqueue_script('atbdp-bootstrap'); // maybe we do not need the bootstrap js in the admin panel at the moment.
             wp_enqueue_script('sweetalert');
-            wp_enqueue_script('atbdp-google-map-admin');
+            if (!$disable_map){ wp_enqueue_script('atbdp-google-map-admin'); }
             wp_enqueue_script('select2script');
             wp_enqueue_script('atbdp-admin-script');
 
@@ -133,8 +137,15 @@ class ATBDP_Enqueuer {
      */
     public function front_end_enqueue_scripts($force=false) {
         global $typenow, $post;
-        // get the map api key from the user settings
-        $map_api_key = get_directorist_option('map_api_key', null); // eg. zaSyBtTwA-Y_X4OMsIsc9WLs7XEqavZ3ocQLQ
+        $front_scripts_dependency = array('jquery',);
+        $disable_map = get_directorist_option('disable_map');
+        if (!$disable_map){
+            // get the map api from the user settings
+            $map_api_key = get_directorist_option('map_api_key'); // eg. zaSyBtTwA-Y_X4OMsIsc9WLs7XEqavZ3ocQLQ
+            //Google map needs to be enqueued from google server with a valid API key. So, it is not possible to store map js file locally as this file will be unique for all users based on their MAP API key.
+            wp_register_script( 'atbdp-google-map-front', '//maps.googleapis.com/maps/api/js?key='.$map_api_key.'&libraries=places', false, ATBDP_VERSION, true );
+            $front_scripts_dependency[] = 'atbdp-google-map-front';
+        }
         // Registration of all styles and js for the front end should be done here
         // but the inclusion should be limited to the scope of the page user viewing.
         // This way,  we can just enqueue any styles and scripts in side the shortcode or any other functions.
@@ -166,7 +177,7 @@ class ATBDP_Enqueuer {
 
 
 
-        wp_register_script( 'atbdp-google-map-front', '//maps.googleapis.com/maps/api/js?key='.$map_api_key.'&libraries=places', false, ATBDP_VERSION, true );
+
 
 
         wp_register_script( 'atbdp-user-dashboard', ATBDP_PUBLIC_ASSETS . 'js/user-dashboard.js', array( 'jquery' ), ATBDP_VERSION, true );
@@ -189,7 +200,7 @@ class ATBDP_Enqueuer {
         /* Enqueue all scripts */
         wp_enqueue_script('atbdp-bootstrap-script');
         wp_enqueue_script('atbdp-rating');
-        wp_enqueue_script('atbdp-google-map-front');
+        if (!$disable_map) { wp_enqueue_script('atbdp-google-map-front'); }
         wp_enqueue_script('atbdp-uikit');
         wp_enqueue_script('atbdp-uikit-grid');
 
@@ -211,10 +222,7 @@ class ATBDP_Enqueuer {
         if ( (is_object($post) && ATBDP_POST_TYPE == $post->post_type) || $force) {
             wp_enqueue_style('sweetalertcss' );
             wp_enqueue_script('sweetalert' );
-            wp_enqueue_script( 'atbdp-public-script', ATBDP_PUBLIC_ASSETS . 'js/main.js', array(
-                'jquery',
-                'atbdp-google-map-front',
-            ), ATBDP_VERSION, true );
+            wp_enqueue_script( 'atbdp-public-script', ATBDP_PUBLIC_ASSETS . 'js/main.js', apply_filters('atbdp_front_script_dependency', $front_scripts_dependency), ATBDP_VERSION, true );
 
             wp_localize_script( 'atbdp-public-script', 'atbdp_public_data', $data );
             wp_enqueue_style('wp-color-picker');

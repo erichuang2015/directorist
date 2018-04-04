@@ -16,6 +16,7 @@ $info_content .= "<p> {$ad}</p></div>";
 // grab social information
 $social_info = !empty( $social ) ? $social : array();
 $map_zoom_level = get_directorist_option('map_zoom_level', 16);
+$disable_map = get_directorist_option('disable_map');
 
 ?>
 <div class="directorist directory_wrapper">
@@ -108,50 +109,60 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
 
 
 
+                    <?php if (!$disable_map) { ?>
 
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="cor-wrap">
-                                <input type="checkbox" name="listing[manual_coordinate]" value="1" id="manual_coordinate" <?= (!empty($manual_coordinate)) ? 'checked':''; ?> >
-                            <label for="manual_coordinate"> <?php _e('Enter Coordinates ( latitude and longitude) Manually ? or set the marker on the map anywhere by clicking on the map', ATBDP_TEXTDOMAIN); ?> </label>
-                            </div>
-                        </div>
-
-                        <div id="hide_if_no_manual_cor">
-
-                            <div class="col-md-5 col-sm-12 v_middle">
-                               <div class="form-group">
-                                   <label for="manual_lat"> <?php _e('Latitude', ATBDP_TEXTDOMAIN); ?>  </label>
-                                   <input type="text" name="listing[manual_lat]" id="manual_lat" value="<?= (!empty($manual_lat)) ? $manual_lat : '' ?>" class="form-control directory_field" placeholder="Enter Latitude eg. 24.89904"/>
-                               </div>
-                            </div>
-                            <div class="col-md-5 col-sm-12 v_middle">
-                                <div class="form-group">
-                                    <label for="manual_lng"> <?php _e('Longitude', ATBDP_TEXTDOMAIN); ?> </label>
-                                    <input type="text" name="listing[manual_lng]" id="manual_lng" value="<?= (!empty($manual_lng)) ? $manual_lng : '' ?>" class="form-control directory_field" placeholder="Enter Longitude eg. 91.87198"/>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="cor-wrap">
+                                    <input type="checkbox" name="listing[manual_coordinate]" value="1"
+                                           id="manual_coordinate" <?= (!empty($manual_coordinate)) ? 'checked' : ''; ?> >
+                                    <label for="manual_coordinate"> <?php _e('Enter Coordinates ( latitude and longitude) Manually ? or set the marker on the map anywhere by clicking on the map', ATBDP_TEXTDOMAIN); ?> </label>
                                 </div>
                             </div>
-                            <div class="col-md-2 col-sm-12 v_middle">
-                                <div class="lat_btn_wrap">
-                                <button class="btn btn-default btn-sm" id="generate_admin_map"><?php _e('Generate on Map', ATBDP_TEXTDOMAIN); ?></button>
+
+                            <div id="hide_if_no_manual_cor">
+
+                                <div class="col-md-5 col-sm-12 v_middle">
+                                    <div class="form-group">
+                                        <label for="manual_lat"> <?php _e('Latitude', ATBDP_TEXTDOMAIN); ?>  </label>
+                                        <input type="text" name="listing[manual_lat]" id="manual_lat"
+                                               value="<?= (!empty($manual_lat)) ? $manual_lat : '' ?>"
+                                               class="form-control directory_field"
+                                               placeholder="Enter Latitude eg. 24.89904"/>
+                                    </div>
                                 </div>
-                            </div> <!-- ends #hide_if_no_manual_cor-->
+                                <div class="col-md-5 col-sm-12 v_middle">
+                                    <div class="form-group">
+                                        <label for="manual_lng"> <?php _e('Longitude', ATBDP_TEXTDOMAIN); ?> </label>
+                                        <input type="text" name="listing[manual_lng]" id="manual_lng"
+                                               value="<?= (!empty($manual_lng)) ? $manual_lng : '' ?>"
+                                               class="form-control directory_field"
+                                               placeholder="Enter Longitude eg. 91.87198"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-12 v_middle">
+                                    <div class="lat_btn_wrap">
+                                        <button class="btn btn-default btn-sm"
+                                                id="generate_admin_map"><?php _e('Generate on Map', ATBDP_TEXTDOMAIN); ?></button>
+                                    </div>
+                                </div> <!-- ends #hide_if_no_manual_cor-->
 
 
-                        </div> <!--ends #hide_if_no_manual_cor -->
-                    </div> <!--ends .row-->
+                            </div> <!--ends #hide_if_no_manual_cor -->
+                        </div> <!--ends .row-->
 
 
-                    <!--Google map will be generated here using js-->
-                    <div class="map_wrapper">
-                        <div id="floating-panel">
-                            <button class="btn btn-danger" id="delete_marker"> <?php _e('Delete Marker', ATBDP_TEXTDOMAIN); ?></button>
+                               <!--Google map will be generated here using js-->
+                        <div class="map_wrapper">
+                            <div id="floating-panel">
+                                <button class="btn btn-danger"
+                                        id="delete_marker"> <?php _e('Delete Marker', ATBDP_TEXTDOMAIN); ?></button>
+                            </div>
+
+                            <div id="gmap"></div>
                         </div>
 
-                        <div id="gmap"></div>
-                    </div>
-
-                    <?php
+                        <?php
                         /**
                          * It fires after the google map preview area
                          * @param string $type Page type.
@@ -159,6 +170,7 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
                          * @since 1.1.1
                          **/
                         do_action('atbdp_edit_after_googlemap_preview', 'add_listing_page_backend', $args['listing_info']);
+                    }
                     ?>
                 </div><!--ends add_listing_form_wrapper-->
 
@@ -172,6 +184,8 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
     // as supplied by the browser's 'navigator.geolocation' object.
 
     jQuery(document).ready(function ($) {
+        <?php if (!$disable_map) { ?>
+
         // initialize all vars here to avoid hoisting related misunderstanding.
         var placeSearch, map, autocomplete, address_input, markers, info_window, $manual_lat, $manual_lng, saved_lat_lng, info_content;
          $manual_lat = $('#manual_lat');
@@ -359,6 +373,7 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
             }
             markers = [];
         }
+        <?php } ?>
 
 
 

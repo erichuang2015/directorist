@@ -36,7 +36,11 @@ $info_content .= $image ; // add the image if available
 $info_content .= "<address> {$ad} </address>";
 $info_content .= "<a href='http://www.google.com/maps/place/{$manual_lat},{$manual_lng}' target='_blank'> ".__('View On Google Maps', ATBDP_TEXTDOMAIN)."</a></div>";
 $map_zoom_level = get_directorist_option('map_zoom_level', 16);
-$disable_map = get_directorist_option('disable_map');
+$disable_map = get_directorist_option('disable_map', 0);
+$disable_sharing = get_directorist_option('disable_sharing', 0);
+$disable_s_widget = get_directorist_option('disable_submit_listing_widget', 0);
+$disable_widget_login = get_directorist_option('disable_widget_login', 0);
+$disable_contact_info = get_directorist_option('disable_contact_info', 0);
 
 ?>
 
@@ -106,23 +110,36 @@ $disable_map = get_directorist_option('disable_map');
                             <div class="about_detail">
                                 <?php echo wp_kses($post->post_content, wp_kses_allowed_html('post')); ?>
                             </div>
-
+                        <?php if (!$disable_sharing) { ?>
                             <div class="director_social_wrap">
-                                <!--@todo; add settings to Enable or disable listing sharing....-->
                                 <p><?php _e('Share this post',ATBDP_TEXTDOMAIN); ?></p>
                                 <ul>
+                                    <li>
+                                        <a href="https://www.facebook.com/share.php?u=<?php echo
+                                        get_the_permalink(); ?>&title=<?php echo get_the_title(); ?>"
+                                           target="_blank">
+                                            <span class="fa fa-facebook"></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="http://twitter.com/intent/tweet?status=<?php echo get_the_title(); ?>+<?php echo get_the_permalink(); ?>" target="_blank">
+                                            <span class="fa fa-twitter"></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a  href="https://plus.google.com/share?url=<?php echo get_the_permalink(); ?>" target="_blank">
+                                            <span class="fa fa-google-plus"></span>
+                                        </a>
+                                    </li>
 
-
-                                    <li><a href="https://www.facebook.com/share.php?u=<?php echo
-                                        get_the_permalink(); ?>&title=<?php echo get_the_title(); ?>" target="_blank"><span class="fa fa-facebook"></span></a></li>
-
-                                    <li><a href="http://twitter.com/intent/tweet?status=<?php echo get_the_title(); ?>+<?php echo get_the_permalink(); ?>" target="_blank"><span class="fa fa-twitter"></span></a></li>
-                                    <li><a  href="https://plus.google.com/share?url=<?php echo get_the_permalink(); ?>" target="_blank"><span class="fa fa-google-plus"></span></a></li>
-
-                                    <li><a href="http://www.linkedin.com/shareArticle?mini=true&url=<?php echo get_the_permalink(); ?>&title=<?php echo get_the_title(); ?>" target="_blank"><span class="fa fa-linkedin"></span></a></li>
-
+                                    <li>
+                                        <a href="http://www.linkedin.com/shareArticle?mini=true&url=<?php echo get_the_permalink(); ?>&title=<?php echo get_the_title(); ?>" target="_blank">
+                                            <span class="fa fa-linkedin"></span>
+                                        </a>
+                                    </li>
                                 </ul>
-                            </div>
+                            </div> <!--Ends social share-->
+                            <?php } ?>
                         </div>
                     </div>
                     <?php
@@ -149,7 +166,9 @@ $disable_map = get_directorist_option('disable_map');
                         </div> <!--ends. .col-md-5-->
 
                         <div class="col-md-7">
-                            <?php } ?><!-- Contact Information section-->
+                            <?php }
+                            if (!$disable_contact_info) {
+                            ?><!-- Contact Information section-->
                             <div class="directory_contact_area">
                                 <div class="directory_are_title">
                                     <h4><span class="fa fa-envelope-o"></span><?php _e('Contact Information', ATBDP_TEXTDOMAIN); ?></h4>
@@ -189,6 +208,7 @@ $disable_map = get_directorist_option('disable_map');
                                     </div>
                                 <?php } ?>
                             </div>  <!--ends .directory_contact_area -->
+                            <?php } ?>
                             <!--We need to close the row and col div when we have business hour enabled. We used negative checking so that they can show by default if the setting is not set by the user after adding the plugin.-->
                             <?php if ( is_business_hour_active() && $enable_bh_on_page && (!is_empty_v($business_hours) || !empty($enable247hour)) ) {
                             ?>
@@ -198,10 +218,8 @@ $disable_map = get_directorist_option('disable_map');
 
                     <?php
                     /*@todo; add a settings to toggle the display of map for individual listing or all listings.*/
-                    if (!$disable_map){
-                        if (!empty($manual_lat) && !empty($manual_lng)){
+                    if (!$disable_map && (!empty($manual_lat) && !empty($manual_lng)) ){
                             echo '<div id="gmap"></div>';
-                        }
                     } ?>
                     <!--Google map section-->
 
@@ -237,8 +255,9 @@ $disable_map = get_directorist_option('disable_map');
                 </div>
 
 
-
-
+                <?php if (!$disable_s_widget){  ?>
+                <!--@todo; Maybe we can let user decide to use side bar or full screen listing without sidebar-->
+                <!--For now let user hide the default widget below and later let the user choose whether he wants to use sidebar or not at all.-->
                 <!--SIDE BAR -->
                 <div class="col-md-4 col-sm-4">
                     <div class="directory_user_area">
@@ -250,38 +269,36 @@ $disable_map = get_directorist_option('disable_map');
                             <a href="<?= esc_url(ATBDP_Permalink::get_add_listing_page_link()); ?>" class="<?= atbdp_directorist_button_classes(); ?>"><?php _e('Submit New Listing', ATBDP_TEXTDOMAIN); ?></a>
 
                             <?php
-                            atbdp_after_new_listing_button(); // fires an empty action to let dev extend by adding anything here
-                            if (!is_user_logged_in()){
-                                wp_login_form();
-                                wp_register();
+                            if (!$disable_widget_login) {
+                                atbdp_after_new_listing_button(); // fires an empty action to let dev extend by adding anything here
+                                if (!is_user_logged_in()) {
+                                    wp_login_form();
+                                    wp_register();
+                                }
+                                /**
+                                 * Fires after the side bar login from is rendered on single listing page
+                                 *
+                                 *
+                                 * @since 1.0.0
+                                 *
+                                 * @param object|WP_post $post The current post object which is our listing post
+                                 * @param array $listing_info The meta information of the current listing
+                                 */
+
+                                do_action('atbdp_after_sidebar_login_form', $post, $listing_info);
                             }
                             ?>
-                        </div>
-                    </div> <!--ends . directory_user_area-->
-
-
-                    <?php
-                    /**
-                     * Fires after the side bar login from is rendered on single listing page
-                     *
-                     *
-                     * @since 1.0.0
-                     *
-                     * @param object|WP_post $post The current post object which is our listing post
-                     * @param array $listing_info The meta information of the current listing
-                     */
-
-                    do_action('atbdp_after_sidebar_login_form', $post, $listing_info);
-
-                    ?>
+                        </div> <!--ends .directory_user_area_form-->
+                    </div> <!--ends .directory_user_area-->
 
                 </div> <!--ends .col-md-4 col-sm-4-->
+            <?php } ?>
 
 
             <?php
             include ATBDP_TEMPLATES_DIR.'sidebar-listing.php';
             ?>
-        </div>
+        </div> <!--ends .row-->
 </section>
 
 <script>
@@ -289,7 +306,7 @@ $disable_map = get_directorist_option('disable_map');
     jQuery(document).ready(function ($) {
 
         // show map if lat long is NOT empty
-        <?php if (!empty($manual_lat) && !empty($manual_lng)){ ?>
+        <?php if (!$disable_map && (!empty($manual_lat) && !empty($manual_lng))){ ?>
         // initialize all vars here to avoid hoisting related misunderstanding.
         var  map, info_window, saved_lat_lng, info_content;
         saved_lat_lng = {lat:<?= (!empty($manual_lat)) ? floatval($manual_lat) : false ?>, lng: <?= (!empty($manual_lng)) ? floatval($manual_lng) : false ?> }; // default is London city
@@ -321,14 +338,12 @@ $disable_map = get_directorist_option('disable_map');
 
 
         initMap();
-        <?php } ?>
-
-
         //Convert address tags to google map links -
         $('address').each(function () {
             var link = "<a href='http://maps.google.com/maps?q=" + encodeURIComponent( $(this).text() ) + "' target='_blank'>" + $(this).text() + "</a>";
             $(this).html(link);
         });
+        <?php } ?>
 
     }); // ends jquery ready function.
 

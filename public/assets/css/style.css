@@ -1851,11 +1851,13 @@ span.remove_image {
 /*Ajax loading */
 .atbdp_ajax_loading {
 	background: url("../images/spinner-2x.gif") no-repeat center center;
-	padding-left: 10px;
 	display: inline-block;
 	background-size: cover;
 	min-height: 35px;
 	min-width: 35px;
+	position: relative;
+	top: 14px;
+	left: 5px;
 }
 
 /* select 2 customize */

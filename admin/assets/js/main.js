@@ -48,7 +48,7 @@
         });
         // now add the new elements. we could do it here without using ajax but it would require more markup here.
         atbdp_do_ajax( iconBindingElement, 'atbdp_social_info_handler', ID, function(data){
-            $("#social_info_sortable_container").append(data);
+            $s_wrap.append(data);
         });
     });
 

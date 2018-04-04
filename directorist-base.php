@@ -714,7 +714,7 @@ final class Directorist_Base {
      */
     public function show_review($post)
     {
-        $enable_review = get_directorist_option('enable_review');
+        $enable_review = get_directorist_option('enable_review', 1);
         if (!$enable_review ) return; // vail if review is not enabled
         $enable_owner_review = get_directorist_option('enable_owner_review');
         $review_num = get_directorist_option('review_num', 5); // how many reviews to show?
