@@ -239,15 +239,16 @@ class ATBDP_Enqueuer {
         wp_register_script( 'sweetalert', ATBDP_ADMIN_ASSETS . 'js/sweetalert.min.js', array( 'jquery' ), ATBDP_VERSION, true );
         wp_enqueue_style('sweetalertcss');
         wp_enqueue_script('atbdp-bootstrap-script');
-
-        wp_register_script('atbdp_add_listing_js', ATBDP_PUBLIC_ASSETS . 'js/add-listing.js', array(
+        $dependency = array(
             'jquery',
             'atbdp-rating',
-            'atbdp-google-map-front',
             'sweetalert',
             'jquery-ui-sortable',
             'select2script'
-        ), ATBDP_VERSION, true );
+        );
+        $disable_map = get_directorist_option('disable_map');
+        if (!$disable_map){ $disable_map[]= 'atbdp-google-map-front'; }
+        wp_register_script('atbdp_add_listing_js', ATBDP_PUBLIC_ASSETS . 'js/add-listing.js', $dependency, ATBDP_VERSION, true );
         wp_enqueue_script('atbdp_add_listing_js');
 
         // Internationalization text for javascript file especially add-listing.js

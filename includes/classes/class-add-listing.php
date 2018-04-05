@@ -38,8 +38,8 @@ if (!class_exists('ATBDP_Add_Listing')):
         {
             // show the attachment of the current users only
             add_filter( 'ajax_query_attachments_args', array($this, 'show_current_user_attachments'), 10, 1 );
-            add_action ('wp_loaded', array($this, 'add_listing_to_db'));
-            add_action('parse_query', array($this, 'parse_query')); // do stuff likes editing, renewing, favorite etc in this hook
+            add_action ('wp_loaded', array($this, 'add_listing_to_db'));/*@todo; check if it is better to use init hook instead of wp_loaded*/
+            add_action('parse_query', array($this, 'parse_query')); // do stuff likes adding, editing, renewing, favorite etc in this hook
 
         }
 
@@ -69,37 +69,30 @@ if (!class_exists('ATBDP_Add_Listing')):
                 // add listing form has been submitted
                 if (ATBDP()->helper->verify_nonce($this->nonce, $this->nonce_action )) {
                     // we have data and passed the security
-                    $is_new_listing = true;
-                    $is_edit_listing = false;
-                    $new_l_status = get_directorist_option('new_listing_status', 'publish');
-                    $edit_l_status = get_directorist_option('edit_listing_status', 'publish');
                     // we not need to sanitize post vars to be saved to the database,
                     // because wp_insert_post() does this inside that like : $postarr = sanitize_post($postarr, 'db');;
                     $title= !empty($_POST['listing_title']) ? sanitize_text_field($_POST['listing_title']) : '';
+                    $price= !empty($_POST['price']) ? sanitize_text_field($_POST['price']) : '';
                     $content = !empty($_POST['listing_content']) ? wp_kses($_POST['listing_content'], wp_kses_allowed_html('post')) : '';
-
                     $info= (!empty($_POST['listing'])) ? aazztech_enc_serialize($_POST['listing']) : aazztech_enc_serialize( array() );
-
-                    $excerpt = !empty($_POST['listing']['excerpt']) ? sanitize_textarea_field($_POST['listing']['excerpt']) : '';
                     $args = array(
                         'post_content' => $content,
                         'post_title' => $title,
-                        'post_excerpt' => $excerpt,
-                        'post_status' => $new_l_status,
                         'post_type' => ATBDP_POST_TYPE,
                         'tax_input' =>!empty($_POST['tax_input'])? atbdp_sanitize_array( $_POST['tax_input'] ) : array(),
-                        'meta_input'=>  array('_listing_info'=>$info,),
+                        'meta_input'=>  array('_listing_info'=>$info,'_price'=>$price),
 
                     );
 
 
                     // is it update post ? @todo; change listing_id to atbdp_listing_id later for consistency with rewrite tags
                     if (!empty($_POST['listing_id'])){
-                        $is_new_listing = false;
-                        $is_edit_listing = true;
+                        $edit_l_status = get_directorist_option('edit_listing_status');
                         // update the post
                         $args['ID']= absint($_POST['listing_id']); // set the ID of the post to update the post
-                        $args['post_status']= $edit_l_status; // set the status of edit listing.
+                        if (!empty($edit_l_status)){
+                            $args['post_status']= $edit_l_status; // set the status of edit listing.
+                        }
                         // Check if the current user is the owner of the post
                         $post = get_post($args['ID']);
                         // update the post if the current user own the listing he is trying to edit. or we and give access to the editor or the admin of the post.
@@ -164,21 +157,22 @@ if (!class_exists('ATBDP_Add_Listing')):
                     }else{
                         // the post is a new post, so insert it as new post.
                         if (current_user_can('publish_at_biz_dirs')){
+                            $new_l_status = get_directorist_option('new_listing_status', 'publish');
+                            $args['post_status'] = $new_l_status;
                             $post_id = wp_insert_post($args);
                             do_action('atbdp_listing_inserted', $post_id);
 
                             //Every post with the published status should contain all the post meta keys so that we can include them in query.
-                            if ($is_new_listing){
-                                if ('publish' == $new_l_status) {
-                                    $expire_in_days = get_directorist_option('listing_expire_in_days');
-                                    $never_expire =empty($expire_in_days) ? 1 : 0;
-                                    $exp_dt = calc_listing_expiry_date();
-                                    update_post_meta( $post_id, '_expiry_date', $exp_dt );
-                                    update_post_meta( $post_id, '_never_expire', $never_expire );
-                                    update_post_meta( $post_id, '_featured', 0 );
-                                    update_post_meta( $post_id, '_listing_status', 'post_status' );
-                                }
+                            if ('publish' == $new_l_status) {
+                                $expire_in_days = get_directorist_option('listing_expire_in_days');
+                                $never_expire =empty($expire_in_days) ? 1 : 0;
+                                $exp_dt = calc_listing_expiry_date();
+                                update_post_meta( $post_id, '_expiry_date', $exp_dt );
+                                update_post_meta( $post_id, '_never_expire', $never_expire );
+                                update_post_meta( $post_id, '_featured', 0 );
+                                update_post_meta( $post_id, '_listing_status', 'post_status' );
                             }
+
                         }
                     }
 

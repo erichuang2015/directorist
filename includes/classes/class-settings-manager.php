@@ -1259,7 +1259,7 @@ The Administrator of ==SITE_NAME==
                     array(
                         'type' => 'select',
                         'name' => 'new_listing_status',
-                        'label' => __( 'New Listing\'s Default Status', ATBDP_TEXTDOMAIN ),
+                        'label' => __( 'New Listing\'s Default status', ATBDP_TEXTDOMAIN ),
                         'items' => array(
                             array(
                                 'value' => 'publish',
@@ -1270,7 +1270,7 @@ The Administrator of ==SITE_NAME==
                                 'label' => __('Pending', ATBDP_TEXTDOMAIN),
                             ),
                         ),
-                        'description' => __( 'Select the Default Listing Status for new listing', ATBDP_TEXTDOMAIN ),
+                        'description' => __( 'Choose the Default Listing Status for a new listing when a user submits it from the Front End', ATBDP_TEXTDOMAIN ),
 
                         'default' => array(
                             'value' => 'publish',
@@ -1291,7 +1291,7 @@ The Administrator of ==SITE_NAME==
                                 'label' => __('Pending', ATBDP_TEXTDOMAIN),
                             ),
                         ),
-                        'description' => __( 'Select the Default Listing Status for Edited listing', ATBDP_TEXTDOMAIN ),
+                        'description' => __( 'Select the Default Listing Status for Edited listing when a user edits it on the front end.', ATBDP_TEXTDOMAIN ),
 
                         'default' => array(
                             'value' => 'publish',

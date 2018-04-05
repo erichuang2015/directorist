@@ -314,7 +314,6 @@ li.vp-current a.vp-js-menu-dropdown.vp-menu-dropdown {
     color: red;
 }
 
-/*Ajax Loader*/
 /*Ajax loading */
 .atbdp_ajax_loading {
 	background: url("../images/spinner-2x.gif") no-repeat center center;
@@ -325,4 +324,10 @@ li.vp-current a.vp-js-menu-dropdown.vp-menu-dropdown {
     position: relative;
     top: 14px;
     left: 5px;
+}
+/*Contact Information*/
+#poststuff h2.directorist_contact_form_title {
+	font-weight: 700;
+	font-size: 18px;
+	text-align: center;
 }

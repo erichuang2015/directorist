@@ -124,6 +124,7 @@ class ATBDP_Metabox {
         // if the posted data has info about never_expire, then use it, otherwise, use the data from the settings.
         $never_expire = !empty($p['never_expire']) ? (int) $p['never_expire'] : (empty($expire_in_days) ? 1 : 0);
         $featured = !empty($p['featured'])? (int) $p['featured'] : 0;
+        $price = !empty($p['price'])? (int) $p['price'] : 0;
         $listing_status = !empty($p['listing_status'])? sanitize_text_field($p['listing_status']) : 'post_status';
         $listing_info = (!empty($p['listing'])) ? aazztech_enc_serialize($p['listing']) : aazztech_enc_serialize(array());
         //prepare expiry date, if we receive complete expire date from the submitted post, then use it, else use the default data
@@ -146,6 +147,7 @@ class ATBDP_Metabox {
         update_post_meta( $post_id, '_never_expire', $never_expire );
         update_post_meta( $post_id, '_featured', $featured );
         update_post_meta( $post_id, '_listing_status', $listing_status );
+        update_post_meta( $post_id, '_price', $price );
 
 
     }

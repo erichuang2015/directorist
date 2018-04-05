@@ -1,5 +1,6 @@
 <?php
 $lf= get_post_meta($post->ID, '_listing_info', true);
+$price= get_post_meta($post->ID, '_price', true);
 $listing_info = (!empty($lf))? aazztech_enc_unserialize($lf) : array();
 $attachment_ids= (!empty($listing_info['attachment_id'])) ? $listing_info['attachment_id'] : array();
 
@@ -23,6 +24,7 @@ $bdbh_settings = !empty($listing_info['bdbh_settings']) ? extract(atbdp_sanitize
 
 $manual_lat = (!empty($manual_lat)) ? floatval($manual_lat) : false;
 $manual_lng = (!empty($manual_lng)) ? floatval($manual_lng) : false;
+$hide_contact_info = !empty($hide_contact_info) ? $hide_contact_info : false;
 
 /*INFO WINDOW CONTENT*/
 $t = get_the_title();
@@ -69,8 +71,10 @@ $disable_contact_info = get_directorist_option('disable_contact_info', 0);
                         <?php } ?>
                         <div class="listing_detail">
                             <div class="listing_title">
-                                <h2><?php esc_html_e($post->post_title); ?></h2>
+                                <h2><?php esc_html_e($post->post_title); ?> </h2>
                                 <p class="sub_title"><?= (!empty($tagline)) ? esc_html(stripslashes($tagline)) : ''; ?></p>
+                                <?php echo !empty($price) ? sprintf("<p class='listing_price'>%s: %s</p>", __('Price', ATBDP_TEXTDOMAIN),$price ): '' ; ?>
+                                <!--@todo: style the price and Add the Currency Symbol or letter, Show the price in the search and all listing pages, and dashboard-->
                             </div>
                             <?php
                             /**
@@ -167,7 +171,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info', 0);
 
                         <div class="col-md-7">
                             <?php }
-                            if (!$disable_contact_info) {
+                            if (!$disable_contact_info || !$hide_contact_info) {
                             ?><!-- Contact Information section-->
                             <div class="directory_contact_area">
                                 <div class="directory_are_title">
@@ -218,7 +222,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info', 0);
 
                     <?php
                     /*@todo; add a settings to toggle the display of map for individual listing or all listings.*/
-                    if (!$disable_map && (!empty($manual_lat) && !empty($manual_lng)) ){
+                    if (!$disable_map || (!empty($manual_lat) && !empty($manual_lng)) ){
                             echo '<div id="gmap"></div>';
                     } ?>
                     <!--Google map section-->
@@ -305,8 +309,8 @@ $disable_contact_info = get_directorist_option('disable_contact_info', 0);
 
     jQuery(document).ready(function ($) {
 
-        // show map if lat long is NOT empty
-        <?php if (!$disable_map && (!empty($manual_lat) && !empty($manual_lng))){ ?>
+        // Do not show map if lat long is empty or map is globally disabled.
+        <?php if (!$disable_map || (!empty($manual_lat) && !empty($manual_lng))){ ?>
         // initialize all vars here to avoid hoisting related misunderstanding.
         var  map, info_window, saved_lat_lng, info_content;
         saved_lat_lng = {lat:<?= (!empty($manual_lat)) ? floatval($manual_lat) : false ?>, lng: <?= (!empty($manual_lng)) ? floatval($manual_lng) : false ?> }; // default is London city
@@ -315,7 +319,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info', 0);
         // create an info window for map
         info_window = new google.maps.InfoWindow({
             content: info_content,
-            maxWidth: 400
+            maxWidth: 400/*Add configuration for max width*/
         });
 
 

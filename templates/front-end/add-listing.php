@@ -10,6 +10,7 @@ if (!empty($id)) {
         return;
     }
     $lf= get_post_meta($p_id, '_listing_info', true);
+    $price= get_post_meta($p_id, '_price', true);
     $listing_info = (!empty($lf))? aazztech_enc_unserialize($lf) : array();
 
     extract($listing_info);
@@ -106,12 +107,12 @@ $disable_map = get_directorist_option('disable_map');
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <label for="atbd_excerpt"><?php esc_html_e('Tag-line/Motto', ATBDP_TEXTDOMAIN); ?></label>
+                                <label for="atbdp_excerpt"><?php esc_html_e('Tag-line/Motto', ATBDP_TEXTDOMAIN); ?></label>
                                 <input type="text" name="listing[tagline]" value="<?= !empty($tagline) ? esc_attr($tagline): ''; ?>" class="form-control directory_field" placeholder="<?= __('Your Organization\'s motto or tag-line', ATBDP_TEXTDOMAIN); ?>"/>
                             </div>
                             <div class="form-group">
-                                <label for="atbd_excerpt"><?php esc_html_e('Short Description/Excerpt:', ATBDP_TEXTDOMAIN) ?></label>
-                                <textarea name="listing[excerpt]" id="atbd_excerpt"  class="form-control directory_field" cols="30" rows="5" placeholder="<?= __('Short Description or Excerpt', ATBDP_TEXTDOMAIN); ?>"> <?= !empty($excerpt) ? esc_textarea( stripslashes($excerpt)) : ''; ?> </textarea>
+                                <label for="atbdp_excerpt"><?php esc_html_e('Short Description/Excerpt:', ATBDP_TEXTDOMAIN) ?></label>
+                                <textarea name="listing[excerpt]" id="atbdp_excerpt"  class="form-control directory_field" cols="30" rows="5" placeholder="<?= __('Short Description or Excerpt', ATBDP_TEXTDOMAIN); ?>"> <?= !empty($excerpt) ? esc_textarea( stripslashes($excerpt)) : ''; ?> </textarea>
                             </div>
 
                         </div>
@@ -185,41 +186,56 @@ $disable_map = get_directorist_option('disable_map');
                                     <?php } ?>
                                 </select>
                             </div>
+
+                            <div class="form-group">
+                                <!--@todo; Add currency Name near price-->
+                                <label for="price"><?php esc_html_e('Price ( Optional---Leave it blank to hide it)', ATBDP_TEXTDOMAIN) ?></label>
+                                <input type="text" id="price" name="price" value="<?= !empty($price) ? esc_attr($price): ''; ?>" class="form-control directory_field" placeholder="<?= __('Price of this listing. Eg. 100', ATBDP_TEXTDOMAIN); ?>"/>
+                            </div>
                         </div>
                     </div>
 
+                    <div class="directorist-contact-fields">
+                        <div class="row">
+                            <!-- MAP or ADDRESS related information starts here -->
+                            <div class="col-sm-12">
+                                <h2 class="directorist_contact_form_title">Contact Information</h2>
+                                <div class="form-check">
+                                    <input type="checkbox" name="listing[hide_contact_info]" class="form-check-input" id="hide_contact_info" value="1" <?php if(!empty($hide_contact_info) ) {checked($hide_contact_info); } ?> >
+                                    <label class="form-check-label" for="hide_contact_info"><?php esc_html_e('Check it to hide Contact Information for this listing', ATBDP_TEXTDOMAIN); ?></label>
 
-                    <div class="row">
-                        <!-- MAP or ADDRESS related information starts here -->
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="address"><?php esc_html_e('Address:', ATBDP_TEXTDOMAIN); ?></label>
-                                <input type="text" name="listing[address]" id="address" value="<?= !empty($address) ? esc_attr($address): ''; ?>" class="form-control directory_field" placeholder="<?= __('Listing address eg. Houghton Street London WC2A 2AE UK', ATBDP_TEXTDOMAIN); ?>"/>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="atbdp_phone_number"><?php esc_html_e('Phone Number:', ATBDP_TEXTDOMAIN); ?></label>
-                                <input type="tel" name="listing[phone][]" id="atbdp_phone_number" value="<?= !empty($phone[0]) ? esc_attr($phone[0]): ''; ?>" class="form-control directory_field" placeholder="Phone Number"/>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="address"><?php esc_html_e('Address:', ATBDP_TEXTDOMAIN); ?></label>
+                                    <input type="text" name="listing[address]" id="address" value="<?= !empty($address) ? esc_attr($address): ''; ?>" class="form-control directory_field" placeholder="<?= __('Listing address eg. Houghton Street London WC2A 2AE UK', ATBDP_TEXTDOMAIN); ?>"/>
+                                </div>
                             </div>
 
-                        </div>
-                        <div class="col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label for="atbdp_email"><?php esc_html_e('Email:', ATBDP_TEXTDOMAIN); ?></label>
-                                <input type="email" name="listing[email]" id="atbdp_email" value="<?= !empty( $email ) ? esc_attr($email) : ''; ?>" class="form-control directory_field" placeholder="Enter Email"/>
-                            </div>
-                        </div>
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="atbdp_phone_number"><?php esc_html_e('Phone Number:', ATBDP_TEXTDOMAIN); ?></label>
+                                    <input type="tel" name="listing[phone][]" id="atbdp_phone_number" value="<?= !empty($phone[0]) ? esc_attr($phone[0]): ''; ?>" class="form-control directory_field" placeholder="<?php esc_attr_e('Phone Number', ATBDP_TEXTDOMAIN); ?>"/>
+                                </div>
 
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="atbdp_website"><?php esc_html_e('Website:', ATBDP_TEXTDOMAIN); ?></label>
-
-                                <input type="text" id="atbdp_website" name="listing[website]" value="<?= !empty( $website ) ? esc_url($website) : ''; ?>" class="form-control directory_field" placeholder="Listing website eg. http://example.com"/>
                             </div>
-                        </div>
-                    </div> <!--ends .row-->
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="atbdp_email"><?php esc_html_e('Email:', ATBDP_TEXTDOMAIN); ?></label>
+                                    <input type="email" name="listing[email]" id="atbdp_email" value="<?= !empty( $email ) ? esc_attr($email) : ''; ?>" class="form-control directory_field" placeholder="<?php esc_attr_e('Enter Email', ATBDP_TEXTDOMAIN); ?>"/>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="atbdp_website"><?php esc_html_e('Website:', ATBDP_TEXTDOMAIN); ?></label>
+
+                                    <input type="text" id="atbdp_website" name="listing[website]" value="<?= !empty( $website ) ? esc_url($website) : ''; ?>" class="form-control directory_field" placeholder="<?php esc_attr_e('Listing website eg. http://example.com', ATBDP_TEXTDOMAIN); ?>"/>
+                                </div>
+                            </div>
+                        </div> <!--ends .row-->
+                    </div><!--ends contact information-->
 
                     <!--Social Information-->
 
