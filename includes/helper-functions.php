@@ -1295,3 +1295,50 @@ if (!function_exists('atbdp_parse_mysql_date')){
 
     }
 }
+
+if (!function_exists('currency_has_decimal')){
+    /**
+     * Check if currency has decimals.
+     * @param  string $currency
+     * @return bool
+     */
+     function currency_has_decimals( $currency ) {
+        if ( in_array( $currency, array( 'RIAL', 'SAR', 'HUF', 'JPY', 'TWD' ) ) ) {
+            return false;
+        }
+
+        return true;
+    }
+}
+
+/**
+ * Print formatted Price inside a p tag
+ *
+ * @param int|string $price The price amount to display
+ * @param bool $disable_price whether displaying price is enabled or disabled
+ * @param string $currency The name of the currency
+ * @param string $symbol currency symbol
+ * @param string $c_position currency position
+ * @param bool $echo Whether to Print value or to Return value. Default is printing value.
+ * @return mixed
+ */
+function atbdp_display_price($price='', $disable_price=false, $currency='USD', $symbol='', $c_position='', $echo=true){
+    if (empty($price) || $disable_price) return null; // vail if the price is empty or price display is disabled.
+
+        $before = ''; $after = '';
+        if(empty($c_position)){
+            $c_position = get_directorist_option('g_currency_position');
+        }
+        if(empty($currency)){
+            $currency = get_directorist_option('g_currency', 'USD');
+        }
+        if(empty($symbol)){
+            $symbol = atbdp_currency_symbol($currency);
+        }
+
+        ('after' == $c_position) ? $after = $symbol : $before = $symbol;
+        $price = $before.atbdp_format_amount($price).$after;
+        $p = sprintf("<p class='listing_price'>%s: %s</p>", __('Price', ATBDP_TEXTDOMAIN), $price );
+        if ($echo){ echo $p; }else{ return $p; }
+
+}

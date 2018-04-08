@@ -47,7 +47,9 @@ $listing_tags = get_terms(ATBDP_TAGS, array('hide_empty' => 0));
 // get the map zoom level from the user settings
 $map_zoom_level = get_directorist_option('map_zoom_level', 16);
 $disable_map = get_directorist_option('disable_map');
-
+$disable_price = get_directorist_option('disable_list_price');
+$disable_contact_info = get_directorist_option('disable_contact_info');
+//padded_var_dump($disable_price, $disable_contact_info, $disable_map);
 ?>
 
 <div class="directorist directory_wrapper single_area">
@@ -186,15 +188,18 @@ $disable_map = get_directorist_option('disable_map');
                                     <?php } ?>
                                 </select>
                             </div>
-
+                            <?php if (!$disable_price) { ?>
                             <div class="form-group">
                                 <!--@todo; Add currency Name near price-->
                                 <label for="price"><?php esc_html_e('Price ( Optional---Leave it blank to hide it)', ATBDP_TEXTDOMAIN) ?></label>
                                 <input type="text" id="price" name="price" value="<?= !empty($price) ? esc_attr($price): ''; ?>" class="form-control directory_field" placeholder="<?= __('Price of this listing. Eg. 100', ATBDP_TEXTDOMAIN); ?>"/>
                             </div>
+                            <?php } ?>
                         </div>
                     </div>
 
+
+                    <?php if (!$disable_contact_info){ ?>
                     <div class="directorist-contact-fields">
                         <div class="row">
                             <!-- MAP or ADDRESS related information starts here -->
@@ -236,6 +241,8 @@ $disable_map = get_directorist_option('disable_map');
                             </div>
                         </div> <!--ends .row-->
                     </div><!--ends contact information-->
+                    <?php } ?>
+
 
                     <!--Social Information-->
 

@@ -80,7 +80,8 @@ class ATBDP_Email {
         $exp_date           = get_post_meta($listing_id, '_expiry_date', true);
         $never_exp           = get_post_meta($listing_id, '_never_expire', true);
         $renewal_link       = ATBDP_Permalink::get_renewal_page_link($listing_id); // @todo; add renewal link later
-        $cat_name           = ''; // @todo; add cat name later
+        $cats               = wp_get_object_terms( $listing_id, ATBDP_CATEGORY, array( 'fields' => 'names' ) );/*@todo, maybe we can use get_the_terms() for utilizing some default caching???*/
+        $cat_name           = !empty($cats) ? $cats[0] : '';/*@todo; if a listing is attached to multiple cats, we can print more than one cat later.*/
         $find_replace =  array(
             '==NAME=='                  => !empty($user->display_name) ? $user->display_name : '' ,
             '==USERNAME=='              => !empty($user->user_login) ? $user->user_login : '' ,

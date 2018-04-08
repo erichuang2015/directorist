@@ -11,6 +11,8 @@ $in_s_string_text = !empty($s_string) ? sprintf(__('Search Result for: "%s"', AT
 $in_tag_text = !empty($in_tag) ? sprintf(__(' from "%s" Tag', ATBDP_TEXTDOMAIN), $in_tag) : '';
 $in_cat_text = !empty($in_cat) ? sprintf(__(' from "%s" Category', ATBDP_TEXTDOMAIN), $in_cat) : '';
 $in_loc_text = !empty($in_loc) ? sprintf(__(' in "%s" Location', ATBDP_TEXTDOMAIN), $in_loc) : '';
+$is_disable_price = get_directorist_option('disable_list_price');
+
 ?>
 
     <div class="directorist directory_wrapper single_area">
@@ -67,6 +69,9 @@ $in_loc_text = !empty($in_loc) ? sprintf(__(' in "%s" Location', ATBDP_TEXTDOMAI
                             extract($info);
                             // get only one parent or high level term object
                             $single_parent = ATBDP()->taxonomy->get_one_high_level_term(get_the_ID(), ATBDP_CATEGORY);
+                            $deepest_location = ATBDP()->taxonomy->get_one_deepest_level_term(get_the_ID(), ATBDP_LOCATION);
+                            $featured = get_post_meta(get_the_ID(), '_featured', true);
+                            $price = get_post_meta(get_the_ID(), '_price', true);
                             ?>
 
                             <div class="col-md-4 col-sm-6">
@@ -86,6 +91,12 @@ $in_loc_text = !empty($in_loc) ? sprintf(__(' in "%s" Location', ATBDP_TEXTDOMAI
                                             <div class="content_upper">
                                                 <h4 class="post_title">
                                                     <a href="<?= esc_url(get_post_permalink(get_the_ID())); ?>"><?php echo esc_html(stripslashes(get_the_title())); ?></a>
+                                                    <?php
+                                                    if ($featured){ printf(
+                                                        ' <span class="directorist-ribbon featured-ribbon">%s</span>',
+                                                        esc_html__('Featured', ATBDP_TEXTDOMAIN)
+                                                    );}
+                                                    ?>
                                                 </h4>
                                                 <p><?= (!empty($tagline)) ? esc_html(stripslashes($tagline)) : ''; ?></p>
                                                 <?php
@@ -98,7 +109,14 @@ $in_loc_text = !empty($in_loc) ? sprintf(__(' in "%s" Location', ATBDP_TEXTDOMAI
                                                  */
 
                                                 do_action('atbdp_after_listing_tagline');
-
+                                                atbdp_display_price($price, $is_disable_price);
+                                                /**
+                                                 * Fires after the price of the listing is rendered
+                                                 *
+                                                 *
+                                                 * @since 3.1.0
+                                                 */
+                                                do_action('atbdp_after_listing_price');
                                                 ?>
 
                                             </div>

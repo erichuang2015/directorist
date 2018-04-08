@@ -92,7 +92,7 @@ class ATBDP_Gateway{
                     'type' => 'toggle',
                     'name' => 'enable_monetization',
                     'label' => __('Enable Monetization Feature', ATBDP_TEXTDOMAIN),
-                    'description' => __('Choose whether you want to monetize your site or not. Monetization features will let you accept payment from your users if they submit listing based on different criteria. Default is OFF.', ATBDP_TEXTDOMAIN),
+                    'description' => __('Choose whether you want to monetize your site or not. Monetization features will let you accept payment from your users if they submit listing based on different criteria. Default is NO.', ATBDP_TEXTDOMAIN),
                     'default' => '',
                 ),
 
@@ -113,7 +113,7 @@ class ATBDP_Gateway{
                     'type' => 'toggle',
                     'name' => 'enable_featured_listing',
                     'label' => __('Monetize by Featured Listing', ATBDP_TEXTDOMAIN),
-                    'description' => __('You can enabled this option to collect payment from your user for making their listing featured. Settings this option to OFF will disable all sorts of monetization features. This setting gives you a quick way to turn monetization on or off instantly. Default is OFF.', ATBDP_TEXTDOMAIN),
+                    'description' => __('You can enabled this option to collect payment from your user for making their listing featured. Settings this option to NO will disable all sorts of monetization features. This setting gives you a quick way to turn monetization on or off instantly. Default is NO.', ATBDP_TEXTDOMAIN),
                     'default' => '',
                 ),
 
@@ -143,7 +143,7 @@ class ATBDP_Gateway{
                     'type' => 'toggle',
                     'name' => 'show_featured_ribbon',
                     'label' => __('Show Featured Ribbon/Text', ATBDP_TEXTDOMAIN),
-                    'description' => __('Set this option to "ON" to show Featured Ribbon/Label besides featured listings. . Default is ON', ATBDP_TEXTDOMAIN),
+                    'description' => __('Set this option to YES to show Featured Ribbon/Label besides featured listings. . Default is YES', ATBDP_TEXTDOMAIN),
                     'default' => 1,
                 ),
 
@@ -166,7 +166,7 @@ class ATBDP_Gateway{
                 'gateways' => array(
                     'type' => 'section',
                     'title' => __('Gateway General Settings', ATBDP_TEXTDOMAIN),
-                    'description' => __('You can Customize Gateway-related settings here. You can enable or disable any gateways here. Here, ON means Enabled, and OFF means disabled. After switching any option, Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                    'description' => __('You can Customize Gateway-related settings here. You can enable or disable any gateways here. Here, YES means Enabled, and NO means disabled. After switching any option, Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
                     'fields' => $this->get_gateway_settings_fields(),
                 ),
             )),
@@ -184,7 +184,7 @@ class ATBDP_Gateway{
                     'type' => 'toggle',
                     'name' => 'enable_offline_payment',
                     'label' => __('Enable Offline Payment', ATBDP_TEXTDOMAIN),
-                    'description' => __('Choose whether you want to accept offline Payment or not. Default is ON.', ATBDP_TEXTDOMAIN),
+                    'description' => __('Choose whether you want to accept offline Payment or not. Default is YES.', ATBDP_TEXTDOMAIN),
                     'default' => 1,
                 ),
                 array(

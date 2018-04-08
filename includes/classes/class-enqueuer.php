@@ -247,7 +247,7 @@ class ATBDP_Enqueuer {
             'select2script'
         );
         $disable_map = get_directorist_option('disable_map');
-        if (!$disable_map){ $disable_map[]= 'atbdp-google-map-front'; }
+        if (!$disable_map){ $dependency[]= 'atbdp-google-map-front'; }
         wp_register_script('atbdp_add_listing_js', ATBDP_PUBLIC_ASSETS . 'js/add-listing.js', $dependency, ATBDP_VERSION, true );
         wp_enqueue_script('atbdp_add_listing_js');
 

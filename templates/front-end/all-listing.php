@@ -42,6 +42,8 @@ var_dump($dt);*/
     //var_dump( get_post_meta( $list->ID, '_expiry_date', true ) );
 
 }*/
+$is_disable_price = get_directorist_option('disable_list_price');
+
 ?>
 
 
@@ -88,7 +90,12 @@ var_dump($dt);*/
                         extract($info);
                         // get only one parent or high level term object
                         $single_parent = ATBDP()->taxonomy->get_one_high_level_term(get_the_ID(), ATBDP_CATEGORY);
+                        $deepest_location = ATBDP()->taxonomy->get_one_deepest_level_term(get_the_ID(), ATBDP_LOCATION);
                         $featured = get_post_meta(get_the_ID(), '_featured', true);
+                        $price = get_post_meta(get_the_ID(), '_price', true);
+
+
+
                         ?>
 
                         <div class="col-md-4 col-sm-6">
@@ -108,24 +115,37 @@ var_dump($dt);*/
                                         <div class="content_upper">
                                             <h4 class="post_title">
                                                 <a href="<?= esc_url(get_post_permalink(get_the_ID())); ?>"><?php echo esc_html(stripslashes(get_the_title())); ?></a>
+                                                <?php
+                                                if ($featured){ printf(
+                                                    ' <span class="directorist-ribbon featured-ribbon">%s</span>',
+                                                    esc_html__('Featured', ATBDP_TEXTDOMAIN)
+                                                );}
+                                            ?>
                                             </h4>
-                                            <p><?= (!empty($tagline)) ? esc_html(stripslashes($tagline)) : ''; ?></p>
-                                            <?php
+                                            <?php echo (!empty($tagline)) ? sprintf('<p>%s</p>', esc_html(stripslashes($tagline))) : '';
 
                                             /**
-                                             * Fires after the title and sub title of the listing is rendered on the single listing page
+                                             * Fires after the title and sub title of the listing is rendered
                                              *
                                              *
                                              * @since 1.0.0
                                              */
 
                                             do_action('atbdp_after_listing_tagline');
+                                            atbdp_display_price($price, $is_disable_price);
+                                            /**
+                                             * Fires after the price of the listing is rendered
+                                             *
+                                             *
+                                             * @since 3.1.0
+                                             */
+                                            do_action('atbdp_after_listing_price');
 
                                             ?>
                                           
                                         </div>
                                         <!--it is better to show the gen info if we have data-->
-                                        <?php if (!empty($single_parent) || !empty($address)) { ?>
+                                        <?php if (!empty($single_parent) || !empty($deepest_location)) { ?>
                                         <div class="general_info">
                                             <ul>
                                                 <?php if (!empty($single_parent)){ ?>
@@ -135,18 +155,20 @@ var_dump($dt);*/
 
                                                         <span class="fa <?= esc_attr(get_cat_icon(@$single_parent->term_id)); ?>" aria-hidden="true"></span>
                                                         <span> <?php if (is_object($single_parent)) { ?>
-                                                                <a href="<?= ATBDP_Permalink::get_category_archive($single_parent) ?>">
+                                                                <a href="<?= ATBDP_Permalink::get_category_archive($single_parent); ?>">
                                                                 <?= esc_html($single_parent->name); ?>
                                                                 </a>
-                                                            <?php } else {
-                                                               _e('Others', ATBDP_TEXTDOMAIN);
-                                                            } ?>
+                                                            <?php } ?>
                                                         </span>
                                                     </p>
                                                 </li>
-                                                <?php } if (!empty($address)){ ?>
+                                                <?php } if (!empty($deepest_location)){ ?>
                                                 <li><p class="info_title"><?php _e('Location:', ATBDP_TEXTDOMAIN);?>
-                                                    <span><?= esc_html(stripslashes($address)); ?></span>
+                                                    <span><?php if (is_object($deepest_location)) { ?>
+                                                            <a href="<?= ATBDP_Permalink::get_location_archive($deepest_location); ?>">
+                                                                <?= esc_html($deepest_location->name); ?>
+                                                                </a>
+                                                        <?php } ?></span>
                                                     </p>
                                                 </li>
                                             <?php } ?>

@@ -140,7 +140,7 @@ class ATBDP_Settings_Manager {
                     'emails' => array(
                         'type' => 'section',
                         'title' => __('Email General Settings', ATBDP_TEXTDOMAIN),
-                        'description' => __('You can Customize Email and Notification-related settings here. You can enable or disable any emails here. Here, ON means Enabled, and OFF means disabled. After switching any option, Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can Customize Email and Notification-related settings here. You can enable or disable any emails here. Here, YES means Enabled, and NO means disabled. After switching any option, Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
                         'fields' => $this->get_email_settings_fields(),
                     ),
                 )),
@@ -692,7 +692,7 @@ The Administrator of ==SITE_NAME==
                     'type' => 'toggle',
                     'name' => 'disable_email_notification',
                     'label' => __('Disable all Email Notifications', ATBDP_TEXTDOMAIN),
-                    'description' => __('Set this option to "ON" to DISABLE ALL EMAIL NOTIFICATIONS. Default is OFF which means Email notification is enabled by default.', ATBDP_TEXTDOMAIN),
+                    'description' => __('Set this option to YES to DISABLE ALL EMAIL NOTIFICATIONS. Default is NO which means Email notification is enabled by default.', ATBDP_TEXTDOMAIN),
                     'default' => '',
                 ),
                 array(
@@ -940,7 +940,7 @@ The Administrator of ==SITE_NAME==
                     'extensions' => array(
                         'type' => 'section',
                         'title' => __('Extensions General Settings', ATBDP_TEXTDOMAIN),
-                        'description' => __('You can Customize Extensions-related settings here. You can enable or disable any extensions here. Here, ON means Enabled, and OFF means disabled. After switching any option, Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can Customize Extensions-related settings here. You can enable or disable any extensions here. Here, YES means Enabled, and NO means disabled. After switching any option, Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
                         'fields' => $this->get_extension_settings_fields(),
                     ),
                 )),
@@ -981,14 +981,14 @@ The Administrator of ==SITE_NAME==
                     'type' => 'toggle',
                     'name' => 'disable_map',
                     'label' => __( 'Disable Google Map', ATBDP_TEXTDOMAIN ),
-                    'description' => __( 'Set it ON to disable Google map on your website. If you leave it off, then you or your user can disable google map on individual listing too.', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Set it YES to disable Google map on your website. If you leave it off, then you or your user can disable google map on individual listing too.', ATBDP_TEXTDOMAIN ),
                     'default' => 0,
                 ),
                 array(
                     'type' => 'toggle',
                     'name' => 'disable_sharing',
                     'label' => __( 'Disable Social Sharing links', ATBDP_TEXTDOMAIN ),
-                    'description' => __( 'Set it ON to disable Social Sharing links on a Single Listing Details Page.', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Set it YES to disable Social Sharing links on a Single Listing Details Page.', ATBDP_TEXTDOMAIN ),
                     'default' => 0,
                 ),
 
@@ -996,7 +996,7 @@ The Administrator of ==SITE_NAME==
                     'type' => 'toggle',
                     'name' => 'disable_submit_listing_widget',
                     'label' => __( 'Disable "Submit Your Item" Widget', ATBDP_TEXTDOMAIN ),
-                    'description' => __( 'Set it ON to disable "Submit New Item Widget" on a Single Listing Details page.', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Set it YES to disable "Submit New Item Widget" on a Single Listing Details page.', ATBDP_TEXTDOMAIN ),
                     'default' => 0,
                 ),
 
@@ -1004,7 +1004,7 @@ The Administrator of ==SITE_NAME==
                     'type' => 'toggle',
                     'name' => 'disable_widget_login',
                     'label' => __( 'Disable Login Form Inside "Submit Your Item" Widget', ATBDP_TEXTDOMAIN ),
-                    'description' => __( 'Set it ON to disable the Login Form inside "Submit New Item Widget" on a Single Listing Details page.', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Set it YES to disable the Login Form inside "Submit New Item Widget" on a Single Listing Details page.', ATBDP_TEXTDOMAIN ),
                     'default' => 0,
                 ),
 
@@ -1012,7 +1012,14 @@ The Administrator of ==SITE_NAME==
                     'type' => 'toggle',
                     'name' => 'disable_contact_info',
                     'label' => __( 'Disable Contact Information', ATBDP_TEXTDOMAIN ),
-                    'description' => __( 'Set it ON to disable Contact Information on a Single Listing Details page.', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Set it YES to disable Contact Information on a Single Listing Details page.', ATBDP_TEXTDOMAIN ),
+                    'default' => 0,
+                ),
+                array(
+                    'type' => 'toggle',
+                    'name' => 'disable_list_price',
+                    'label' => __( 'Disable Listing Price', ATBDP_TEXTDOMAIN ),
+                    'description' => __( 'Set it YES to disable Price field. However, if you do not disable price globally here, you can also disable pricing per listing during adding a listing.', ATBDP_TEXTDOMAIN ),
                     'default' => 0,
                 ),
 
@@ -1027,14 +1034,14 @@ The Administrator of ==SITE_NAME==
                     'type' => 'toggle',
                     'name' => 'exclude_bootstrap_css',
                     'label' => __('Do not include Plugin\'s Bootstrap CSS in the Front-End', ATBDP_TEXTDOMAIN),
-                    'description' => __('You can turn this option ON to disable Bootstrap CSS in the Front-End if your theme is using bootstrap CSS already and you are facing problem.', ATBDP_TEXTDOMAIN),
+                    'description' => __('You can turn this option YES to disable Bootstrap CSS in the Front-End if your theme is using bootstrap CSS already and you are facing problem.', ATBDP_TEXTDOMAIN),
                     'default' => 0,
                 ),
                 array(
                     'type' => 'toggle',
                     'name' => 'exclude_admin_bootstrap_css',
                     'label' => __('Do not include Plugin\'s Bootstrap CSS in the Backend', ATBDP_TEXTDOMAIN),
-                    'description' => __('You can turn this option ON to disable Bootstrap CSS in the Admin Area of Directorist. It is better to keep this option turned off to load bootstrap css in the admin area of this plugin, unless you have a good reason to turn it ON', ATBDP_TEXTDOMAIN),
+                    'description' => __('You can turn this option YES to disable Bootstrap CSS in the Admin Area of Directorist. It is better to keep this option turned off to load bootstrap css in the admin area of this plugin, unless you have a good reason to turn it YES', ATBDP_TEXTDOMAIN),
                     'default' => 0,
                 ),
 
@@ -1242,7 +1249,7 @@ The Administrator of ==SITE_NAME==
                         'type' => 'toggle',
                         'name' => 'can_renew_listing',
                         'label' => __('Can User Renew Listing?', ATBDP_TEXTDOMAIN),
-                        'description' => __('Here ON means users can renew their listings. OFF means users can not renew their listings. Default is ON.', ATBDP_TEXTDOMAIN),
+                        'description' => __('Here YES means users can renew their listings. NO means users can not renew their listings. Default is YES.', ATBDP_TEXTDOMAIN),
                         'default' => 1,
                     ),
                     array(
@@ -1356,7 +1363,7 @@ The Administrator of ==SITE_NAME==
                         'type' => 'toggle',
                         'name' => 'enable_pop_listing',
                         'label' => __('Enable popular listings on Single Listing page', ATBDP_TEXTDOMAIN),
-                        'description' => __('Choose whether you want to display popular listings on Single listing details page or not. Default is ON.', ATBDP_TEXTDOMAIN),
+                        'description' => __('Choose whether you want to display popular listings on Single listing details page or not. Default is YES.', ATBDP_TEXTDOMAIN),
                         'default' => atbdp_yes_to_bool($e_p_list),
                     ),
 
@@ -1377,7 +1384,7 @@ The Administrator of ==SITE_NAME==
                         'type' => 'toggle',
                         'name' => 'enable_rel_listing',
                         'label' => __('Enable related listings on Single Listing page', ATBDP_TEXTDOMAIN),
-                        'description' => __('Choose whether you want to display related listings on Single listing details page or not. Default is ON.', ATBDP_TEXTDOMAIN),
+                        'description' => __('Choose whether you want to display related listings on Single listing details page or not. Default is YES.', ATBDP_TEXTDOMAIN),
                         'default' => atbdp_yes_to_bool($e_r_list),
                     ),
 
@@ -1507,7 +1514,7 @@ The Administrator of ==SITE_NAME==
                         'type' => 'toggle',
                         'name' => 'enable_review',
                         'label' => __('Enable Reviews & Rating', ATBDP_TEXTDOMAIN),
-                        'description' => __('Choose whether you want to display reviews form on Single listing details page or not. Default is ON.', ATBDP_TEXTDOMAIN),
+                        'description' => __('Choose whether you want to display reviews form on Single listing details page or not. Default is YES.', ATBDP_TEXTDOMAIN),
                         'default' => atbdp_yes_to_bool($e_review),
                     ),
 
@@ -1515,7 +1522,7 @@ The Administrator of ==SITE_NAME==
                         'type' => 'toggle',
                         'name' => 'enable_owner_review',
                         'label' => __('Enable Owner Review', ATBDP_TEXTDOMAIN),
-                        'description' => __('Choose whether you want to allow a listing OWNER to post a review on his/her OWN listing on Single listing details page or not. Default is ON.', ATBDP_TEXTDOMAIN),
+                        'description' => __('Choose whether you want to allow a listing OWNER to post a review on his/her OWN listing on Single listing details page or not. Default is YES.', ATBDP_TEXTDOMAIN),
                         'default' => 1,
                     ),
 

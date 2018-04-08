@@ -17,7 +17,9 @@ $info_content .= "<p> {$ad}</p></div>";
 $social_info = !empty( $social ) ? $social : array();
 $map_zoom_level = get_directorist_option('map_zoom_level', 16);
 $disable_map = get_directorist_option('disable_map');
-
+$disable_price = get_directorist_option('disable_list_price');
+$disable_contact_info = get_directorist_option('disable_contact_info');
+//padded_var_dump($disable_price, $disable_contact_info, $disable_map);
 ?>
 <div class="directorist directory_wrapper">
     <div class="container-fluid">
@@ -36,6 +38,7 @@ $disable_map = get_directorist_option('disable_map');
 
                     <div class="row">
                         <div class="col-sm-12">
+                            <!--@todo; add toggle for the moto and excerpt later. -->
                             <div class="form-group">
                                 <label for="atbdp_tagline"><?php esc_html_e('Tag-line/Motto', ATBDP_TEXTDOMAIN) ?></label>
                                 <input type="text" id="atbdp_tagline" name="listing[tagline]" value="<?= !empty($tagline) ? esc_attr($tagline): ''; ?>" class="form-control directory_field" placeholder="<?= __('Your Organization\'s motto or tag-line', ATBDP_TEXTDOMAIN); ?>"/>
@@ -44,19 +47,20 @@ $disable_map = get_directorist_option('disable_map');
                                 <label for="atbdp_excerpt"><?php esc_html_e('Short Description/Excerpt:', ATBDP_TEXTDOMAIN) ?></label>
                                 <textarea name="listing[excerpt]" id="atbdp_excerpt"  class="form-control directory_field" cols="30" rows="5" placeholder="<?= __('Short Description or Excerpt', ATBDP_TEXTDOMAIN); ?>"><?= !empty($excerpt) ?esc_textarea( stripslashes($excerpt)): ''; ?></textarea>
                             </div>
-
+                            <?php if (!$disable_price){ ?>
                             <div class="form-group">
                                 <!--@todo; Add currency Name near price-->
                                 <label for="price"><?php esc_html_e('Price ( Optional---Leave it blank to hide it)', ATBDP_TEXTDOMAIN) ?></label>
                                 <input type="text" id="price" name="price" value="<?= !empty($Price) ? esc_attr($Price): ''; ?>" class="form-control directory_field" placeholder="<?= __('Price of this listing. Eg. 100', ATBDP_TEXTDOMAIN); ?>"/>
                             </div>
+                            <?php } ?>
 
                         </div>
                     </div>
 
 
 
-
+                    <?php if (!$disable_contact_info){ ?>
                     <div class="directorist-contact-fields">
                         <div class="row">
                             <!-- MAP or ADDRESS related information starts here -->
@@ -98,6 +102,7 @@ $disable_map = get_directorist_option('disable_map');
                             </div>
                         </div> <!--ends .row-->
                     </div> <!--ends .directorist contact fields-->
+                    <?php } ?>
 
                     <!--Social Information-->
 

@@ -43,7 +43,10 @@ $disable_sharing = get_directorist_option('disable_sharing', 0);
 $disable_s_widget = get_directorist_option('disable_submit_listing_widget', 0);
 $disable_widget_login = get_directorist_option('disable_widget_login', 0);
 $disable_contact_info = get_directorist_option('disable_contact_info', 0);
-
+$is_disable_price = get_directorist_option('disable_list_price');
+$p_lnk = get_the_permalink();
+$p_title = get_the_title();
+$featured = get_post_meta(get_the_ID(), '_featured', true);
 ?>
 
 <section class="directorist directory_wrapper">
@@ -56,7 +59,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info', 0);
                                 <div class="directory_image_gallery">
                                     <?php foreach ($image_links as $image_link){ ?>
                                         <div class="single_image">
-                                            <img src="<?= esc_url($image_link); ?>" alt="Details Image">
+                                            <img src="<?= esc_url($image_link); ?>" alt="<?php esc_attr_e('Details Image', ATBDP_TEXTDOMAIN); ?>">
                                         </div>
                                         <?php
                                         // do not output more than one image if the MI extension is not active
@@ -71,20 +74,29 @@ $disable_contact_info = get_directorist_option('disable_contact_info', 0);
                         <?php } ?>
                         <div class="listing_detail">
                             <div class="listing_title">
-                                <h2><?php esc_html_e($post->post_title); ?> </h2>
+                                <h2><?php
+                                    echo esc_html($p_title);
+                                    /*Print Featured ribbon if it is featured*/
+                                    if ($featured){ printf(
+                                            ' <span class="directorist-ribbon featured-ribbon">%s</span>',
+                                            esc_html__('Featured', ATBDP_TEXTDOMAIN)
+                                    );                                    }
+                                    ?>
+                                </h2>
                                 <p class="sub_title"><?= (!empty($tagline)) ? esc_html(stripslashes($tagline)) : ''; ?></p>
-                                <?php echo !empty($price) ? sprintf("<p class='listing_price'>%s: %s</p>", __('Price', ATBDP_TEXTDOMAIN),$price ): '' ; ?>
                                 <!--@todo: style the price and Add the Currency Symbol or letter, Show the price in the search and all listing pages, and dashboard-->
                             </div>
                             <?php
                             /**
                              * Fires after the title and sub title of the listing is rendered on the single listing page
-                             * @param array $listing_info The meta information of the current listing
                              *
                              * @since 1.0.0
                              */
 
-                            do_action('atbdp_after_listing_tagline', $listing_info);
+                            do_action('atbdp_after_listing_tagline');
+                            atbdp_display_price($price, $is_disable_price);
+                            do_action('atbdp_after_listing_price');
+
                             ?>
 
 
@@ -117,27 +129,31 @@ $disable_contact_info = get_directorist_option('disable_contact_info', 0);
                         <?php if (!$disable_sharing) { ?>
                             <div class="director_social_wrap">
                                 <p><?php _e('Share this post',ATBDP_TEXTDOMAIN); ?></p>
+                                <?php
+                                //prepare the data for the links because links needs to be escaped
+                                $twt_lnk = "http://twitter.com/intent/tweet?status={$p_title}+{$p_lnk}";
+                                $fb_lnk = "https://www.facebook.com/share.php?u={$p_lnk}&title={$p_title}";
+                                $g_lnk = "https://plus.google.com/share?url={$p_lnk}";
+                                $in_link = "http://www.linkedin.com/shareArticle?mini=true&url={$p_lnk}&title={$p_title}";
+                                ?>
                                 <ul>
                                     <li>
-                                        <a href="https://www.facebook.com/share.php?u=<?php echo
-                                        get_the_permalink(); ?>&title=<?php echo get_the_title(); ?>"
-                                           target="_blank">
+                                        <a href="<?php echo esc_url($fb_lnk); ?>" target="_blank">
                                             <span class="fa fa-facebook"></span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="http://twitter.com/intent/tweet?status=<?php echo get_the_title(); ?>+<?php echo get_the_permalink(); ?>" target="_blank">
+                                        <a href="<?php echo esc_url($twt_lnk); ?>" target="_blank">
                                             <span class="fa fa-twitter"></span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a  href="https://plus.google.com/share?url=<?php echo get_the_permalink(); ?>" target="_blank">
+                                        <a  href="<?php echo esc_url($g_lnk); ?>" target="_blank">
                                             <span class="fa fa-google-plus"></span>
                                         </a>
                                     </li>
-
                                     <li>
-                                        <a href="http://www.linkedin.com/shareArticle?mini=true&url=<?php echo get_the_permalink(); ?>&title=<?php echo get_the_title(); ?>" target="_blank">
+                                        <a href="<?php echo esc_url($in_link); ?>" target="_blank">
                                             <span class="fa fa-linkedin"></span>
                                         </a>
                                     </li>

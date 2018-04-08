@@ -334,6 +334,37 @@ class ATBDP_Custom_Taxonomy {
 
     }
 
+    /**
+     * It returns a single deepest level term object of the given taxonomy
+     *@TODO; improve it later if possible
+     *@param int $post_id The post ID whose taxonomy we are searching through for a term
+     *@param string $taxonomoy The name of the taxonomy whose term we are looking form
+     *@return object | false It returns a term object on success and false on failure
+     */
+    public function get_one_deepest_level_term($post_id, $taxonomoy='category')
+    {
+
+        // get all taxes for the current listing
+        $locations = get_the_terms( $post_id, $taxonomoy );
+
+        // wrapper to hide any errors from top level categories or listings without locations
+        if ( $locations && ! is_wp_error( $locations ) ) {
+
+            // loop through each location
+            foreach ($locations as $location) {
+                // get the children (if any) of the current $location
+                $children = get_categories(array('taxonomy' => ATBDP_LOCATION, 'parent' => $location->term_id));
+
+                if (count($children) == 0) {
+                    // if no children, then this ($location) is the deepest level location, if we want multiple deepest level location then we can sev the
+                    return $location ;
+                }
+            }
+        }
+        return false;
+
+    }
+
 
 }
 
