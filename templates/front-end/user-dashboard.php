@@ -10,6 +10,7 @@ $u_pro_pic= get_user_meta($uid, 'pro_pic', true);
 $u_address= get_user_meta($uid, 'address', true);
 $date_format = get_option( 'date_format' );
 $featured_active = get_directorist_option('enable_featured_listing');
+$is_disable_price = get_directorist_option('disable_list_price');
 
 
 ?>
@@ -54,6 +55,8 @@ $featured_active = get_directorist_option('enable_featured_listing');
                                     extract($info);
                                     // get only one parent or high level term object
                                     $single_parent = ATBDP()->taxonomy->get_one_high_level_term($post->ID, ATBDP_CATEGORY);
+                                    $price= get_post_meta($post->ID, '_price', true);
+
                                     ?>
                                     <div class="col-lg-4 col-sm-6" id="listing_id_<?= $post->ID; ?>">
                                         <div class="single_directory_post">
@@ -77,6 +80,7 @@ $featured_active = get_directorist_option('enable_featured_listing');
                                                          */
 
                                                         do_action('atbdp_after_listing_tagline');
+
 
                                                         ?>
                                                     </div> <!--ends .content_upper-->
@@ -125,7 +129,18 @@ $featured_active = get_directorist_option('enable_featured_listing');
                                                             $f_status = !empty($featured) ? __('Yes', ATBDP_TEXTDOMAIN) : __('No', ATBDP_TEXTDOMAIN);
                                                             ?>
                                                             <p><?php printf(__('Is this Featured: %s', ATBDP_TEXTDOMAIN), $f_status); ?></p>
-                                                        <?php } ?>
+                                                        <?php }
+
+                                                        atbdp_display_price($price, $is_disable_price);
+                                                        /**
+                                                         * Fires after the price of the listing is rendered
+                                                         *
+                                                         *
+                                                         * @since 3.1.0
+                                                         */
+                                                        do_action('atbdp_after_listing_price');
+                                                        ?>
+
                                                     </div>
                                                 </div> <!--ends .article_content-->
                                             </article> <!--ends article-->

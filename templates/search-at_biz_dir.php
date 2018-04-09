@@ -100,15 +100,6 @@ $is_disable_price = get_directorist_option('disable_list_price');
                                                 </h4>
                                                 <p><?= (!empty($tagline)) ? esc_html(stripslashes($tagline)) : ''; ?></p>
                                                 <?php
-
-                                                /**
-                                                 * Fires after the title and sub title of the listing is rendered on the single listing page
-                                                 *
-                                                 *
-                                                 * @since 1.0.0
-                                                 */
-
-                                                do_action('atbdp_after_listing_tagline');
                                                 atbdp_display_price($price, $is_disable_price);
                                                 /**
                                                  * Fires after the price of the listing is rendered
@@ -117,6 +108,7 @@ $is_disable_price = get_directorist_option('disable_list_price');
                                                  * @since 3.1.0
                                                  */
                                                 do_action('atbdp_after_listing_price');
+
                                                 ?>
 
                                             </div>

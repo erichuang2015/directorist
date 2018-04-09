@@ -123,6 +123,14 @@ $is_disable_price = get_directorist_option('disable_list_price');
                                             ?>
                                             </h4>
                                             <?php echo (!empty($tagline)) ? sprintf('<p>%s</p>', esc_html(stripslashes($tagline))) : '';
+                                            atbdp_display_price($price, $is_disable_price);
+                                            /**
+                                             * Fires after the price of the listing is rendered
+                                             *
+                                             *
+                                             * @since 3.1.0
+                                             */
+                                            do_action('atbdp_after_listing_price');
 
                                             /**
                                              * Fires after the title and sub title of the listing is rendered
@@ -132,14 +140,7 @@ $is_disable_price = get_directorist_option('disable_list_price');
                                              */
 
                                             do_action('atbdp_after_listing_tagline');
-                                            atbdp_display_price($price, $is_disable_price);
-                                            /**
-                                             * Fires after the price of the listing is rendered
-                                             *
-                                             *
-                                             * @since 3.1.0
-                                             */
-                                            do_action('atbdp_after_listing_price');
+
 
                                             ?>
                                           
@@ -178,7 +179,7 @@ $is_disable_price = get_directorist_option('disable_list_price');
 
 
                                         <div class="read_more_area">
-                                            <a class="btn btn-default" href="<?= get_post_permalink(get_the_ID()); ?>"><?php _e('Read More', ATBDP_TEXTDOMAIN); ?></a> <?php echo ($featured) ? '<span>'.esc_html__('Featured', ATBDP_TEXTDOMAIN).'</span>' : ''; ?>
+                                            <a class="btn btn-default" href="<?= get_post_permalink(get_the_ID()); ?>"><?php _e('Read More', ATBDP_TEXTDOMAIN); ?></a>
                                         </div>
                                     </div>
                                 </article>

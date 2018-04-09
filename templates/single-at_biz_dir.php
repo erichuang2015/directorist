@@ -85,6 +85,10 @@ $featured = get_post_meta(get_the_ID(), '_featured', true);
                                 </h2>
                                 <p class="sub_title"><?= (!empty($tagline)) ? esc_html(stripslashes($tagline)) : ''; ?></p>
                                 <!--@todo: style the price and Add the Currency Symbol or letter, Show the price in the search and all listing pages, and dashboard-->
+                                <?php
+                                atbdp_display_price($price, $is_disable_price);
+                                do_action('atbdp_after_listing_price');
+                                ?>
                             </div>
                             <?php
                             /**
@@ -94,8 +98,7 @@ $featured = get_post_meta(get_the_ID(), '_featured', true);
                              */
 
                             do_action('atbdp_after_listing_tagline');
-                            atbdp_display_price($price, $is_disable_price);
-                            do_action('atbdp_after_listing_price');
+
 
                             ?>
 
