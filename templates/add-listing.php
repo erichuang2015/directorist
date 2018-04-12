@@ -47,13 +47,10 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                                 <label for="atbdp_excerpt"><?php esc_html_e('Short Description/Excerpt:', ATBDP_TEXTDOMAIN) ?></label>
                                 <textarea name="listing[excerpt]" id="atbdp_excerpt"  class="form-control directory_field" cols="30" rows="5" placeholder="<?= __('Short Description or Excerpt', ATBDP_TEXTDOMAIN); ?>"><?= !empty($excerpt) ?esc_textarea( stripslashes($excerpt)): ''; ?></textarea>
                             </div>
-                            <?php if (!$disable_price){
-                                $currency = get_directorist_option('g_currency', 'USD');
-                                ?>
+                            <?php if (!$disable_price){ ?>
                             <div class="form-group">
-                                <label for="price"><?php
-                                    printf(esc_html__('Price in [%s] ( Optional---Leave it blank to hide it)', ATBDP_TEXTDOMAIN), sanitize_text_field($currency));
-                                    ?></label>
+                                <!--@todo; Add currency Name near price-->
+                                <label for="price"><?php esc_html_e('Price ( Optional---Leave it blank to hide it)', ATBDP_TEXTDOMAIN) ?></label>
                                 <input type="text" id="price" name="price" value="<?= !empty($Price) ? esc_attr($Price): ''; ?>" class="form-control directory_field" placeholder="<?= __('Price of this listing. Eg. 100', ATBDP_TEXTDOMAIN); ?>"/>
                             </div>
                             <?php } ?>

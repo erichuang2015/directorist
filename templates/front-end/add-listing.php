@@ -78,55 +78,52 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                      **/
                     do_action('atbdp_edit_before_title_fields', 'add_listing_page_frontend');
                     ?>
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12">
-                            <div class="form-group">
-                                <label for="listing_title"><?php esc_html_e('Title:', ATBDP_TEXTDOMAIN); ?></label>
-                                <input type="text" name="listing_title" value="<?= !empty($listing->post_title) ? esc_attr($listing->post_title):'';?>" class="form-control directory_field" placeholder="<?= __('Enter a title', ATBDP_TEXTDOMAIN); ?>"/>
-                            </div>
+                    <div class="atbdp_info_module">
 
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <h3 class="module_title">General information</h3>
+                                <p>Basic informatin about the directory</p>
+                                <div class="form-group">
+                                    <label for="listing_title"><?php esc_html_e('Title:', ATBDP_TEXTDOMAIN); ?></label>
+                                    <input type="text" name="listing_title" value="<?= !empty($listing->post_title) ? esc_attr($listing->post_title):'';?>" class="form-control directory_field" placeholder="<?= __('Enter a title', ATBDP_TEXTDOMAIN); ?>"/>
+                                </div>
+
+                            </div>
                         </div>
-                    </div>
 
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="listing_content">Long Description:</label>
+                                    <?php wp_editor(
+                                            !empty($listing->post_content) ? wp_kses($listing->post_content, wp_kses_allowed_html('post')) :'',
+                                            'listing_content',
+                                            array(
+                                                'media_buttons' => false,
+                                                'quicktags'     => false,
+                                                'editor_height' => 200
+                                            )); ?>
+                                </div>
 
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="listing_content">Long Description:</label>
-                                <?php wp_editor(
-                                        !empty($listing->post_content) ? wp_kses($listing->post_content, wp_kses_allowed_html('post')) :'',
-                                        'listing_content',
-                                        array(
-                                            'media_buttons' => false,
-                                            'quicktags'     => false,
-                                            'editor_height' => 200
-                                        )); ?>
                             </div>
-
                         </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="atbdp_excerpt"><?php esc_html_e('Tag-line/Motto', ATBDP_TEXTDOMAIN); ?></label>
-                                <input type="text" name="listing[tagline]" value="<?= !empty($tagline) ? esc_attr($tagline): ''; ?>" class="form-control directory_field" placeholder="<?= __('Your Organization\'s motto or tag-line', ATBDP_TEXTDOMAIN); ?>"/>
-                            </div>
-                            <div class="form-group">
-                                <label for="atbdp_excerpt"><?php esc_html_e('Short Description/Excerpt:', ATBDP_TEXTDOMAIN) ?></label>
-                                <textarea name="listing[excerpt]" id="atbdp_excerpt"  class="form-control directory_field" cols="30" rows="5" placeholder="<?= __('Short Description or Excerpt', ATBDP_TEXTDOMAIN); ?>"> <?= !empty($excerpt) ? esc_textarea( stripslashes($excerpt)) : ''; ?> </textarea>
-                            </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="atbdp_excerpt"><?php esc_html_e('Tag-line/Motto', ATBDP_TEXTDOMAIN); ?></label>
+                                    <input type="text" name="listing[tagline]" value="<?= !empty($tagline) ? esc_attr($tagline): ''; ?>" class="form-control directory_field" placeholder="<?= __('Your Organization\'s motto or tag-line', ATBDP_TEXTDOMAIN); ?>"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="atbdp_excerpt"><?php esc_html_e('Short Description/Excerpt:', ATBDP_TEXTDOMAIN) ?></label>
+                                    <textarea name="listing[excerpt]" id="atbdp_excerpt"  class="form-control directory_field" cols="30" rows="5" placeholder="<?= __('Short Description or Excerpt', ATBDP_TEXTDOMAIN); ?>"> <?= !empty($excerpt) ? esc_textarea( stripslashes($excerpt)) : ''; ?> </textarea>
+                                </div>
 
+                            </div>
                         </div>
-                    </div>
 
-
-
-
-
-
-
-                    <div class="row">
+                        <div class="row">
                         <div class="col-md-6 col-sm-6">
                             <div class="form-group">
                                 <label for="at_biz_dir-category"><?php esc_html_e('Category:', ATBDP_TEXTDOMAIN); ?></label>
@@ -188,23 +185,20 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                                     <?php } ?>
                                 </select>
                             </div>
-                            <?php if (!$disable_price) {
-                                $currency = get_directorist_option('g_currency', 'USD');
-                                ?>
+                            <?php if (!$disable_price) { ?>
                             <div class="form-group">
                                 <!--@todo; Add currency Name near price-->
-                                <label for="price"><?php 
-                                    printf(esc_html__('Price in [%s] ( Optional---Leave it blank to hide it)', ATBDP_TEXTDOMAIN), sanitize_text_field($currency));
-                                     ?></label>
+                                <label for="price"><?php esc_html_e('Price ( Optional---Leave it blank to hide it)', ATBDP_TEXTDOMAIN) ?></label>
                                 <input type="text" id="price" name="price" value="<?= !empty($price) ? esc_attr($price): ''; ?>" class="form-control directory_field" placeholder="<?= __('Price of this listing. Eg. 100', ATBDP_TEXTDOMAIN); ?>"/>
                             </div>
                             <?php } ?>
                         </div>
                     </div>
 
+                    </div>
 
                     <?php if (!$disable_contact_info){ ?>
-                    <div class="directorist-contact-fields">
+                    <div class="directorist-contact-fields atbdp_info_module">
                         <div class="row">
                             <!-- MAP or ADDRESS related information starts here -->
                             <div class="col-sm-12">
@@ -244,34 +238,35 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                                 </div>
                             </div>
                         </div> <!--ends .row-->
-                    </div><!--ends contact information-->
                     <?php } ?>
 
 
                     <!--Social Information-->
 
                     <!-- add social icon adding field-->
-                    <?php
-                    /**
-                     * It fires before social information fields
-                     * @param string $type Page type.
-                     * @param array $listing_info Information of the current listing
-                     * @since 1.1.1
-                     **/
-                    do_action('atbdp_edit_before_social_info_fields', 'add_listing_page_frontend', $listing_info);
+                        <div class="row">
+                            <?php
+                            /**
+                             * It fires before social information fields
+                             * @param string $type Page type.
+                             * @param array $listing_info Information of the current listing
+                             * @since 1.1.1
+                             **/
+                            do_action('atbdp_edit_before_social_info_fields', 'add_listing_page_frontend', $listing_info);
 
 
-                    ATBDP()->load_template('meta-partials/social', array('social_info' => $social_info));
+                            ATBDP()->load_template('meta-partials/social', array('social_info' => $social_info));
 
-                    /**
-                     * It fires after social information fields
-                     * @param string $type Page type.
-                     * @param array $listing_info Information of the current listing
-                     * @since 1.1.1
-                     **/
-                    do_action('atbdp_edit_after_social_info_fields', 'add_listing_page_frontend', $listing_info);
+                            /**
+                             * It fires after social information fields
+                             * @param string $type Page type.
+                             * @param array $listing_info Information of the current listing
+                             * @since 1.1.1
+                             **/
+                            do_action('atbdp_edit_after_social_info_fields', 'add_listing_page_frontend', $listing_info);
 
-                    ?>
+                            ?>
+                        </div>
                     <?php if (!$disable_map) { ?>
                         <!--Show map only if it is not disabled in the settings-->
                         <div class="row">
@@ -286,7 +281,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                                     </label>
                                 </div>
                             </div>
-                            <div id="hide_if_no_manual_cor">
+                            <div id="hide_if_no_manual_cor" class="clearfix">
 
                                 <div class="col-md-6 col-sm-12">
                                     <div class="form-group">
@@ -332,6 +327,8 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                                 </div>
                             </div> <!--ends .col-md-12-->
                         </div><!--ends .row-->
+                    </div><!--ends contact information-->
+                    <div class="atbdp_info_module">
                         <?php
                         /**
                          * It fires after the google map preview area
@@ -339,9 +336,9 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                          * @param array $listing_info Information of the current listing
                          * @since 1.1.1
                          **/
-                        do_action('atbdp_edit_after_googlemap_preview', 'add_listing_page_frontend', $listing_info);
-                    }
-                    ?>
+                        do_action('atbdp_edit_after_googlemap_preview', 'add_listing_page_frontend', $listing_info);?>
+                    </div>
+                    <?php } ?>
 
 
                     <!--Image Uploader-->

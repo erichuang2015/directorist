@@ -123,12 +123,12 @@ $is_disable_price = get_directorist_option('disable_list_price');
                                                         $exp_date           = get_post_meta($post->ID, '_expiry_date', true);
                                                         $never_exp           = get_post_meta($post->ID, '_never_expire', true);
                                                         $exp_text = ! empty( $never_exp ) ? __( 'Never Expires', ATBDP_TEXTDOMAIN ) :  date_i18n( $date_format, strtotime( $exp_date ) ); ?>
-                                                        <p><?php printf(__('Expiration: %s', ATBDP_TEXTDOMAIN), $exp_text); ?></p>
-                                                        <p><?php printf(__('Listing Status: %s', ATBDP_TEXTDOMAIN), get_post_status_object($post->post_status)->label); ?></p>
+                                                        <p><?php printf(__('<span>Expiration:</span> %s', ATBDP_TEXTDOMAIN), $exp_text); ?></p>
+                                                        <p><?php printf(__('<span>Listing Status:</span> %s', ATBDP_TEXTDOMAIN), get_post_status_object($post->post_status)->label); ?></p>
                                                         <?php if ($featured_active){
                                                             $f_status = !empty($featured) ? __('Yes', ATBDP_TEXTDOMAIN) : __('No', ATBDP_TEXTDOMAIN);
                                                             ?>
-                                                            <p><?php printf(__('Is this Featured: %s', ATBDP_TEXTDOMAIN), $f_status); ?></p>
+                                                            <p><?php printf(__('<span>Is this Featured:</span> %s', ATBDP_TEXTDOMAIN), $f_status); ?></p>
                                                         <?php }
 
                                                         atbdp_display_price($price, $is_disable_price);
