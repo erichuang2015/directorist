@@ -380,7 +380,9 @@ input[type='checkbox']{
 .directorist .single_directory_post .content_upper{
 	text-align: center;
 }
-
+.directorist .single_directory_post .content_upper p{
+	text-align: center;
+}
 .directorist .content_upper p{
 	color: #676767;
 	margin: 0;
@@ -1542,6 +1544,8 @@ textarea.directory_field{
 }
 .directorist .user_info_wrap .directory_field{
 	margin-bottom: 25px;
+	padding-left: 15px;
+	padding-right: 15px;
 }
 #favorite .directorist .db_btn_area button {
 	width: auto;
@@ -1694,12 +1698,11 @@ textarea.directory_field{
 #atbdp_review_form .rating{
 	margin-bottom: 15px;
 }
-.directorist .cor-wrap{
-	margin-top: 40px;
-	margin-bottom: 20px;
-	padding-top: 10px;
-	border-top: 1px solid #ededed;
-}
+/*.directorist .cor-wrap{*/
+	/*margin-top: 40px;*/
+	/*margin-bottom: 20px;*/
+	/*padding-top: 10px;*/
+/*}*/
 .directorist .cor-wrap input,
 .directorist .cor-wrap label{
 	display: inline-block;
@@ -2161,3 +2164,67 @@ span.remove_image {
 	}
 }
 
+.directorist input#atbdp_checkout_submit_btn {
+	width: auto;
+	margin: 0 0 0 5px;
+}
+.directorist span.directorist-ribbon{
+	font-size: 12px;
+	padding: 2px 5px;
+	border-radius: 4px;
+}
+.directorist span.directorist-ribbon.featured-ribbon {
+	background: #f8dc1b;
+	color: #4d1c1c;
+}
+.directorist article.directorist-featured-listings {
+	background: #f8fcf5;
+}
+.directorist .directorist .single_directory_post .listing-meta p{
+	margin-bottom: 0;
+}
+.directorist .directorist .single_directory_post .listing-meta p span{
+	font-weight: 500;
+	color: #000;
+	margin-right: 7px;
+}
+.directorist .atbdp_info_module{
+	display: block;
+	width: 100%;
+}
+.directorist .atbdp_info_module:before, .atbdp_info_module:after{
+	content: '';
+	clear: both;
+	display: table;
+}
+.directorist .atbdp_info_module {
+	display: block;
+	padding-bottom: 30px;
+	border-bottom: 1px solid #ededed;
+	margin-bottom: 50px;
+}
+.directorist .directorist-contact-fields .directorist_contact_form_title{
+	margin-bottom: 20px;
+}
+.directorist input#bank_transfer {
+	width: auto;
+	margin-right: 10px;
+}
+.directorist .directorist-contact-fields .cor-wrap {
+	margin-top: 25px;
+	margin-bottom: 20px;
+}
+.directorist .cor-wrap.disable_open_hour{
+	margin-bottom: 15px;
+}
+.directorist .enable247hour{
+	margin-bottom: 20px;
+}
+.directorist  .listing-meta.db_btn_area p{
+	margin: 0;
+}
+.directorist  .listing-meta.db_btn_area p span{
+	font-weight: 500;
+	color: #333;
+	margin-right: 10px;
+}
