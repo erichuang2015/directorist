@@ -18,10 +18,17 @@ class ATBDP_Cron {
     public function __construct()
     {
         //init wp schedule
-        //add_action('init', array($this, 'schedule_events')); // for testing on local host use init hook
+        //add_action('wp', array($this, 'schedule_events')); // for testing on local host use init hook
         add_action('init', function (){
-            $this->update_renewal_status();
+            /*$this->update_renewal_status();
+            $this->update_expired_status();
+            $this->delete_expired_listings();*/
+            // test delete expire listings manually.
+            //$this->delete_expired_listings();
+            //wp_delete_post( 1477, false );
+            //wp_trash_post(1472);
         });
+
     }
 
     /**
@@ -30,20 +37,9 @@ class ATBDP_Cron {
      */
     public function schedule_events()
     {
-        add_filter( 'cron_schedules', 'example_add_cron_interval' );
-
-        function example_add_cron_interval( $schedules ) {
-            $schedules['five_seconds'] = array(
-                'interval' => 10,
-                'display'  => esc_html__( 'Every Five Seconds' ),
-            );
-
-            return $schedules;
-        }
-
 
         if( ! wp_next_scheduled( 'directorist_hourly_scheduled_events' ) ) {
-            wp_schedule_event( time(), 'five_seconds', 'directorist_hourly_scheduled_events' );
+            wp_schedule_event( time(), 'hourly', 'directorist_hourly_scheduled_events' );
         }
 
 
@@ -63,12 +59,12 @@ class ATBDP_Cron {
      * @access   public
      */
     public function hourly_scheduled_events() {
-        /*
+        
         $this->update_renewal_status(); // we will send about to expire notification here
         $this->update_expired_status();  // we will send expired notification here
         $this->send_renewal_reminders(); // we will send renewal notification after expiration here
         $this->delete_expired_listings(); // we will delete listings here certain days after expiration here.
-        */
+
 
     }
 
@@ -140,6 +136,8 @@ class ATBDP_Cron {
         $can_renew               = get_directorist_option('can_renew_listing');
         $email_renewal_day       = get_directorist_option('email_renewal_day');
         $delete_in_days          = get_directorist_option('delete_expired_listings_after');
+        $del_exp_l               = get_directorist_option('delete_expired_listing',1);
+        // add renewal reminder days to deletion thresholds
         $delete_threshold = $can_renew ? (int) $email_renewal_day + (int) $delete_in_days : $delete_in_days;
 
         // Define the query
@@ -170,8 +168,14 @@ class ATBDP_Cron {
                     '_featured' => 0,
                     '_renewal_reminder_sent' => 0,
                 );
-                if( $delete_threshold > 0 ) {
-                    $metas['_deletion_date'] = date( 'Y-m-d H:i:s', strtotime( "+".$delete_threshold." days" ) );
+                // delete expired listings?
+                if ($del_exp_l){
+                    // if deletion threshold is set then add deletion date
+                    if( $delete_threshold > 0 ) {
+                        $metas['_deletion_date'] = date( 'Y-m-d H:i:s', strtotime( "+".$delete_threshold." days" ) );
+                    }else{
+                        $metas['_deletion_date'] = date( 'Y-m-d H:i:s', current_time('timestamp'));
+                    }
                 }
                 wp_update_post( array(
                     'ID'           => $listing->ID,
@@ -250,43 +254,48 @@ class ATBDP_Cron {
      */
     private function delete_expired_listings() {
 
-        $delete_in_days = (int) get_directorist_option('delete_expired_listings_after');
-        // check if user wanna delete the post.
-        //@todo; in future, let the admin decide to delete or hide the post from the public. because direct deletion is not a good idea.
-        if( $delete_in_days > 0 ) {
-
-            // Define the query
-            $args = array(
-                'post_type'      => ATBDP_POST_TYPE,
-                'posts_per_page' => -1,
-                'post_status'    => 'private',
-                'meta_query'     => array(
-                    array(
-                        'key'	  => '_listing_status',
-                        'value'	  => 'expired',
-                    ),
-                    array(
-                        'key'	  => '_deletion_date',
-                        'value'	  => current_time( 'mysql' ),
-                        'compare' => '<',
-                        'type'    => 'DATETIME'
-                    ),
-                    array(
-                        'key'	  => '_never_expire',
-                        'value' => 0,
-                    )
+        $del_exp_l               = get_directorist_option('delete_expired_listing',1);
+        if (!$del_exp_l) return; // vail if admin does not want to delete expired listing
+        $del_mode = get_directorist_option('deletion_mode', 'trash'); // force_delete | trash
+        $force = 'force_delete' == $del_mode ? true : false; // for now we are just focusing on Force Delete or Not. later we may consider more
+        // Define the query
+        $args = array(
+            'post_type'      => ATBDP_POST_TYPE,
+            'posts_per_page' => -1,
+            'post_status'    => 'private',
+            'meta_query'     => array(
+                array(
+                    'key'	  => '_listing_status',
+                    'value'	  => 'expired',
+                ),
+                array(
+                    'key'	  => '_deletion_date',
+                    'value'	  => current_time( 'mysql' ),
+                    'compare' => '<',
+                    'type'    => 'DATETIME'
+                ),
+                array(
+                    'key'	  => '_never_expire',
+                    'value' => 0,
                 )
-            );
+            )
+        );
 
-            $listings  = new WP_Query( $args );
+        $listings  = new WP_Query( $args );
 
-            if( $listings ->found_posts ) {
-                foreach ($listings->posts as $listing) {
-                    // Delete the listing @todo; Let the admin decide whether to delete the post directly or he wants to move to trash
-                    wp_delete_post( $listing->ID, true );
+        if( $listings ->found_posts ) {
+            // should we delete or trash? @todo; later think about adding option to change post status (eg to hidden) instead of deleting them.
+            foreach ($listings->posts as $listing) {
+                if ($force){
+                    wp_delete_post( $listing->ID, $force );
+                }else{
+                    wp_trash_post($listing->ID);
                 }
+                do_action('atbdp_deleted_expired_listings', $listing->ID);
+
             }
         }
+
     }
 }
 

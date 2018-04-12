@@ -771,6 +771,7 @@ The Administrator of ==SITE_NAME==
             'listing_submitted',
             'payment_received',
             'listing_published',
+            'listing_deleted',
         ));
     }
 
@@ -792,6 +793,7 @@ The Administrator of ==SITE_NAME==
             'listing_renewed',
             'order_completed',
             'listing_edited',
+            'listing_deleted',
         ));
     }
 
@@ -826,6 +828,10 @@ The Administrator of ==SITE_NAME==
             array(
                 'value' => 'payment_received',
                 'label' => __('Payment Received', ATBDP_TEXTDOMAIN),
+            ),
+            array(
+                'value' => 'listing_deleted',
+                'label' => __('Listing Deleted', ATBDP_TEXTDOMAIN),
             ),
         ));
     }
@@ -1253,15 +1259,43 @@ The Administrator of ==SITE_NAME==
                         'default' => 1,
                     ),
                     array(
+                        'type' => 'toggle',
+                        'name' => 'delete_expired_listing',
+                        'label' => __('Delete Expired Listings', ATBDP_TEXTDOMAIN),
+                        'description' => __('Here YES means expired listings will be deleted (after threshold of course). NO means expired listings will not be deleted. Default is YES.', ATBDP_TEXTDOMAIN),
+                        'default' => 1,
+                    ),
+                    array(
                         'type' => 'slider',
                         'name' => 'delete_expired_listings_after',
-                        'label' => __('Delete Expired Listings After (days) of Expiration', ATBDP_TEXTDOMAIN),
-                        'description' => __( 'Set how many days after the expiration of a listing you would like the listings gets deleted. Set it 0 to delete expired listings immediately.', ATBDP_TEXTDOMAIN ),
+                        'label' => __('Delete/Trash Expired Listings After (days) of Expiration', ATBDP_TEXTDOMAIN),
+                        'description' => __( 'Set how many days after the expiration of a listing you would like the listings gets tashed/deleted. Set it 0 to delete/trash expired listings immediately.', ATBDP_TEXTDOMAIN ),
                         'min' => '0',
                         'max' => '180',
                         'step' => '1',
                         'default' => 15,
                         'validation' => 'numeric',
+                    ),
+                    array(
+                        'type' => 'select',
+                        'name' => 'deletion_mode',
+                        'label' => __( 'Delete or Trash Expired Listings', ATBDP_TEXTDOMAIN ),
+                        'items' => array(
+                            array(
+                                'value' => 'force_delete',
+                                'label' => __('Delete Permanently', ATBDP_TEXTDOMAIN),
+                            ),
+                            array(
+                                'value' => 'trash',
+                                'label' => __('Move to Trash', ATBDP_TEXTDOMAIN),
+                            ),
+                        ),
+                        'description' => __( 'Choose the Default actions after a listing reaches its deletion threshold. Default action is to trash them.', ATBDP_TEXTDOMAIN ),
+/*@todo; later add option to make listing status hidden or invalid for expired listing, so that admin may retain expired listings without having them deleted after the deletion threshold */
+                        'default' => array(
+                            'value' => 'trash',
+                            'label' => __('Move to Trash', ATBDP_TEXTDOMAIN),
+                        ),
                     ),
                     array(
                         'type' => 'select',

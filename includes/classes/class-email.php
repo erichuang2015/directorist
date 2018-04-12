@@ -28,8 +28,9 @@ class ATBDP_Email {
         add_action('atbdp_status_updated_to_renewal', array($this, 'notify_owner_listing_to_expire'));
         /*Fire up email for expired listings*/
         add_action('atbdp_listing_expired', array($this, 'notify_owner_listing_expired'));
-        //@todo; send admin a notification too for expired listings.
+        //@todo; send admin a notification too for expired listings. Think about it later or give admin option??
         add_action('atbdp_send_renewal_reminder', array($this, 'notify_owner_to_renew'));
+        //add_action('atbdp_deleted_expired_listings', array($this, 'notify_owner_listing_deleted'));
 
 
     }
@@ -79,7 +80,7 @@ class ATBDP_Email {
         $current_time       = current_time( 'timestamp' );
         $exp_date           = get_post_meta($listing_id, '_expiry_date', true);
         $never_exp           = get_post_meta($listing_id, '_never_expire', true);
-        $renewal_link       = ATBDP_Permalink::get_renewal_page_link($listing_id); // @todo; add renewal link later
+        $renewal_link       = ATBDP_Permalink::get_renewal_page_link($listing_id);
         $cats               = wp_get_object_terms( $listing_id, ATBDP_CATEGORY, array( 'fields' => 'names' ) );/*@todo, maybe we can use get_the_terms() for utilizing some default caching???*/
         $cat_name           = !empty($cats) ? $cats[0] : '';/*@todo; if a listing is attached to multiple cats, we can print more than one cat later.*/
         $find_replace =  array(
@@ -483,6 +484,27 @@ This email is sent automatically for information purpose only. Please do not res
         return $this->send_mail( $user->user_email, $sub, $body, $this->get_email_headers() );
     }
 
+
+    /**
+     * It notifies the listing owner when the listing is deleted
+     *
+     * @since 3.1.0
+     * @param int $listing_id
+     * @return bool Whether the email was sent successfully or not.
+     */
+    public function notify_owner_listing_deleted($listing_id)
+    {
+        if (get_directorist_option('disable_email_notification')) return false;
+        if(! in_array( 'listing_deleted', get_directorist_option('notify_user', array()) ) ) return false;
+        $user = $this->get_owner($listing_id);
+        $sub  = $this->replace_in_content(get_directorist_option("email_sub_deleted_listing"), null, $listing_id, $user);
+        $body = $this->replace_in_content(get_directorist_option("email_tmpl_deleted_listing"), null, $listing_id, $user);
+
+        return $this->send_mail( $user->user_email, $sub, $body, $this->get_email_headers() );
+
+    }
+
+
     /**
      * It notifies admin via email when an order is created
      *
@@ -582,6 +604,7 @@ This email is sent automatically for information purpose only. Please do not res
         return $this->send_mail( $this->get_admin_email_list(), $sub, $this->replace_in_content($body, null, $listing_id), $this->get_email_headers() );
 
     }
+
 
 
 

@@ -18,6 +18,7 @@ if(!class_exists('ATBDP_Custom_Post')):
             add_action('manage_'.ATBDP_POST_TYPE.'_posts_custom_column', array($this, 'manage_listing_columns'), 10, 2);
             /*make column sortable*/
             add_filter( 'manage_edit-'.ATBDP_POST_TYPE.'_sortable_columns', array($this, 'make_sortable_column'), 10, 1 );
+            add_filter( 'post_row_actions', array($this, 'add_listing_id_row'), 10, 2 );
 
 
 
@@ -175,9 +176,9 @@ if(!class_exists('ATBDP_Custom_Post')):
                     echo ! empty( $never_exp ) ? __( 'Never Expires', ATBDP_TEXTDOMAIN ) :  date_i18n( "$date_format @  $time_format" , strtotime( $exp_date ) );
                     break;
                 case 'atbdp_date':
-                    $t = strtotime(get_the_time( 'U', $post_id ));
+                    $t = get_the_time( 'U' );
                     echo date_i18n( $date_format , $t );
-                    printf(__(' ( %s ago )', ATBDP_TEXTDOMAIN), human_time_diff($t, time()));
+                    printf(__(' ( %s ago )', ATBDP_TEXTDOMAIN), human_time_diff($t));
 
                     break;
 
@@ -208,8 +209,18 @@ if(!class_exists('ATBDP_Custom_Post')):
             return $title;
 
         }
-
-
+        /**
+         * It adds an ID row on the listings list page
+         *
+         * @param array     $actions        The array of post actions
+         * @param WP_Post   $post           The current post post
+         * @return array    $actions        It returns the array of post actions after adding an ID row
+         */
+        public function add_listing_id_row($actions, WP_Post $post)
+        {
+            if (  ATBDP_POST_TYPE != $post->post_type) return $actions;
+            return array_merge(array('ID'=> "ID: {$post->ID}"), $actions);
+        }
 
 
     }
