@@ -188,10 +188,14 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                                     <?php } ?>
                                 </select>
                             </div>
-                            <?php if (!$disable_price) { ?>
+                            <?php if (!$disable_price) {
+                                $currency = get_directorist_option('g_currency', 'USD');
+                                ?>
                             <div class="form-group">
                                 <!--@todo; Add currency Name near price-->
-                                <label for="price"><?php esc_html_e('Price ( Optional---Leave it blank to hide it)', ATBDP_TEXTDOMAIN) ?></label>
+                                <label for="price"><?php 
+                                    printf(esc_html__('Price in [%s] ( Optional---Leave it blank to hide it)', ATBDP_TEXTDOMAIN), sanitize_text_field($currency));
+                                     ?></label>
                                 <input type="text" id="price" name="price" value="<?= !empty($price) ? esc_attr($price): ''; ?>" class="form-control directory_field" placeholder="<?= __('Price of this listing. Eg. 100', ATBDP_TEXTDOMAIN); ?>"/>
                             </div>
                             <?php } ?>
