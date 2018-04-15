@@ -328,6 +328,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                             </div> <!--ends .col-md-12-->
                         </div><!--ends .row-->
                     </div><!--ends contact information-->
+                    <?php } ?>
                     <div class="atbdp_info_module">
                         <?php
                         /**
@@ -338,7 +339,6 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                          **/
                         do_action('atbdp_edit_after_googlemap_preview', 'add_listing_page_frontend', $listing_info);?>
                     </div>
-                    <?php } ?>
 
 
                     <!--Image Uploader-->

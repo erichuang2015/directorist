@@ -20,6 +20,11 @@ class ATBDP_Shortcode {
         $checkout = new ATBDP_Checkout;
         add_shortcode('directorist_checkout', array($checkout, 'display_checkout_content'));
         add_shortcode('directorist_payment_receipt', array($checkout, 'payment_receipt'));
+        add_shortcode('shortcode_test', function (){
+
+           return '<h1> hello from the shortcode</h1>';
+        });
+
 
 
     }
@@ -84,6 +89,24 @@ class ATBDP_Shortcode {
 
         if (!is_empty_v($tax_queries)){
             $args['tax_query'] = $tax_queries;
+        }
+
+        $meta_queries = array();
+        // Show featured listing first. Eg. Order by Featured Listings eg.
+        $featured_active = get_directorist_option('enable_featured_listing');
+        if ($featured_active){
+            $meta_queries[] = array(
+                'key'     => '_featured',
+                'type'    => 'NUMERIC',
+                'compare' => 'EXISTS',
+            );
+
+            $args['orderby']  = array(
+                'meta_value_num' => 'DESC',
+            );
+        }
+        if (!is_empty_v($meta_queries)){
+            $args['meta_query'] = $meta_queries;
         }
 
         $listings = new WP_Query(apply_filters('atbdp_search_query_args', $args));

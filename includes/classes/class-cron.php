@@ -18,16 +18,7 @@ class ATBDP_Cron {
     public function __construct()
     {
         //init wp schedule
-        //add_action('wp', array($this, 'schedule_events')); // for testing on local host use init hook
-        add_action('init', function (){
-            /*$this->update_renewal_status();
-            $this->update_expired_status();
-            $this->delete_expired_listings();*/
-            // test delete expire listings manually.
-            //$this->delete_expired_listings();
-            //wp_delete_post( 1477, false );
-            //wp_trash_post(1472);
-        });
+        add_action('wp', array($this, 'schedule_events')); // for testing on local host use init hook, otherwise, we wont be able to vardump, we will have to log the data to view.
 
     }
 
@@ -37,15 +28,12 @@ class ATBDP_Cron {
      */
     public function schedule_events()
     {
-
+        // register our cron hook
         if( ! wp_next_scheduled( 'directorist_hourly_scheduled_events' ) ) {
             wp_schedule_event( time(), 'hourly', 'directorist_hourly_scheduled_events' );
         }
-
-
-        // run the schedules events
+        // run the schedules events on our cron hooked
         add_action('directorist_hourly_scheduled_events', array($this, 'hourly_scheduled_events'));
-        //@todo; Test cron integration using short intervals. also test all cron functions manually before finalizing this class.
     }
     function bl_print_tasks() {
         echo '<pre>'; print_r( _get_cron_array() ); echo '</pre>';
@@ -78,11 +66,8 @@ class ATBDP_Cron {
 
         $can_renew       = get_directorist_option('can_renew_listing');
         $renew_email_threshold = get_directorist_option('email_to_expire_day'); // before how many days of expiration, a renewal message should be sent
-        //var_dump('user can renew', $can_renew);
-        //var_dump(' email threshold', $renew_email_threshold);
         if( $can_renew && $renew_email_threshold > 0 ) {
             $renew_email_threshold_date = date( 'Y-m-d H:i:s', strtotime( "+{$renew_email_threshold} days" ) );
-            //padded_var_dump('threadhold date', $renew_email_threshold_date);
 
             // Define the query
             $args = array(
@@ -109,11 +94,8 @@ class ATBDP_Cron {
             );
 
             $listings  = new WP_Query( $args ); // get all the post that has post_status only and update their status and fire an email
-            //padded_var_dump($listings->posts);
             if ($listings->found_posts){
                 foreach ($listings->posts as $listing){
-                    //padded_var_dump('Status: '. get_post_meta($listing->ID, '_listing_status', true));
-                    //padded_var_dump('ID : '.$listing->ID . ' Expire Date : '.get_post_meta($listing->ID, '_expiry_date', true));
                     update_post_meta( $listing->ID, '_listing_status', 'renewal' );
                     // hook for dev.
                     do_action('atbdp_status_updated_to_renewal', $listing->ID);

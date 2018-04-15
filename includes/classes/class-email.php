@@ -30,7 +30,9 @@ class ATBDP_Email {
         add_action('atbdp_listing_expired', array($this, 'notify_owner_listing_expired'));
         //@todo; send admin a notification too for expired listings. Think about it later or give admin option??
         add_action('atbdp_send_renewal_reminder', array($this, 'notify_owner_to_renew'));
-        //add_action('atbdp_deleted_expired_listings', array($this, 'notify_owner_listing_deleted'));
+        /*Fire up email for deleted/trashed listings*/
+        add_action('atbdp_deleted_expired_listings', array($this, 'notify_owner_listing_deleted'));
+        add_action('atbdp_deleted_expired_listings', array($this, 'notify_admin_listing_deleted'));
 
 
     }
@@ -146,6 +148,28 @@ class ATBDP_Email {
     public function get_owner_email($listing_id)
     {
         return get_the_author_meta( 'user_email', get_post_field( 'post_author', $listing_id ));
+    }
+
+    /**
+     * Get admin email template for listing deleted email
+     *
+     * @since 3.1.0
+     * @return string It returns the email template to send to the admin when a listing is deleted or archived
+     */
+    public function get_listing_deleted_admin_tmpl()
+    {
+        return __("
+Dear Administrator,
+
+The following Listing has been deleted on your website ==SITE_NAME==
+
+Listing Summery:
+ID: ==LISTING_ID==
+Title: ==LISTING_TITLE==
+
+
+This email is sent automatically for information purpose only. Please do not respond to this.
+", ATBDP_TEXTDOMAIN);
     }
 
     /**
@@ -501,6 +525,25 @@ This email is sent automatically for information purpose only. Please do not res
         $body = $this->replace_in_content(get_directorist_option("email_tmpl_deleted_listing"), null, $listing_id, $user);
 
         return $this->send_mail( $user->user_email, $sub, $body, $this->get_email_headers() );
+
+    }
+
+
+    /**
+     * It notifies admin via email when a listing has been deleted
+     *
+     * @since 3.1.0
+     * @param int $listing_id   The listing ID
+     * @return bool Whether the email was sent successfully or not.
+     */
+    public function notify_admin_listing_deleted($listing_id)
+    {
+        if (get_directorist_option('disable_email_notification')) return false; //vail if email notification is off
+        if( ! in_array( 'listing_deleted', get_directorist_option('notify_admin', array()) ) ) return false; // vail if order created notification to admin off
+        $s = __( '[==SITE_NAME==] A Listing has been deleted [ID#: ==LISTING_ID==] on your website', ATBDP_TEXTDOMAIN );
+        $sub = $this->replace_in_content($s, null, $listing_id);
+        $body = $this->replace_in_content($this->get_listing_deleted_admin_tmpl(), null, $listing_id);
+        return $this->send_mail( $this->get_admin_email_list(), $sub, $body, $this->get_email_headers() );
 
     }
 

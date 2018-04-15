@@ -182,14 +182,14 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                         </div>
 
                         <?php
-                        /**
-                         * It fires after the google map preview area
-                         * @param string $type Page type.
-                         * @param array $listing_info Information of the current listing
-                         * @since 1.1.1
-                         **/
-                        do_action('atbdp_edit_after_googlemap_preview', 'add_listing_page_backend', $args['listing_info']);
                     }
+                    /**
+                     * It fires after the google map preview area
+                     * @param string $type Page type.
+                     * @param array $listing_info Information of the current listing
+                     * @since 1.1.1
+                     **/
+                    do_action('atbdp_edit_after_googlemap_preview', 'add_listing_page_backend', $args['listing_info']);
                     ?>
                 </div><!--ends add_listing_form_wrapper-->
 

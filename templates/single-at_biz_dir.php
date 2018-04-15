@@ -47,11 +47,13 @@ $is_disable_price = get_directorist_option('disable_list_price');
 $p_lnk = get_the_permalink();
 $p_title = get_the_title();
 $featured = get_post_meta(get_the_ID(), '_featured', true);
+// make main column size 12 when sidebar or submit widget is active @todo; later make the listing submit widget as real widget instead of hard code
+$main_col_size = is_active_sidebar( 'right-sidebar-listing' ) || !$disable_s_widget ? 'col-md-8' : 'col-md-12';
 ?>
 
 <section class="directorist directory_wrapper">
         <div class="row">
-                <div class="col-md-8 col-sm-8">
+                <div class="<?php echo esc_attr($main_col_size); ?>">
                     <div class="single_listing_info">
                         <?php if (!empty($image_links)){
                             ?>
@@ -127,7 +129,20 @@ $featured = get_post_meta(get_the_ID(), '_featured', true);
                             </ul>
 
                             <div class="about_detail">
-                                <?php echo wp_kses($post->post_content, wp_kses_allowed_html('post')); ?>
+                                <?php
+                                /*
+                                 * Automatic embedding done by WP by hooking to the_content filter
+                                 * As we are outputting the data on the content filter before them, therefore it is our duty to parse the embed using the WP_Embed object manually.
+                                 * Here run_shortcode() will parse [embed]url[embed]
+                                 * and autoembed() will parse any embeddable url like https://youtube.com/?v=vidoecode etc.
+                                 * then do_shortcode() will parse the rest of the shortcodes
+                                 * */
+                                global $wp_embed;
+                                $cont = $wp_embed->autoembed($wp_embed->run_shortcode($post->post_content));
+                                echo do_shortcode($cont);
+
+                                ?>
+
                             </div>
                         <?php if (!$disable_sharing) { ?>
                             <div class="director_social_wrap">
@@ -276,48 +291,6 @@ $featured = get_post_meta(get_the_ID(), '_featured', true);
                     do_action('atbdp_after_single_listing', $post, $listing_info);
                     ?>
                 </div>
-
-
-                <?php if (!$disable_s_widget){  ?>
-                <!--@todo; Maybe we can let user decide to use side bar or full screen listing without sidebar-->
-                <!--For now let user hide the default widget below and later let the user choose whether he wants to use sidebar or not at all.-->
-                <!--SIDE BAR -->
-                <div class="col-md-4 col-sm-4">
-                    <div class="directory_user_area">
-                        <div class="directory_are_title">
-                            <h4><?php _e('Submit Your Item', ATBDP_TEXTDOMAIN); ?></h4>
-                        </div>
-
-                        <div class="directory_user_area_form">
-                            <a href="<?= esc_url(ATBDP_Permalink::get_add_listing_page_link()); ?>" class="<?= atbdp_directorist_button_classes(); ?>"><?php _e('Submit New Listing', ATBDP_TEXTDOMAIN); ?></a>
-
-                            <?php
-                            if (!$disable_widget_login) {
-                                atbdp_after_new_listing_button(); // fires an empty action to let dev extend by adding anything here
-                                if (!is_user_logged_in()) {
-                                    wp_login_form();
-                                    wp_register();
-                                }
-                                /**
-                                 * Fires after the side bar login from is rendered on single listing page
-                                 *
-                                 *
-                                 * @since 1.0.0
-                                 *
-                                 * @param object|WP_post $post The current post object which is our listing post
-                                 * @param array $listing_info The meta information of the current listing
-                                 */
-
-                                do_action('atbdp_after_sidebar_login_form', $post, $listing_info);
-                            }
-                            ?>
-                        </div> <!--ends .directory_user_area_form-->
-                    </div> <!--ends .directory_user_area-->
-
-                </div> <!--ends .col-md-4 col-sm-4-->
-            <?php } ?>
-
-
             <?php
             include ATBDP_TEMPLATES_DIR.'sidebar-listing.php';
             ?>

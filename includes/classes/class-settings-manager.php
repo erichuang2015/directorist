@@ -193,6 +193,12 @@ class ATBDP_Settings_Manager {
                         'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
                         'fields' => $this->email_renewed_tmpl_settings_fields(),
                     ),
+                    'deleted_eml_templates' => array(
+                        'type' => 'section',
+                        'title' => __('For deleted/trashed Listings', ATBDP_TEXTDOMAIN),
+                        'description' => __('You can Customize Email and Notification Templates related settings here. Do not forget to save the changes.', ATBDP_TEXTDOMAIN),
+                        'fields' => $this->email_deleted_tmpl_settings_fields(),
+                    ),
                     'new_order_created' => array(
                         'type' => 'section',
                         'title' => __('For New Order (Created)', ATBDP_TEXTDOMAIN),
@@ -454,7 +460,7 @@ The Administrator of ==SITE_NAME==
         $tmpl = __("
 Dear ==NAME==,
 
-We have noticed that you might have forget to renew your listing '==LISTING_TITLE==' at ==SITE_LINK==. We would to remind you that it expired on ==EXPIRATION_DATE==. But please don't worry.  You can still renew it by clicking this link: ==RENEWAL_LINK==.
+We have noticed that you might have forgot to renew your listing '==LISTING_TITLE==' at ==SITE_LINK==. We would like to remind you that it expired on ==EXPIRATION_DATE==. But please don't worry.  You can still renew it by clicking this link: ==RENEWAL_LINK==.
 
 Thanks,
 The Administrator of ==SITE_NAME==
@@ -524,6 +530,44 @@ The Administrator of ==SITE_NAME==
                 'name' => 'email_tmpl_renewed_listing',
                 'label' => __('Email Body', ATBDP_TEXTDOMAIN),
                 'description' => __('Edit the email template for sending to the user his/her listings has renewed successfully. HTML content is allowed too.', ATBDP_TEXTDOMAIN),
+                'default' => $tmpl,
+            ),
+
+
+        ));
+    }
+
+    /**
+     * Get all the settings fields for the deleted listing email template section
+     * @since 3.1.0
+     * @return array
+     */
+    public function email_deleted_tmpl_settings_fields()
+    {
+        // let's define default data
+        $sub = __('[==SITE_NAME==] : Your Listing "==LISTING_TITLE==" Has Been Deleted', ATBDP_TEXTDOMAIN);
+        $tmpl = __("
+Dear ==NAME==,
+
+Your listing '==LISTING_LINK==' with the ID #==LISTING_ID== has been deleted successfully at ==SITE_LINK==.
+
+Thanks,
+The Administrator of ==SITE_NAME==
+", ATBDP_TEXTDOMAIN);
+
+        return apply_filters('atbdp_email_deleted_tmpl_settings_fields', array(
+            array(
+                'type' => 'textbox',
+                'name' => 'email_sub_deleted_listing',
+                'label' => __('Email Subject', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the subject for sending to the user when his/her listings has deleted successfully.', ATBDP_TEXTDOMAIN),
+                'default' => $sub,
+            ),
+            array(
+                'type' => 'textarea',
+                'name' => 'email_tmpl_deleted_listing',
+                'label' => __('Email Body', ATBDP_TEXTDOMAIN),
+                'description' => __('Edit the email template for sending to the user when his/her listings has deleted successfully. HTML content is allowed too.', ATBDP_TEXTDOMAIN),
                 'default' => $tmpl,
             ),
 
@@ -1261,7 +1305,7 @@ The Administrator of ==SITE_NAME==
                     array(
                         'type' => 'toggle',
                         'name' => 'delete_expired_listing',
-                        'label' => __('Delete Expired Listings', ATBDP_TEXTDOMAIN),
+                        'label' => __('Delete/Trash Expired Listings', ATBDP_TEXTDOMAIN),
                         'description' => __('Here YES means expired listings will be deleted (after threshold of course). NO means expired listings will not be deleted. Default is YES.', ATBDP_TEXTDOMAIN),
                         'default' => 1,
                     ),
@@ -1269,7 +1313,7 @@ The Administrator of ==SITE_NAME==
                         'type' => 'slider',
                         'name' => 'delete_expired_listings_after',
                         'label' => __('Delete/Trash Expired Listings After (days) of Expiration', ATBDP_TEXTDOMAIN),
-                        'description' => __( 'Set how many days after the expiration of a listing you would like the listings gets tashed/deleted. Set it 0 to delete/trash expired listings immediately.', ATBDP_TEXTDOMAIN ),
+                        'description' => __( 'Set how many days after the expiration of a listing you would like the listings gets tashed/deleted. Set it 0 to delete/trash expired listings immediately.(N.B. This option depends on the "Delete/Trash Expired Listings" option', ATBDP_TEXTDOMAIN ),
                         'min' => '0',
                         'max' => '180',
                         'step' => '1',
