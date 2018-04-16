@@ -13,9 +13,7 @@ if(!class_exists('ATBDP_Ajax_Handler')):
     class ATBDP_Ajax_Handler {
 
     /**
-     * Register two hooks for Two ajax actions.
-     * And make response to Two ajax calls from Member Post Screen
-     * To Add new Social link and new Skill info.
+     * It registers our ajax functions to our ajax hooks
      */
     public function __construct()
     {
@@ -25,7 +23,7 @@ if(!class_exists('ATBDP_Ajax_Handler')):
 /*        add_action( 'wp_ajax_nopriv_save_listing_review', array($this, 'save_listing_review')); // don not allow unregistered user to submit review*/
         add_action( 'wp_ajax_load_more_review', array($this, 'load_more_review')); // load more reviews to the front end single page
         add_action( 'wp_ajax_nopriv_load_more_review', array($this, 'load_more_review'));// load more reviews for non logged in user too
-        add_action('wp_ajax_remove_listing', array($this, 'remove_listing')); //@TODO; complete it later
+        add_action('wp_ajax_remove_listing', array($this, 'remove_listing')); //delete a listing
         add_action('wp_ajax_update_user_profile', array($this, 'update_user_profile'));
 
         /*CHECKOUT RELATED STUFF*/
@@ -82,9 +80,14 @@ if(!class_exists('ATBDP_Ajax_Handler')):
     {
         // delete the listing from here. first check the nonce and then delete and then send success.
         // save the data if nonce is good and data is valid
-        if (valid_js_nonce()) {
-            if ( !empty($_POST['listing_id'])){
-                $success = ATBDP()->listing->db->delete_listing_by_id(absint($_POST['listing_id']));
+        if (valid_js_nonce() && !empty($_POST['listing_id'])) {
+            $pid = (int) $_POST['listing_id'];
+            // Check if the current user is the owner of the post
+            $listing = get_post($pid);
+            // delete the post if the current user is the owner of the listing
+            if (get_current_user_id() == $listing->post_author || current_user_can('delete_at_biz_dirs')){
+
+                $success = ATBDP()->listing->db->delete_listing_by_id($pid);
                 if ($success){
                     echo 'success';
                 }else{

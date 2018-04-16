@@ -28,6 +28,7 @@ if ( !defined('ATBDP_LANG_DIR') ) { define('ATBDP_LANG_DIR', dirname(plugin_base
 if ( !defined('ATBDP_NAME') ) { define('ATBDP_NAME', 'Directorist'); }
 // Plugin Post Type
 if ( !defined('ATBDP_POST_TYPE') ) { define('ATBDP_POST_TYPE', 'at_biz_dir'); }
+if ( !defined('ATBDP_ORDER_POST_TYPE') ) { define('ATBDP_ORDER_POST_TYPE', 'atbdp_orders'); }
 // Plugin Category Taxonomy
 if ( !defined('ATBDP_CATEGORY') ) { define('ATBDP_CATEGORY', ATBDP_POST_TYPE.'-category'); }
 // Plugin Location Taxonomy

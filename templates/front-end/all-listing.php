@@ -2,46 +2,6 @@
 !empty($args['data']) ? extract($args['data']) : array(); // data array contains all required var.
 $all_listings = !empty($all_listings) ? $all_listings : new WP_Query;
 $all_listing_title = !empty($all_listing_title) ? $all_listing_title : __('All Items', ATBDP_TEXTDOMAIN);
-// testing
-$send_before_days_date = date( 'Y-m-d H:i:s', strtotime( "+6 days" ) );
-//var_dump($send_before_days_date);
-// Define the query
-$dt = '2018-04-07 09:24:00';
-$args = array(
-    'post_type'      => ATBDP_POST_TYPE,
-    'posts_per_page' => -1,
-    'post_status'    => 'publish',
-    'meta_query'     => array(
-        //'relation'    => 'AND',
-        array(
-            'key'	  => '_listing_status',
-            'value'	  => 'post_status',
-        ),
-        /*array(
-            'key'	  => '_expiry_date',
-            //$dt            : '2018-04-3 09:24:00';
-            // post has time : '2018-04-07 09:24:00'
-            'value'	  => $dt,
-            'compare' => '<=', // it actually means that _expiry_date <= $dt;
-            'type'    => 'DATETIME'
-        ),*/
-        array(
-            'key'	  => '_never_expire',
-            'value'	  => 0,
-        ),
-        // if we are querying post to send notification to the user, then it is good to leave the post that that has send notification meta
-    )
-);
-//$listings  = new WP_Query( $args );
-/*var_dump('dumping our posts' );
-var_dump( $listings->posts );
-var_dump($send_before_days_date);
-var_dump($dt);*/
-/*foreach ($listings->posts as $list) {
-    //var_dump( 'Post ID :     '. $list->ID );
-    //var_dump( get_post_meta( $list->ID, '_expiry_date', true ) );
-
-}*/
 $is_disable_price = get_directorist_option('disable_list_price');
 
 ?>
@@ -79,8 +39,6 @@ $is_disable_price = get_directorist_option('disable_list_price');
                 <?php if ( $all_listings->have_posts() ) {
                     while ( $all_listings->have_posts() ) { $all_listings->the_post(); ?>
                         <?php
-                        //var_dump(get_post_meta(get_the_ID()));
-
                         /*RATING RELATED STUFF STARTS*/
                         $reviews = ATBDP()->review->db->count(array('post_id' => get_the_ID()));
                         $average = ATBDP()->review->get_average(get_the_ID());

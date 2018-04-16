@@ -49,7 +49,6 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
 $disable_map = get_directorist_option('disable_map');
 $disable_price = get_directorist_option('disable_list_price');
 $disable_contact_info = get_directorist_option('disable_contact_info');
-//padded_var_dump($disable_price, $disable_contact_info, $disable_map);
 ?>
 
 <div class="directorist directory_wrapper single_area">
@@ -202,7 +201,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                         <div class="row">
                             <!-- MAP or ADDRESS related information starts here -->
                             <div class="col-sm-12">
-                                <h2 class="directorist_contact_form_title">Contact Information</h2>
+                                <h3 class="directorist_contact_form_title"><?php esc_html_e('Contact Information', ATBDP_TEXTDOMAIN) ?></h3>
                                 <div class="form-check">
                                     <input type="checkbox" name="listing[hide_contact_info]" class="form-check-input" id="hide_contact_info" value="1" <?php if(!empty($hide_contact_info) ) {checked($hide_contact_info); } ?> >
                                     <label class="form-check-label" for="hide_contact_info"><?php esc_html_e('Check it to hide Contact Information for this listing', ATBDP_TEXTDOMAIN); ?></label>
@@ -212,7 +211,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <label for="address"><?php esc_html_e('Address:', ATBDP_TEXTDOMAIN); ?></label>
-                                    <input type="text" name="listing[address]" id="address" value="<?= !empty($address) ? esc_attr($address): ''; ?>" class="form-control directory_field" placeholder="<?= __('Listing address eg. Houghton Street London WC2A 2AE UK', ATBDP_TEXTDOMAIN); ?>"/>
+                                    <input type="text" name="listing[address]" id="address" value="<?= !empty($address) ? esc_attr($address): ''; ?>" class="form-control directory_field" placeholder="<?php esc_html_e('Listing address eg. Houghton Street London WC2A 2AE UK', ATBDP_TEXTDOMAIN); ?>"/>
                                 </div>
                             </div>
 
@@ -384,7 +383,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
 
             address_input = document.getElementById('address');
             address_input.addEventListener('focus', geolocate);
-            // this function will work on sites that uses SSL, it applies to Chrome especially, other broweser may allow location sharing without securing.
+            // this function will work on sites that uses SSL, it applies to Chrome especially, other browsers may allow location sharing without securing.
             function geolocate() {
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function (position) {
@@ -417,9 +416,6 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                 // Get the place details from the autocomplete object.
                 var place = autocomplete.getPlace();
 
-                //console.dir(place);
-                /*console.log('place has changed and now we are ready to rock on');
-                 console.log(place);*/
                 // set the value of input field to save them to the database
                 $manual_lat.val(place.geometry.location.lat());
                 $manual_lng.val(place.geometry.location.lng());
@@ -491,7 +487,6 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
             function geocodeAddress(geocoder, resultsMap) {
                 var address = address_input.value;
                 geocoder.geocode({'address': address}, function (results, status) {
-                    //console.dir(results);
                     if (status === 'OK') {
                         // set the value of input field to save them to the database
                         $manual_lat.val(results[0].geometry.location.lat());

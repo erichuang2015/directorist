@@ -79,10 +79,8 @@
 	margin-right: 11px;
 }
 .directorist .cor-wrap {
-	margin-top: 40px;
 	margin-bottom: 20px;
 	padding-top: 10px;
-	border-top: 1px solid #ededed;
 }
 /*
 ========================================
@@ -325,9 +323,38 @@ li.vp-current a.vp-js-menu-dropdown.vp-menu-dropdown {
     top: 14px;
     left: 5px;
 }
+
+.post-type-atbdp_orders .wrap a.page-title-action {
+    display: none !important;
+}
 /*Contact Information*/
 #poststuff h2.directorist_contact_form_title {
 	font-weight: 700;
 	font-size: 18px;
 	text-align: center;
+}
+
+
+/**/
+.add_listing_form_wrapper .module_title{
+	font-size: 22px;
+}
+.add_listing_form_wrapper  .atbdp_info_module {
+	padding-bottom: 25px;
+	border-bottom: 1px solid #ededed;
+	margin-bottom: 25px;
+}
+.add_listing_form_wrapper input[type='checkbox'] + label{
+	margin: 0;
+}
+.add_listing_form_wrapper .directorist-contact-fields .form-check{
+	margin-bottom: 30px;
+	margin-top: 10px;
+}
+.add_listing_form_wrapper  .enable247hour{
+	margin-bottom: 10px;
+}
+.add_listing_form_wrapper  .map_cor.cor-wrap{
+	margin-top: 30px;
+	margin-bottom: 20px;
 }

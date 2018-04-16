@@ -103,7 +103,6 @@ class ATBDP_Order {
             ?>
             <script type="text/javascript">
                 var atbdp_bulk_actions = <?php echo json_encode( atbdp_get_payment_bulk_actions() ); ?>;
-                //console.log(atbdp_bulk_actions);
                 /*$actions = array(
                  'set_to_created'   => __( "Set Status to Created", ATBDP_TEXTDOMAIN ),
                  'set_to_pending'   => __( "Set Status to Pending", ATBDP_TEXTDOMAIN ),

@@ -19,7 +19,7 @@ $map_zoom_level = get_directorist_option('map_zoom_level', 16);
 $disable_map = get_directorist_option('disable_map');
 $disable_price = get_directorist_option('disable_list_price');
 $disable_contact_info = get_directorist_option('disable_contact_info');
-//padded_var_dump($disable_price, $disable_contact_info, $disable_map);
+$currency = get_directorist_option('g_currency', 'USD');
 ?>
 <div class="directorist directory_wrapper">
     <div class="container-fluid">
@@ -36,36 +36,43 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                     do_action('atbdp_edit_before_tagline_fields', 'add_listing_page_backend', $args['listing_info']);
                     ?>
 
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <!--@todo; add toggle for the moto and excerpt later. -->
-                            <div class="form-group">
-                                <label for="atbdp_tagline"><?php esc_html_e('Tag-line/Motto', ATBDP_TEXTDOMAIN) ?></label>
-                                <input type="text" id="atbdp_tagline" name="listing[tagline]" value="<?= !empty($tagline) ? esc_attr($tagline): ''; ?>" class="form-control directory_field" placeholder="<?= __('Your Organization\'s motto or tag-line', ATBDP_TEXTDOMAIN); ?>"/>
-                            </div>
-                            <div class="form-group">
-                                <label for="atbdp_excerpt"><?php esc_html_e('Short Description/Excerpt:', ATBDP_TEXTDOMAIN) ?></label>
-                                <textarea name="listing[excerpt]" id="atbdp_excerpt"  class="form-control directory_field" cols="30" rows="5" placeholder="<?= __('Short Description or Excerpt', ATBDP_TEXTDOMAIN); ?>"><?= !empty($excerpt) ?esc_textarea( stripslashes($excerpt)): ''; ?></textarea>
-                            </div>
-                            <?php if (!$disable_price){ ?>
-                            <div class="form-group">
-                                <!--@todo; Add currency Name near price-->
-                                <label for="price"><?php esc_html_e('Price ( Optional---Leave it blank to hide it)', ATBDP_TEXTDOMAIN) ?></label>
-                                <input type="text" id="price" name="price" value="<?= !empty($Price) ? esc_attr($Price): ''; ?>" class="form-control directory_field" placeholder="<?= __('Price of this listing. Eg. 100', ATBDP_TEXTDOMAIN); ?>"/>
-                            </div>
-                            <?php } ?>
+                    <div class="atbdp_info_module">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h3 class="module_title"><?php esc_attr_e('General information', ATBDP_TEXTDOMAIN); ?></h3>
+                                <!--@todo; add toggle for the moto and excerpt later. -->
+                                <div class="form-group">
+                                    <label for="atbdp_tagline"><?php esc_html_e('Tag-line/Motto', ATBDP_TEXTDOMAIN) ?></label>
+                                    <input type="text" id="atbdp_tagline" name="listing[tagline]" value="<?= !empty($tagline) ? esc_attr($tagline): ''; ?>" class="form-control directory_field" placeholder="<?= __('Your Organization\'s motto or tag-line', ATBDP_TEXTDOMAIN); ?>"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="atbdp_excerpt"><?php esc_html_e('Short Description/Excerpt:', ATBDP_TEXTDOMAIN) ?></label>
+                                    <textarea name="listing[excerpt]" id="atbdp_excerpt"  class="form-control directory_field" cols="30" rows="5" placeholder="<?= __('Short Description or Excerpt', ATBDP_TEXTDOMAIN); ?>"><?= !empty($excerpt) ?esc_textarea( stripslashes($excerpt)): ''; ?></textarea>
+                                </div>
+                                <?php if (!$disable_price){ ?>
+                                    <div class="form-group">
+                                        <!--@todo; Add currency Name near price-->
+                                        <label for="price"><?php
+                                            /*Translator: % is the name of the currency such eg. USD etc.*/
+                                            printf(esc_html__('Price [%s] ( Optional---Leave it blank to hide it)', ATBDP_TEXTDOMAIN), $currency); ?></label>
+                                        <input type="text" id="price" name="price" value="<?= !empty($Price) ? esc_attr($Price): ''; ?>" class="form-control directory_field" placeholder="<?= __('Price of this listing. Eg. 100', ATBDP_TEXTDOMAIN); ?>"/>
+                                    </div>
+                                <?php } ?>
 
+                            </div>
                         </div>
                     </div>
 
 
 
+
                     <?php if (!$disable_contact_info){ ?>
+                    <div class="atbdp_info_module">
                     <div class="directorist-contact-fields">
                         <div class="row">
                             <!-- MAP or ADDRESS related information starts here -->
                             <div class="col-sm-12">
-                                <h2 class="directorist_contact_form_title">Contact Information</h2>
+                                <h3 class="directorist_contact_form_title module_title"><?php esc_html_e('Contact Information', ATBDP_TEXTDOMAIN); ?></h3>
                                 <div class="form-check">
                                     <input type="checkbox" name="listing[hide_contact_info]" class="form-check-input" id="hide_contact_info" value="1" <?php if(!empty($hide_contact_info) ) {checked($hide_contact_info); } ?> >
                                     <label class="form-check-label" for="hide_contact_info"><?php esc_html_e('Check it to hide Contact Information for this listing', ATBDP_TEXTDOMAIN); ?></label>
@@ -82,14 +89,14 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="atbdp_phone_number"><?php esc_html_e('Phone Number:', ATBDP_TEXTDOMAIN); ?></label>
-                                    <input type="tel" name="listing[phone][]" id="atbdp_phone_number" value="<?= !empty($phone[0]) ? esc_attr($phone[0]): ''; ?>" class="form-control directory_field" placeholder="Phone Number"/>
+                                    <input type="tel" name="listing[phone][]" id="atbdp_phone_number" value="<?= !empty($phone[0]) ? esc_attr($phone[0]): ''; ?>" class="form-control directory_field" placeholder="<?php esc_attr_e('Phone Number', ATBDP_TEXTDOMAIN); ?>"/>
                                 </div>
 
                             </div>
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="atbdp_email"><?php esc_html_e('Email:', ATBDP_TEXTDOMAIN); ?></label>
-                                    <input type="email" name="listing[email]" id="atbdp_email" value="<?= !empty( $email ) ? esc_attr($email) : ''; ?>" class="form-control directory_field" placeholder="Enter Email"/>
+                                    <input type="email" name="listing[email]" id="atbdp_email" value="<?= !empty( $email ) ? esc_attr($email) : ''; ?>" class="form-control directory_field" placeholder="<?php esc_attr_e('Enter Email', ATBDP_TEXTDOMAIN); ?>"/>
                                 </div>
                             </div>
 
@@ -97,7 +104,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                                 <div class="form-group">
                                     <label for="atbdp_website"><?php esc_html_e('Website:', ATBDP_TEXTDOMAIN); ?></label>
 
-                                    <input type="text" id="atbdp_website" name="listing[website]" value="<?= !empty( $website ) ? esc_url($website) : ''; ?>" class="form-control directory_field" placeholder="Listing website eg. http://example.com"/>
+                                    <input type="text" id="atbdp_website" name="listing[website]" value="<?= !empty( $website ) ? esc_url($website) : ''; ?>" class="form-control directory_field" placeholder="<?php esc_attr_e('Listing Website eg. http://example.com', ATBDP_TEXTDOMAIN); ?>"/>
                                 </div>
                             </div>
                         </div> <!--ends .row-->
@@ -105,7 +112,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                     <?php } ?>
 
                     <!--Social Information-->
-
+                    <div class="row">
                     <?php
                         /**
                          * It fires before social information fields
@@ -125,6 +132,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                          **/
                         do_action('atbdp_edit_after_social_info_fields', 'add_listing_page_backend', $args['listing_info']);
                     ?>
+                    </div>
 
 
 
@@ -132,7 +140,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
 
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="cor-wrap">
+                                <div class="cor-wrap map_cor">
                                     <input type="checkbox" name="listing[manual_coordinate]" value="1"
                                            id="manual_coordinate" <?= (!empty($manual_coordinate)) ? 'checked' : ''; ?> >
                                     <label for="manual_coordinate"> <?php _e('Enter Coordinates ( latitude and longitude) Manually ? or set the marker on the map anywhere by clicking on the map', ATBDP_TEXTDOMAIN); ?> </label>
@@ -147,7 +155,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                                         <input type="text" name="listing[manual_lat]" id="manual_lat"
                                                value="<?= (!empty($manual_lat)) ? $manual_lat : '' ?>"
                                                class="form-control directory_field"
-                                               placeholder="Enter Latitude eg. 24.89904"/>
+                                               placeholder="<?php esc_attr_e('Enter Latitude eg. 24.89904', ATBDP_TEXTDOMAIN); ?>"/>
                                     </div>
                                 </div>
                                 <div class="col-md-5 col-sm-12 v_middle">
@@ -156,7 +164,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                                         <input type="text" name="listing[manual_lng]" id="manual_lng"
                                                value="<?= (!empty($manual_lng)) ? $manual_lng : '' ?>"
                                                class="form-control directory_field"
-                                               placeholder="Enter Longitude eg. 91.87198"/>
+                                               placeholder="<?php esc_attr_e('Enter Longitude eg. 91.87198', ATBDP_TEXTDOMAIN); ?>"/>
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-sm-12 v_middle">
@@ -180,17 +188,17 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
 
                             <div id="gmap"></div>
                         </div>
-
+                        </div>
                         <?php
-                    }
-                    /**
-                     * It fires after the google map preview area
-                     * @param string $type Page type.
-                     * @param array $listing_info Information of the current listing
-                     * @since 1.1.1
-                     **/
-                    do_action('atbdp_edit_after_googlemap_preview', 'add_listing_page_backend', $args['listing_info']);
-                    ?>
+                        }
+                        /**
+                         * It fires after the google map preview area
+                         * @param string $type Page type.
+                         * @param array $listing_info Information of the current listing
+                         * @since 1.1.1
+                         **/
+                        do_action('atbdp_edit_after_googlemap_preview', 'add_listing_page_backend', $args['listing_info']);
+                        ?>
                 </div><!--ends add_listing_form_wrapper-->
 
             </div> <!--ends col-md-12 -->
@@ -327,7 +335,6 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
         function geocodeAddress(geocoder, resultsMap) {
             var address = address_input.value;
             geocoder.geocode({'address': address}, function(results, status) {
-                //console.dir(results);
                 if (status === 'OK') {
                     // set the value of input field to save them to the database
                     $manual_lat.val(results[0].geometry.location.lat());

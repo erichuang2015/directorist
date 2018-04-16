@@ -127,8 +127,12 @@ class ATBDP_Enqueuer {
             wp_localize_script( 'atbdp-admin-script', 'atbdp_admin_data', $data );
             wp_enqueue_media();
 
-        }
 
+        }
+        // lets add a small stylesheet for order listing page
+        if (ATBDP_ORDER_POST_TYPE == $typenow){
+            wp_enqueue_style( 'atbdp-admin', ATBDP_ADMIN_ASSETS . 'css/style.css', false, ATBDP_VERSION);
+        }
     }
 
     /**

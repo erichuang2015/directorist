@@ -132,22 +132,13 @@ class ATBDP_Shortcode {
         if (!$paginate) $args['no_found_rows'] = true;
         $meta_queries = array();
         $featured_active = get_directorist_option('enable_featured_listing');
-        //var_dump($featured_active);
         if ($featured_active){
             $meta_queries[] = array(
                 'key'     => '_featured',
                 'type'    => 'NUMERIC',
                 'compare' => 'EXISTS',
             );
-            /*$meta_queries[] = array(
-                'key'     => '_featured',
-                'type'    => 'NUMERIC',
-                'compare' => 'NOT EXISTS',
-            );
-            $meta_queries['relation'] = 'OR';*/
-            /*$args['meta_key'] = '_featured';
-            $args['meta_value'] =1 ;
-            $args['meta_type'] = 'NUMERIC';*/
+
             $args['orderby']  = array(
                 'meta_value_num' => 'DESC',
                 //'date'           => 'ASC',
@@ -156,9 +147,7 @@ class ATBDP_Shortcode {
         if (!is_empty_v($meta_queries)){
             $args['meta_query'] = $meta_queries;
         }
-        //var_dump($args);
         $all_listings = new WP_Query($args);
-        //var_dump($all_listings->posts);
         $all_listing_title = get_directorist_option('all_listing_title', __('All Items', ATBDP_TEXTDOMAIN));
         $data_for_template = compact('all_listings', 'all_listing_title', 'paged', 'paginate');
 

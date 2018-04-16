@@ -19,6 +19,7 @@
     $("#atbdp_review_form").on("submit", function(){
         if(submit_count>1){
             // show error message
+            /*@todo; make all the strings on js file translatable*/
             swal({
                 title: "WARNING!!",
                 text: 'You can not add more than one review. Refresh the page to edit or delete your review!!!,',
@@ -33,11 +34,9 @@
             var output='';
             var deleteBtn = '';
             var d;
-            // console.log($form.find("#reviewer_name").val());
             var name= $form.find("#reviewer_name").val();
             var content= $form.find("#review_content").val();
             var rating= $form.find("#review_rating").val();
-            //console.log(response);
 
             if (response.success){
                 d = new Date(); // parse mysql date string to js date object
@@ -98,7 +97,6 @@
 
         var data = 'offset='+review_offset + '&post_id=' + post_id;
         atbdp_do_ajax($this, 'load_more_review', data, function ($data) {
-            // console.log($data);
             // if we get data then start processing it
             if($data != 'false' && $data !='error'){
                 $data = jQuery.parseJSON($data); // parse the received json encoded data to JSON object
@@ -183,12 +181,9 @@
                 showLoaderOnConfirm: true,
                 closeOnConfirm: false },
             function(isConfirm) {
-            /*console.log('data that is going to be passed to the ajax');
-            console.log(data);*/
                 if(isConfirm){
                     // user has confirmed, now remove the review
                     atbdp_do_ajax($this, 'remove_listing_review', data, function (response) {
-                        // console.log(response);
                         if ('success' === response){
                             // show success message
                             swal({
@@ -229,7 +224,6 @@
         var $this = $(this);
         var id    = $this.data('listing_id');
         var data = 'listing_id='+id;
-
         swal({
                 title: "Are you sure?",
                 text: "Do you really want to delete this item?!",
@@ -240,12 +234,9 @@
                 showLoaderOnConfirm: true,
                 closeOnConfirm: false },
             function(isConfirm) {
-                /*console.log('data that is going to be passed to the ajax');
-                 console.log(data);*/
                 if(isConfirm){
                     // user has confirmed, now remove the listing
                     atbdp_do_ajax($this, 'remove_listing', data, function (response) {
-                        console.log(response);
                         $('body').append(response);
                         if ('success'=== response){
                             // show success message
@@ -254,7 +245,7 @@
                                 type:"success",
                                 timer: 200,
                                 showConfirmButton: false });
-                            $("#listing_id_"+id).fadeOut();
+                            $("#listing_id_"+id).remove();
                             $this.remove();
                         }else {
                             // show error message

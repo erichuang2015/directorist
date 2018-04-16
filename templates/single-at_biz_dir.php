@@ -256,7 +256,7 @@ $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) || !$disable_s_wid
 
                     <?php
                     /*@todo; add a settings to toggle the display of map for individual listing or all listings.*/
-                    if (!$disable_map || (!empty($manual_lat) && !empty($manual_lng)) ){
+                    if (!$disable_map && (!empty($manual_lat) && !empty($manual_lng)) ){
                             echo '<div id="gmap"></div>';
                     } ?>
                     <!--Google map section-->
@@ -302,7 +302,7 @@ $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) || !$disable_s_wid
     jQuery(document).ready(function ($) {
 
         // Do not show map if lat long is empty or map is globally disabled.
-        <?php if (!$disable_map || (!empty($manual_lat) && !empty($manual_lng))){ ?>
+        <?php if (!$disable_map && (!empty($manual_lat) && !empty($manual_lng))){ ?>
         // initialize all vars here to avoid hoisting related misunderstanding.
         var  map, info_window, saved_lat_lng, info_content;
         saved_lat_lng = {lat:<?= (!empty($manual_lat)) ? floatval($manual_lat) : false ?>, lng: <?= (!empty($manual_lng)) ? floatval($manual_lng) : false ?> }; // default is London city
