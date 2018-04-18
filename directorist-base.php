@@ -3,7 +3,7 @@
 Plugin Name: Directorist - Business Directory Plugin
 Plugin URI: https://aazztech.com/product/directorist-business-directory-plugin
 Description: Create a professional directory listing website like Yelp by a few clicks only. You can list place, any business etc.  with this plugin very easily.
-Version: 3.1.0
+Version: 3.1.1
 Author: AazzTech
 Author URI: https://aazztech.com
 License: GPLv2 or later
@@ -470,7 +470,9 @@ final class Directorist_Base {
                         /*RATING RELATED STUFF ENDS*/
                         $info = ATBDP()->metabox->get_listing_info($pop_post->ID); // get all post meta and extract it.
                         // get only one parent or high level term object
-                        $single_parent = ATBDP()->taxonomy->get_one_high_level_term($pop_post->ID, ATBDP_CATEGORY);
+                        $top_category = ATBDP()->taxonomy->get_one_high_level_term($pop_post->ID, ATBDP_CATEGORY);
+                        /*$featured = get_post_meta($pop_post->ID, '_featured', true);
+                        $price = get_post_meta($pop_post->ID, '_price', true);*/
                         ?>
                         <li>
                             <div class="left_img">
@@ -480,23 +482,25 @@ final class Directorist_Base {
                                 <div class="cate_title">
                                     <h4><a href="<?= esc_url(get_post_permalink($pop_post->ID)); ?>"><?= esc_html($pop_post->post_title); ?></a></h4>
                                 </div>
-                                <p class="directory_tag">
-                                    <span class="fa fa-desktop" aria-hidden="true"></span>
-                                    <span> <?php if (is_object($single_parent)) { ?>
-                                            <a href="<?= esc_url(get_category_link($single_parent->term_id)); ?>"> <?= esc_html($single_parent->name); ?> </a>
-                                        <?php } else {
-                                            echo esc_html__('Others', ATBDP_TEXTDOMAIN);
-                                        } ?>
-                                        </span>
-                                </p>
-                                <!--write code in a way that this extension works regardless of review extension-->
-                                <?php
-                                    ATBDP()->show_static_rating($pop_post);
 
+                        <?php if (!empty($top_category)){ ?>
+
+                            <p class="directory_tag">
+                                <span class="fa <?= esc_attr(get_cat_icon(@$top_category->term_id)); ?>" aria-hidden="true"></span>
+                                    <span> <?php if (is_object($top_category)) { ?>
+                                            <a href="<?= ATBDP_Permalink::get_category_archive($top_category); ?>">
+                                                 <?= esc_html($top_category->name); ?>
+                                            </a>
+                                        <?php } ?>
+
+                                    </span>
+                            </p>
+                            <?php }
+                                    ATBDP()->show_static_rating($pop_post);
                                 ?>
                             </div>
                         </li>
-                    <?php } ?>
+                    <?php } // ends the loop ?>
 
                 </ul>
             </div> <!--ends .categorized_listings-->
@@ -540,6 +544,7 @@ final class Directorist_Base {
                     'value'   => 0,
                     'compare' => '>',
                 ),
+                /*@todo; later sort by featured listings*/
             ),
         );
         return new WP_Query( apply_filters('atbdp_popular_listing_args', $args) );
@@ -571,7 +576,9 @@ final class Directorist_Base {
                         $info = ATBDP()->metabox->get_listing_info($r_post->ID); // get all post meta and extract it.
                         // this will have all vars like attachment etc
                         // get only one parent or high level term object
-                        $single_parent = ATBDP()->taxonomy->get_one_high_level_term($r_post->ID, ATBDP_CATEGORY);
+                        $top_category = ATBDP()->taxonomy->get_one_high_level_term($r_post->ID, ATBDP_CATEGORY);
+                        $deepest_location = ATBDP()->taxonomy->get_one_deepest_level_term(get_the_ID(), ATBDP_LOCATION);
+
                         ?>
                         <div class="col-md-6">
                             <div class="single_directory_post">
@@ -604,34 +611,13 @@ final class Directorist_Base {
 
                                             ?>
                                         </div>
+                                        <?php
+                                        //show category and location info
+                                        ATBDP()->helper->output_listings_taxonomy_info($top_category, $deepest_location);
+                                        // show read more link/btn
+                                        ATBDP()->helper->listing_read_more_link($r_post->ID);
+                                        ?>
 
-                                        <div class="general_info">
-                                            <ul>
-                                                <!--Category Icons should be replaced later -->
-                                                <li>
-                                                    <p class="info_title">Category:</p>
-                                                    <p class="directory_tag">
-                                                        <span class="fa fa-desktop" aria-hidden="true"></span>
-                                                        <span> <?php if (is_object($single_parent)) { ?>
-                                                                <a href="<?= ATBDP_Permalink::get_category_archive($single_parent); ?>"> <?= esc_html($single_parent->name); ?> </a>
-                                                            <?php } else {
-                                                                esc_html_e('Others', ATBDP_TEXTDOMAIN);
-                                                            } ?>
-                                                        </span>
-                                                    </p>
-                                                </li>
-                                                <li><p class="info_title"><?php _e('Location: ', ATBDP_TEXTDOMAIN);?>
-                                                    <span><?= !empty($info['address']) ? esc_html(stripslashes($info['address'])) : 'unknown'; ?></span>
-                                                    </p>
-                                                </li>
-                                            </ul>
-                                        </div>
-
-                                        <div class="read_more_area">
-                                            <a class="btn btn-default " href="<?= get_post_permalink($r_post->ID); ?>">
-                                                <?php esc_html_e('Read More', ATBDP_TEXTDOMAIN); ?>
-                                            </a>
-                                        </div>
                                     </div>
                                 </article>
                             </div>

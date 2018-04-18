@@ -218,7 +218,7 @@ $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) || !$disable_s_wid
                                     <?php }?>
 
                                     <?php
-                                    if (!is_empty_v($phone)) { ?>
+                                    if (isset($phone) && !is_empty_v($phone)) { ?>
                                         <!-- In Future, We will have to use a loop to print more than 1 number-->
                                         <li><span class="info_title"><?php _e('Phone', ATBDP_TEXTDOMAIN); ?></span><span class="info"><?= esc_html( $phone[0]); ?></span></li>
                                     <?php }?>

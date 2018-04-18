@@ -57,26 +57,23 @@ $is_disable_price = get_directorist_option('disable_list_price');
                 <div class="row" data-uk-grid>
 
 
-                    <?php if ( !empty($listings) ) {
+                    <?php
+                    if ( count($listings->posts) ) {
                         while ( $listings->have_posts() ) {
                             $listings->the_post();
-                            /*RATING RELATED STUFF STARTS*/
-                            $reviews = ATBDP()->review->db->count(array('post_id' => get_the_ID()));
-                            $average = ATBDP()->review->get_average(get_the_ID());
-
-                            /*RATING RELATED STUFF ENDS*/
                             $info = ATBDP()->metabox->get_listing_info(get_the_ID()); // get all post meta and extract it.
                             extract($info);
                             // get only one parent or high level term object
-                            $single_parent = ATBDP()->taxonomy->get_one_high_level_term(get_the_ID(), ATBDP_CATEGORY);
+                            $top_category = ATBDP()->taxonomy->get_one_high_level_term(get_the_ID(), ATBDP_CATEGORY);
                             $deepest_location = ATBDP()->taxonomy->get_one_deepest_level_term(get_the_ID(), ATBDP_LOCATION);
                             $featured = get_post_meta(get_the_ID(), '_featured', true);
                             $price = get_post_meta(get_the_ID(), '_price', true);
+                            /*@todo; As listings on search page and the all listing page, and user dashboard is nearly the same, so try to refactor them to a function later using some condition to show some extra fields on the listing on user dashboard*/
                             ?>
 
                             <div class="col-md-4 col-sm-6">
                                 <div class="single_directory_post">
-                                    <article>
+                                    <article class="<?php echo ($featured) ? 'directorist-featured-listings' : ''; ?>">
                                         <figure>
                                             <div class="post_img_wrapper">
                                                 <?= (!empty($attachment_id[0])) ? '<img src="'.esc_url(wp_get_attachment_image_url($attachment_id[0],  array(432,400))).'" alt="listing image">' : '' ?>
@@ -108,40 +105,24 @@ $is_disable_price = get_directorist_option('disable_list_price');
                                                  * @since 3.1.0
                                                  */
                                                 do_action('atbdp_after_listing_price');
+                                                /**
+                                                 * Fires after the title and sub title of the listing is rendered
+                                                 *
+                                                 *
+                                                 * @since 1.0.0
+                                                 */
+                                                /*@todo; later refactor the hook name and now it is kept for backward compatibility to show ratings here in this action*/
+                                                do_action('atbdp_after_listing_tagline');
 
                                                 ?>
 
                                             </div>
-
-                                            <div class="general_info">
-                                                <ul>
-                                                    <!--Category Icons should be replaced later -->
-                                                    <li>
-                                                        <p class="info_title"><?php echo __('Category:', ATBDP_TEXTDOMAIN);?></p>
-                                                        <p class="directory_tag">
-
-                                                            <span class="fa <?= esc_attr(get_cat_icon(@$single_parent->term_id)); ?>" aria-hidden="true"></span>
-                                                            <span> <?php if (is_object($single_parent)) { ?>
-                                                                    <a href="<?= esc_url(ATBDP_Permalink::get_category_archive($single_parent)); ?>">
-                                                                    <?= esc_html($single_parent->name); ?>
-                                                                    </a>
-                                                                <?php } else {
-                                                                   _e('Others', ATBDP_TEXTDOMAIN);
-                                                                } ?>
-                                                            </span>
-                                                        </p>
-                                                    </li>
-                                                    <li>
-                                                        <p class="info_title"><?php _e('Location:', ATBDP_TEXTDOMAIN);?>
-                                                        <span><?= !empty($address) ? esc_html(stripslashes($address)) : ''; ?></span>
-                                                        </p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-
-                                            <div class="read_more_area">
-                                                <a class="btn btn-default" href="<?= esc_url(get_post_permalink(get_the_ID())); ?>"><?php _e('Read More', ATBDP_TEXTDOMAIN); ?></a>
-                                            </div>
+                                            <?php
+                                            //show category and location info
+                                            ATBDP()->helper->output_listings_taxonomy_info($top_category, $deepest_location);
+                                            // show read more link/btn
+                                            ATBDP()->helper->listing_read_more_link();
+                                            ?>
                                         </div>
                                     </article>
                                 </div>

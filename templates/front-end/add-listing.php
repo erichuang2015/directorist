@@ -81,8 +81,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
 
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
-                                <h3 class="module_title">General information</h3>
-                                <p>Basic informatin about the directory</p>
+                                <h3 class="module_title"><?php esc_html_e('General information', ATBDP_TEXTDOMAIN) ?></h3>
                                 <div class="form-group">
                                     <label for="listing_title"><?php esc_html_e('Title:', ATBDP_TEXTDOMAIN); ?></label>
                                     <input type="text" name="listing_title" value="<?= !empty($listing->post_title) ? esc_attr($listing->post_title):'';?>" class="form-control directory_field" placeholder="<?= __('Enter a title', ATBDP_TEXTDOMAIN); ?>"/>
@@ -94,13 +93,13 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label for="listing_content">Long Description:</label>
+                                    <label for="listing_content"><?php esc_html_e('Long Description', ATBDP_TEXTDOMAIN) ?></label>
                                     <?php wp_editor(
                                             !empty($listing->post_content) ? wp_kses($listing->post_content, wp_kses_allowed_html('post')) :'',
                                             'listing_content',
                                             array(
                                                 'media_buttons' => false,
-                                                'quicktags'     => false,
+                                                'quicktags'     => true,
                                                 'editor_height' => 200
                                             )); ?>
                                 </div>
@@ -116,6 +115,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                                 </div>
                                 <div class="form-group">
                                     <label for="atbdp_excerpt"><?php esc_html_e('Short Description/Excerpt:', ATBDP_TEXTDOMAIN) ?></label>
+                                    <!--@todo; later let user decide if he wants to show tinymce or normal textarea-->
                                     <textarea name="listing[excerpt]" id="atbdp_excerpt"  class="form-control directory_field" cols="30" rows="5" placeholder="<?= __('Short Description or Excerpt', ATBDP_TEXTDOMAIN); ?>"> <?= !empty($excerpt) ? esc_textarea( stripslashes($excerpt)) : ''; ?> </textarea>
                                 </div>
 

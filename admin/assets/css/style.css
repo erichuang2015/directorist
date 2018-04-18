@@ -358,3 +358,7 @@ li.vp-current a.vp-js-menu-dropdown.vp-menu-dropdown {
 	margin-top: 30px;
 	margin-bottom: 20px;
 }
+/*fix problem with quick tags*/
+#qt_listing_content_toolbar input{
+    width:initial;
+}

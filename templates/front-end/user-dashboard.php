@@ -47,20 +47,16 @@ $is_disable_price = get_directorist_option('disable_list_price');
                         <div role="tabpanel" class="tab-pane active" data-uk-grid id="my_listings">
                             <?php if ($listings->have_posts()) {
                                 foreach ($listings->posts as $post) {
-                                    /*RATING RELATED STUFF STARTS*/
-                                    $reviews = ATBDP()->review->db->count(array('post_id' => $post->ID));
-                                    $average = ATBDP()->review->get_average($post->ID);
-                                    /*RATING RELATED STUFF ENDS*/
                                     $info = ATBDP()->metabox->get_listing_info($post->ID); // get all post meta and extract it.
                                     extract($info);
                                     // get only one parent or high level term object
-                                    $single_parent = ATBDP()->taxonomy->get_one_high_level_term($post->ID, ATBDP_CATEGORY);
+                                    $top_category = ATBDP()->taxonomy->get_one_high_level_term($post->ID, ATBDP_CATEGORY);
                                     $price= get_post_meta($post->ID, '_price', true);
                                     $featured = get_post_meta(get_the_ID(), '_featured', true);
 
                                     ?>
                                     <div class="col-lg-4 col-sm-6" id="listing_id_<?= $post->ID; ?>">
-                                        <div class="single_directory_post dashboard_listing <?php echo $featured_active ? (empty($featured) ? 'featured': ''):''?>">
+                                        <div class="single_directory_post dashboard_listing <?php echo $featured_active ? (!empty($featured) ? 'featured': ''):''?>">
                                             <article>
                                                 <figure>
                                                     <div class="post_img_wrapper">
@@ -82,7 +78,7 @@ $is_disable_price = get_directorist_option('disable_list_price');
 
                                                         do_action('atbdp_after_listing_tagline');
 
-                                                        echo $featured_active ? (empty($featured) ? '<p class="featured_ribbon">Featured</p>': ''):'';
+                                                        echo $featured_active ? (!empty($featured) ? '<p class="featured_ribbon">Featured</p>': ''):'';
                                                         ?>
 
                                                     </div> <!--ends .content_upper-->
@@ -90,8 +86,6 @@ $is_disable_price = get_directorist_option('disable_list_price');
                                                     <div class="db_btn_area">
                                                         <?php
                                                         $lstatus = get_post_meta($post->ID, '_listing_status', true);
-                                                        $featured = get_post_meta($post->ID, '_featured', true);
-
                                                         // If the listing needs renewal then there is no need to show promote button
                                                         if ('renewal' == $lstatus || 'expired' == $lstatus){
                                                             $can_renew = get_directorist_option('can_renew_listing');

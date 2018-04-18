@@ -2258,3 +2258,8 @@ span.remove_image {
 .directorist .business-hour-title p{
 	margin-bottom: 0;
 }
+
+/*fix problem with quick tags*/
+#qt_listing_content_toolbar input{
+	width:initial;
+}

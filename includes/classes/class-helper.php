@@ -178,17 +178,10 @@ class ATBDP_Helper {
         $t = !empty($message) ? $message : '';
         $t = apply_filters('atbdp_unauthorized_access_message', $t);
         ?>
-            <!--        HTML STARTS -->
-                <div class="notice_wrapper">
-                    <p class="notice"><span class="fa fa-info" aria-hidden="true"></span><?php echo $t; ?></p>
-                </div>
-
-
-<!--        HTML codes ends -->
-
-<?php
-
-
+        <div class="notice_wrapper">
+            <p class="notice"><span class="fa fa-info" aria-hidden="true"></span><?php echo $t; ?></p>
+        </div>
+    <?php
     }
 
     /**
@@ -206,8 +199,65 @@ class ATBDP_Helper {
         echo $time;
     }
 
+    /**
+     * It outputs category and location related markup for the listing
+     * @param WP_Term $cat Listing Category Object
+     * @param WP_Term $loc Listing Location Object
+     */
+    public function output_listings_taxonomy_info($cat, $loc)
+    {
+        if (!empty($cat) || !empty($loc)) { ?>
+            <div class="general_info">
+                <ul>
+                    <?php if (!empty($cat)){ ?>
+                        <li>
+                            <p class="info_title"><?php _e('Category:', ATBDP_TEXTDOMAIN);?></p>
+                            <p class="directory_tag">
 
+                                <span class="fa <?= esc_attr(get_cat_icon(@$cat->term_id)); ?>" aria-hidden="true"></span>
+                                <span> <?php if (is_object($cat)) { ?>
+                                        <a href="<?= ATBDP_Permalink::get_category_archive($cat); ?>">
+                                                                <?= esc_html($cat->name); ?>
+                                         </a>
+                                    <?php } ?>
+                                </span>
+                            </p>
+                        </li>
+                    <?php } if (!empty($loc)){ ?>
+                        <li><p class="info_title"><?php _e('Location:', ATBDP_TEXTDOMAIN);?>
+                                <span><?php if (is_object($loc)) { ?>
+                                        <a href="<?= ATBDP_Permalink::get_location_archive($loc); ?>">
+                                                                <?= esc_html($loc->name); ?>
+                                        </a>
+                                    <?php } ?>
+                                </span>
+                            </p>
+                        </li>
+                    <?php } ?>
+                </ul>
+            </div>
+        <?php }
+    }
 
+    /**
+     * It prints a read more link to the given listing ID or the current post id inside a loop.
+     * @param int $id [optional] Listing ID
+     */
+    public function listing_read_more_link($id=null)
+    {
+        if (empty($id)){
+            global $post;
+            $id = $post->ID;
+        }
+        /*@todo; later make changeable via filter*/
+        ?>
+        <div class="read_more_area">
+            <a class="btn btn-default " href="<?= esc_url(get_post_permalink($id)); ?>">
+                <?php esc_html_e('Read More', ATBDP_TEXTDOMAIN); ?>
+            </a>
+        </div>
+<?php
+    }
 
 }
 endif;
