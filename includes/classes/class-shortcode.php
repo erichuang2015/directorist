@@ -20,12 +20,7 @@ class ATBDP_Shortcode {
         $checkout = new ATBDP_Checkout;
         add_shortcode('directorist_checkout', array($checkout, 'display_checkout_content'));
         add_shortcode('directorist_payment_receipt', array($checkout, 'payment_receipt'));
-        add_shortcode('shortcode_test', function (){
-
-           return '<h1> hello from the shortcode</h1>';
-        });
-
-
+        add_shortcode('transaction_failure', array($checkout, 'transaction_failure'));
 
     }
 

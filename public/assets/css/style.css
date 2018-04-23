@@ -2211,7 +2211,7 @@ span.remove_image {
 .directorist .directorist-contact-fields .directorist_contact_form_title{
 	margin-bottom: 20px;
 }
-.directorist input#bank_transfer {
+.directorist .gateway_list input {
 	width: auto;
 	margin-right: 10px;
 }

@@ -1572,6 +1572,15 @@ The Administrator of ==SITE_NAME==
                         'default' => '',
                         'validation' => 'numeric',
                     ),
+                array(
+                    'type' => 'select',
+                    'name' => 'transaction_failure_page',
+                    'label' =>  __( 'Add Transaction Failure page ID', ATBDP_TEXTDOMAIN ),
+                    'items' => $this->get_pages_vl_arrays(),
+                    'description' => sprintf(__( 'Please Select your Transaction Failure page ( where you used %s shortcode ) ID here. This page is used to show Transaction Failure information but this page generally should be excluded from the menu.', ATBDP_TEXTDOMAIN ),'<strong style="color: #ff4500;">[transaction_failure]</strong>'),
+                    'default' => '',
+                    'validation' => 'numeric',
+                ),
 
 
 

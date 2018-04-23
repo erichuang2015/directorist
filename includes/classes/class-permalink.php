@@ -14,22 +14,22 @@
 if ( ! defined('ABSPATH') ) { die( 'You are not allowed to access this file directly' ); }
 
 if (!class_exists('ATBDP_Permalink')):
-    class ATBDP_Permalink{
-        /**
-         * It returns the link to the custom search archive page of ATBDP
-         * @return string
-         */
-        public static function get_search_result_page_link()
-        {
+class ATBDP_Permalink{
+    /**
+     * It returns the link to the custom search archive page of ATBDP
+     * @return string
+     */
+    public static function get_search_result_page_link()
+    {
 
-            $link = home_url();
-            $id = get_directorist_option('search_result_page'); // get the page id of the search page.
-            if( $id ) $link = get_permalink( $id );
+        $link = home_url();
+        $id = get_directorist_option('search_result_page'); // get the page id of the search page.
+        if( $id ) $link = get_permalink( $id );
 
 
 
-            return apply_filters('atbdp_search_result_page_url', $link );
-        }
+        return apply_filters('atbdp_search_result_page_url', $link );
+    }
 
     /**
      * It returns the link to the custom search archive page of ATBDP
@@ -37,39 +37,38 @@ if (!class_exists('ATBDP_Permalink')):
      */
     public static function get_dashboard_page_link()
     {
-
-
-            $link = home_url();
-
+        $link = home_url();
         $id = get_directorist_option('user_dashboard'); // get the page id of the dashboard page.
-
         if( $id )  $link = get_permalink( $id );
-
         return apply_filters('atbdp_dashboard_page_url', $link );
+    }
+    /**
+     * It returns the link to the custom search archive page of ATBDP
+     * @return string
+     */
+    public static function get_transaction_failure_page_link()
+    {
+        $link = home_url();
+        $id = get_directorist_option('transaction_failure_page'); // get the page id of the dashboard page.
+        if( $id )  $link = get_permalink( $id );
+        return apply_filters('atbdp_transaction_failure_page_url', $link );
     }
 
 
-        /**
-         * It returns the link to the custom search archive page of ATBDP
-         * @param array $query_vars [optional] Array of query vars to be added to the registration page url
-         * @return string
-         */
-        public static function get_registration_page_link($query_vars=array())
-        {
-
-
-            $link = home_url();
-
-
-            $id = get_directorist_option('custom_registration'); // get the page id of the custom registration page.
-
-
+    /**
+     * It returns the link to the custom search archive page of ATBDP
+     * @param array $query_vars [optional] Array of query vars to be added to the registration page url
+     * @return string
+     */
+    public static function get_registration_page_link($query_vars=array())
+    {
+        $link = home_url();
+        $id = get_directorist_option('custom_registration'); // get the page id of the custom registration page.
         if( $id ) $link = get_permalink( $id );
 
         if (!empty($query_vars) && is_array($query_vars)){
             $link = add_query_arg( $query_vars, $link );
         }
-
         return apply_filters('atbdp_registration_page_url', $link );
     }
 
@@ -86,26 +85,26 @@ if (!class_exists('ATBDP_Permalink')):
         return apply_filters('atbdp_add_listing_page_url', $link );
     }
 
-        /**
-         * It returns the link to the custom edit listing page
-         * @param int $listing_id Listing ID
-         * @since 3.1.0
-         * @return string
-         */
-        public static function get_edit_listing_page_link($listing_id)
-        {
-            $link = home_url();
-            $id = get_directorist_option('add_listing_page');
-            if( $id ) {
-                $link = get_permalink( $id );
-                if( '' != get_option( 'permalink_structure' ) ) {
-                    $link = user_trailingslashit( trailingslashit( $link )  . 'edit/' . $listing_id );
-                } else {
-                    $link = add_query_arg( array( 'atbdp_action' => 'edit', 'atbdp_listing_id ' => $listing_id ), $link );
-                }
+    /**
+     * It returns the link to the custom edit listing page
+     * @param int $listing_id Listing ID
+     * @since 3.1.0
+     * @return string
+     */
+    public static function get_edit_listing_page_link($listing_id)
+    {
+        $link = home_url();
+        $id = get_directorist_option('add_listing_page');
+        if( $id ) {
+            $link = get_permalink( $id );
+            if( '' != get_option( 'permalink_structure' ) ) {
+                $link = user_trailingslashit( trailingslashit( $link )  . 'edit/' . $listing_id );
+            } else {
+                $link = add_query_arg( array( 'atbdp_action' => 'edit', 'atbdp_listing_id ' => $listing_id ), $link );
             }
-            return apply_filters('atbdp_edit_listing_page_url', $link );
         }
+        return apply_filters('atbdp_edit_listing_page_url', $link );
+    }
 
 
     /**
@@ -164,23 +163,23 @@ if (!class_exists('ATBDP_Permalink')):
 
     }
 
-        /**
-         * It returns the link to the custom tag archive page of ATBDP
-         * @param WP_Term $tag
-         * @param string $field
-         * @return string
-         */
-        public static function get_tag_archive($tag, $field='slug')
-        {
-            $link = add_query_arg(
-                array(
-                    'q'=>'',
-                    'in_tag'=>$tag->{$field}
-                ),
-                self::get_search_result_page_link()
-            );
-            return apply_filters('atbdp_tag_archive_url', $link);
-        }
+    /**
+     * It returns the link to the custom tag archive page of ATBDP
+     * @param WP_Term $tag
+     * @param string $field
+     * @return string
+     */
+    public static function get_tag_archive($tag, $field='slug')
+    {
+        $link = add_query_arg(
+            array(
+                'q'=>'',
+                'in_tag'=>$tag->{$field}
+            ),
+            self::get_search_result_page_link()
+        );
+        return apply_filters('atbdp_tag_archive_url', $link);
+    }
 
     /**
      * Generate a permalink for Payment receipt page.
@@ -212,53 +211,83 @@ if (!class_exists('ATBDP_Permalink')):
         return apply_filters('atbdp_payment_receipt_page_url', $link);
     }
 
-        /**
-         * Generate a permalink for Checkout page
-         *
-         * @since    3.1.0
-         *
-         * @param    int       $listing_id    Listing ID.
-         * @return   string                   It returns Checkout page URL.
-         */
-        public static function get_checkout_page_link($listing_id) {
-            $link = home_url(); // default url
-            $id = get_directorist_option('checkout_page');
-            if( $id ) {
-                $link = get_permalink( $id );
+    /**
+     * Generate a permalink for Checkout page
+     *
+     * @since    3.1.0
+     *
+     * @param    int       $listing_id    Listing ID.
+     * @return   string                   It returns Checkout page URL.
+     */
+    public static function get_checkout_page_link($listing_id) {
+        $link = home_url(); // default url
+        $id = get_directorist_option('checkout_page');
+        if( $id ) {
+            $link = get_permalink( $id );
 
-                if( '' != get_option( 'permalink_structure' ) ) {
-                    $link = user_trailingslashit( trailingslashit( $link ) . 'submit/' . $listing_id );
-                } else {
-                    $link = add_query_arg(
-                        array(
-                            'atbdp_action' => 'submission',
-                            'atbdp_listing_id' => $listing_id
-                        ),
-                        $link
-                    );
-                }
+            if( '' != get_option( 'permalink_structure' ) ) {
+                $link = user_trailingslashit( trailingslashit( $link ) . 'submit/' . $listing_id );
+            } else {
+                $link = add_query_arg(
+                    array(
+                        'atbdp_action' => 'submission',
+                        'atbdp_listing_id' => $listing_id
+                    ),
+                    $link
+                );
             }
-
-            return apply_filters('atbdp_checkout_page_url', $link);
         }
 
-        public static function get_renewal_page_link($listing_id)
-        {
-            $link = home_url();
-            $id = get_directorist_option('add_listing_page');
+        return apply_filters('atbdp_checkout_page_url', $link);
+    }
 
-            if( $id ) {
-                $link = get_permalink( $id );
-                if( '' != get_option( 'permalink_structure' ) ) {
-                    $link = user_trailingslashit( trailingslashit( $link )  . 'renew/' . $listing_id );
-                } else {
-                    $link = add_query_arg( array( 'atbdp_action' => 'renew', 'atbdp_listing_id ' => $listing_id ), $link );
-                }
+    public static function get_renewal_page_link($listing_id)
+    {
+        $link = home_url();
+        $id = get_directorist_option('add_listing_page');
+
+        if( $id ) {
+            $link = get_permalink( $id );
+            if( '' != get_option( 'permalink_structure' ) ) {
+                $link = user_trailingslashit( trailingslashit( $link )  . 'renew/' . $listing_id );
+            } else {
+                $link = add_query_arg( array( 'atbdp_action' => 'renew', 'atbdp_listing_id ' => $listing_id ), $link );
             }
-
-            return $link;
         }
 
-    } // end ATBDP_Permalink
+        return $link;
+    }
+
+    /**
+     * Generate a permalink for IPN Notify URL
+     *
+     * @since    3.1.2
+     *
+     * @param    int       $order_id    Order ID.
+     * @return   string                   It returns IPN Notify URL
+     */
+    public static function get_ipn_notify_page_link($order_id) {
+        $link = home_url(); // default url
+        $id = get_directorist_option('checkout_page');
+        if( $id ) {
+            $link = get_permalink( $id );
+
+            if( '' != get_option( 'permalink_structure' ) ) {
+                $link = user_trailingslashit( trailingslashit( $link ) . 'paypal-ipn/' . $order_id );
+            } else {
+                $link = add_query_arg(
+                    array(
+                        'atbdp_action' => 'paypal-ipn',
+                        'atbdp_order_id' => $order_id
+                    ),
+                    $link
+                );
+            }
+        }
+
+        return apply_filters('atbdp_paypal_ipn_page_url', $link);
+    }
+
+} // end ATBDP_Permalink
 
 endif;

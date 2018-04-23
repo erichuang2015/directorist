@@ -490,6 +490,10 @@ class ATBDP_Order {
             $order_items[] = atbdp_get_featured_settings_array();
         }
 
+        // fix currency symbol position
+        $before = ''; $after = '';
+        ('after' == $c_position) ? $after = $symbol : $before = $symbol;
+
         ob_start();
         ?>
         <table border="0" cellspacing="0" cellpadding="7" style="border:1px solid #CCC;">
@@ -504,7 +508,7 @@ class ATBDP_Order {
                         <?php if( isset( $order['desc'] ) ) echo $order['desc']; ?>
                     </td>
                     <td style="border-bottom:1px solid #CCC;">
-                        <?php echo atbdp_format_payment_amount( $order['price'] ); ?>
+                        <?php echo $before.esc_html(atbdp_format_payment_amount($order['price'])).$after;?>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -515,7 +519,7 @@ class ATBDP_Order {
                 <td>
                     <?php
                     $amount = get_post_meta( $order_id, '_amount', true );
-                    echo atbdp_format_payment_amount( $amount );
+                    echo $before.esc_html(atbdp_format_payment_amount($amount)).$after;
                     ?>
                 </td>
             </tr>

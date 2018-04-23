@@ -293,4 +293,15 @@ class ATBDP_Checkout
         }
     }
 
+    /**
+     * It output content for payment failure page
+     * @todo; improve this content or page later.
+     * @since 3.1.2
+     * @return string
+     */
+    public function transaction_failure()
+    {
+        return __('Your Transaction was not successful. Please contact support', ATBDP_TEXTDOMAIN);
+    }
+
 } // ends class

@@ -83,6 +83,7 @@ class ATBDP_Email {
         $exp_date           = get_post_meta($listing_id, '_expiry_date', true);
         $never_exp           = get_post_meta($listing_id, '_never_expire', true);
         $renewal_link       = ATBDP_Permalink::get_renewal_page_link($listing_id);
+        $order_receipt_link       = ATBDP_Permalink::get_payment_receipt_page_link($order_id);
         $cats               = wp_get_object_terms( $listing_id, ATBDP_CATEGORY, array( 'fields' => 'names' ) );/*@todo, maybe we can use get_the_terms() for utilizing some default caching???*/
         $cat_name           = !empty($cats) ? $cats[0] : '';/*@todo; if a listing is attached to multiple cats, we can print more than one cat later.*/
         $find_replace =  array(
@@ -93,14 +94,14 @@ class ATBDP_Email {
             '==SITE_URL=='              => sprintf( '<a href="%s">%s</a>', $site_url, $site_url ),
             '==EXPIRATION_DATE=='       => ! empty( $never_exp ) ? __( 'Never Expires', ATBDP_TEXTDOMAIN ) : date_i18n( $date_format, strtotime( $exp_date ) ),
             '==CATEGORY_NAME=='         => $cat_name,
-            '==RENEWAL_LINK=='          => $renewal_link,
+            '==RENEWAL_LINK=='          => sprintf( '<a href="%s">%s</a>', $renewal_link, __('Visit Listing Renewal Page', ATBDP_TEXTDOMAIN) ),
             '==LISTING_ID=='            => $listing_id,
             '==LISTING_TITLE=='         => $l_title,
             '==LISTING_EDIT_URL=='      => sprintf( '<a href="%s">%s</a>', $l_edit_url, $l_title ),
             '==LISTING_LINK=='          => sprintf( '<a href="%s">%s</a>', $listing_url, $l_title ),
             '==LISTING_URL=='           => sprintf( '<a href="%s">%s</a>', $listing_url, $listing_url ),
             '==ORDER_ID=='              => $order_id,
-            '==ORDER_RECEIPT_URL=='     => ATBDP_Permalink::get_payment_receipt_page_link($order_id),
+            '==ORDER_RECEIPT_URL=='     => sprintf( '<a href="%s">%s</a>', $order_receipt_link, __('View Order/Payment Receipt', ATBDP_TEXTDOMAIN) ),
             //'==ORDER_DETAILS=='         => ATBDP_Order::get_order_details( $order_id ),
             '==TODAY=='                 => date_i18n( $date_format, $current_time ),
             '==NOW=='                   => date_i18n( $date_format . ' ' . $time_format, $current_time ),

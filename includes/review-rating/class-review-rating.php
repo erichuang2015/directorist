@@ -78,7 +78,7 @@ class ATBDP_Review_Rating{
         }elseif (is_numeric($post_id_or_object)){
             $ratings = $this->db->get_ratings_by('post_id', absint($post_id_or_object)); // get only 3
         }else{
-            $ratings = [];
+            $ratings = array();
         }
 
 // set placeholder or default counter of individual stars
