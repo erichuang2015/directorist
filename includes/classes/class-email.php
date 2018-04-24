@@ -358,9 +358,9 @@ This email is sent automatically for information purpose only. Please do not res
         if(! in_array( 'order_created', get_directorist_option('notify_user', array()) ) ) return false;
         $user = $this->get_owner($listing_id);
         // Send email according to the type of the payment that user used during checkout. get email template from the db.
-        $offline = (!empty($offline)) ? 'offline' : '';
-        $sub = $this->replace_in_content(get_directorist_option("email_sub_{$offline}_new_order"), $order_id, $listing_id, $user);
-        $body = $this->replace_in_content(get_directorist_option("email_tmpl_{$offline}_new_order"), $order_id, $listing_id, $user);
+        $offline = (!empty($offline)) ? '_offline' : '';
+        $sub = $this->replace_in_content(get_directorist_option("email_sub{$offline}_new_order"), $order_id, $listing_id, $user);
+        $body = $this->replace_in_content(get_directorist_option("email_tmpl{$offline}_new_order"), $order_id, $listing_id, $user);
 
         return $this->send_mail( $user->user_email, $sub, $body, $this->get_email_headers() );
     }

@@ -2,10 +2,13 @@
 if ( !class_exists('ATBDP_Settings_Manager' ) ):
 class ATBDP_Settings_Manager {
 
+    private $extension_url = '';
+
     public function __construct()
     {
         // the safest hook to use is after_setup_theme, since Vafpress Framework may exists in Theme or Plugin
         add_action( 'after_setup_theme', array($this, 'display_plugin_settings') );
+        $this->extension_url = sprintf("<a target='_blank' href='%s'>%s</a>", esc_url(admin_url('edit.php?post_type=at_biz_dir&page=atbdp-extension')), __('Checkout Awesome Extensions', ATBDP_TEXTDOMAIN));
     }
 
     /**
@@ -1597,6 +1600,13 @@ The Administrator of ==SITE_NAME==
         /*BACKWARD Compatibility: $e_review. It may be removed in future release*/
         $e_review = atbdp_get_option('enable_review', 'atbdp_general', 'yes');
             return apply_filters('atbdp_extension_settings_fields', array(
+                    array(
+                        'type' => 'notebox',
+                        'name' => 'extension_promotion',
+                        'label' => __('Need more Features?', ATBDP_TEXTDOMAIN),
+                        'description' => sprintf(__('You can add new features and expand the functionality of the plugin even more by using extensions. %s', ATBDP_TEXTDOMAIN), $this->extension_url),
+                        'status' => 'warning',
+                    ),
                     array(
                         'type' => 'toggle',
                         'name' => 'enable_review',

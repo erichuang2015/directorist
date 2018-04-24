@@ -20,6 +20,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
  */
 
 class ATBDP_Gateway{
+    private $extension_url = '';
     public function __construct()
     {
         // add monetization menu
@@ -29,6 +30,7 @@ class ATBDP_Gateway{
         // add gateway submenu
         add_filter('atbdp_monetization_settings_submenus', array($this, 'gateway_settings_submenu'), 10, 1);
 
+        $this->extension_url = sprintf("<a target='_blank' href='%s'>%s</a>", esc_url(admin_url('edit.php?post_type=at_biz_dir&page=atbdp-extension')), __('Checkout Other Payment Gateways & Extensions', ATBDP_TEXTDOMAIN));
 
     }
 
@@ -179,6 +181,7 @@ class ATBDP_Gateway{
      * @return array It returns an array of gateway settings fields
      */
     function get_gateway_settings_fields(){
+
         return apply_filters('atbdp_gateway_settings_fields', array(
                 array(
                     'type' => 'toggle',
@@ -186,6 +189,13 @@ class ATBDP_Gateway{
                     'label' => __('Enable Offline Payment', ATBDP_TEXTDOMAIN),
                     'description' => __('Choose whether you want to accept offline Payment or not. Default is YES.', ATBDP_TEXTDOMAIN),
                     'default' => 1,
+                ),
+                array(
+                    'type' => 'notebox',
+                    'name' => 'paypal_gateway_promotion',
+                    'label' => __('Need more gateways?', ATBDP_TEXTDOMAIN),
+                    'description' => sprintf(__('You can use different payment gateways to process payment including PayPal. %s', ATBDP_TEXTDOMAIN), $this->extension_url),
+                    'status' => 'warning',
                 ),
                 array(
                     'type' => 'toggle',

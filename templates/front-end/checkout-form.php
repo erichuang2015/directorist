@@ -11,12 +11,9 @@ $symbol = atbdp_currency_symbol($currency);
 ?>
 <div class="directorist directorist-checkout-form">
     <?php do_action('atbdp_before_checkout_form_start'); ?>
-    <form id="atbdp-checkout-form" class="form-vertical" method="post" action="" role="form">
+    <form id="atbdp-checkout-form" class="form-vertical clearfix" method="post" action="" role="form">
         <?php do_action('atbdp_after_checkout_form_start'); ?>
         <p><?php esc_html_e('Your order details are given below. Please review it and click on Proceed to Payment to complete this order.', ATBDP_TEXTDOMAIN); ?></p>
-        <div class="table-responsive">
-
-
             <table id="directorist-checkout-table" class="table table-bordered table-striped">
                 <?php
                 // $args is auto available available through the load_template().
@@ -65,15 +62,11 @@ $symbol = atbdp_currency_symbol($currency);
                         <div id="atbdp_checkout_total_amount"></div><!--total amount will be populated by JS-->
                     </td>
                 </tr>
-
-
-
-            </table>
-
+            </table> <!--ends table-->
             <div id="directorist_payment_gateways" class="panel panel-default">
                 <div class="panel-heading"><?php esc_html_e( 'Choose a payment method', ATBDP_TEXTDOMAIN ); ?></div>
                 <?php echo ATBDP_Gateway::gateways_markup(); ?>
-            </div>
+            </div> <!--ends #directorist_payment_gateways-->
 
             <p id="atbdp_checkout_errors" class="text-danger"></p>
 
@@ -82,10 +75,10 @@ $symbol = atbdp_currency_symbol($currency);
             <div class="pull-right">
                 <a href="<?php echo ATBDP_Permalink::get_dashboard_page_link(); ?>" class="btn btn-default"><?php _e( 'Not Now', ATBDP_TEXTDOMAIN ); ?></a>
                 <input type="submit" id="atbdp_checkout_submit_btn" class="btn btn-primary" value="<?php _e( 'Pay Now', ATBDP_TEXTDOMAIN ); ?>" />
-            </div>
+            </div> <!--ends pull-right-->
+
         <?php do_action('atbdp_before_checkout_form_end'); ?>
-    </form>
+    </form> <!--ends FORM  -->
     <?php do_action('atbdp_after_checkout_form_end'); ?>
-
-
 </div>
+<!-- ends directorist directorist-checkout-form-->
