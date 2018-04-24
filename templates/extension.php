@@ -23,12 +23,27 @@
             <img src="" alt="">
 
             <div class="extension_detail">
-                <a href="https://aazztech.com/plugins/directorist-multiple-image" target="_blank" class="ext_title"><h4> Directorist - Multiple Image </h4></a>
+                <a href="https://aazztech.com/plugins/directorist-multiple-image" target="_blank" class="ext_title"><h4> Directorist - Multiple Images/Slider </h4></a>
                 <p><?php esc_html_e('You can enable multiple image uploading feature in your listing adding page using this extension.', ATBDP_TEXTDOMAIN); ?></p>
 
                 <div class="btn_wrapper">
                     <a href="https://aazztech.com/demos/plugins/directorist-business-directory-plugin/at_biz_dir/moo-cantina/" target="_blank" class="btn demo"><?php esc_html_e('View demo', ATBDP_TEXTDOMAIN); ?></a>
                     <a href="https://aazztech.com/plugins/directorist-multiple-image" target="_blank" class="btn get"><?php esc_html_e('Get extension', ATBDP_TEXTDOMAIN); ?></a>
+                </div>
+            </div>
+        </div>
+
+        <!--Multiple Image Upload-->
+        <div class="single_extension">
+            <img src="" alt="">
+
+            <div class="extension_detail">
+                <a href="https://aazztech.com/plugins/directorist-paypal" target="_blank" class="ext_title"><h4> Directorist - PayPal Payment Gateway </h4></a>
+                <p><?php esc_html_e('You can accept payment via PayPal using this extension', ATBDP_TEXTDOMAIN); ?></p>
+
+                <div class="btn_wrapper">
+                    <a href="https://aazztech.com/demos/plugins/directorist-business-directory-plugin/at_biz_dir/moo-cantina/" target="_blank" class="btn demo"><?php esc_html_e('View demo', ATBDP_TEXTDOMAIN); ?></a>
+                    <a href="https://aazztech.com/plugins/directorist-paypal" target="_blank" class="btn get"><?php esc_html_e('Get extension', ATBDP_TEXTDOMAIN); ?></a>
                 </div>
             </div>
         </div>
