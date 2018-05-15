@@ -68,6 +68,12 @@ $symbol = atbdp_currency_symbol($currency);
                 <?php echo ATBDP_Gateway::gateways_markup(); ?>
             </div> <!--ends #directorist_payment_gateways-->
 
+            <?php
+            do_action('atbdp_before_cc_form');/*Hook for dev*/
+            do_action('atbdp_cc_form'); // placeholder action for credit card form
+            do_action('atbdp_after_cc_form'); /*Hook for dev*/
+            ?>
+
             <p id="atbdp_checkout_errors" class="text-danger"></p>
 
             <?php wp_nonce_field( 'checkout_action', 'checkout_nonce' ); ?>
@@ -78,6 +84,7 @@ $symbol = atbdp_currency_symbol($currency);
             </div> <!--ends pull-right-->
 
         <?php do_action('atbdp_before_checkout_form_end'); ?>
+
     </form> <!--ends FORM  -->
     <?php do_action('atbdp_after_checkout_form_end'); ?>
 </div>
