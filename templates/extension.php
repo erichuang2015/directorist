@@ -6,7 +6,22 @@
             <img src="" alt="">
 
             <div class="extension_detail">
-                <a href="https://aazztech.com/plugins/directorist-paypal" target="_blank" class="ext_title"><h4> Directorist - PayPal Payment Gateway </h4></a>
+                <a href="https://aazztech.com/plugins/directorist-stripe" target="_blank" class="ext_title"><h4> Directorist - Stripe Payment Gateway </h4></a>
+                <p><?php esc_html_e('You can accept payment via Stripe using this extension', ATBDP_TEXTDOMAIN); ?></p>
+
+                <div class="btn_wrapper">
+                    <a href="https://aazztech.com/plugins/directorist-stripe/#screenshots" target="_blank" class="btn demo"><?php esc_html_e('View demo', ATBDP_TEXTDOMAIN); ?></a>
+                    <a href="https://aazztech.com/plugins/directorist-stripe" target="_blank" class="btn get"><?php esc_html_e('Get extension', ATBDP_TEXTDOMAIN); ?></a>
+                </div>
+            </div>
+        </div>
+
+        <!--Paypal Gateway-->
+        <div class="single_extension">
+            <img src="" alt="">
+
+            <div class="extension_detail">
+                <a href="https://aazztech.com/plugins/directorist-paypal" target="_blank" class="ext_title"><h4> Directorist - PayPal Standard Payment Gateway </h4></a>
                 <p><?php esc_html_e('You can accept payment via PayPal using this extension', ATBDP_TEXTDOMAIN); ?></p>
 
                 <div class="btn_wrapper">
