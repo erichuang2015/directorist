@@ -3,7 +3,7 @@ Contributors: AazzTech
 Tags: business directory, directory, listings, classifieds, listing, ads
 Requires at least: 4.0
 Tested up to:  4.9.5
-Stable tag: 3.1.3
+Stable tag: 3.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -11,37 +11,88 @@ Create a classified website, business directory website like Yelp, foursquare et
 
 == Description ==
 
-Live demo: <https://aazztech.com/demos/plugins/directorist-business-directory-plugin>
+[Live Demo](https://aazztech.com/demos/plugins/directorist-business-directory-plugin) | [Free Directory Theme](https://aazztech.com/product/directoria-wordpress-theme/) | [Video Overview](https://www.youtube.com/watch?v=NqtQCzpYRRI)
 
+[youtube https://www.youtube.com/watch?v=NqtQCzpYRRI]
+
+The Directorist plugin has just got even better with a new update. Meet New Directorist Version 3.1.4. It is now updated with a lot of new features like featured listings, basic monetization, listing expiration, improved design, email notifications, ability to add price field to a listing, ability to toggle any options and much more. Best directory plugin just got even better than before. Check out the full changelog of the most recent versions 3.1.0, 3.1.1,3.1.2 & 3.1.3 in the following link to know what’s new features we have added to the plugin recently.
+
+Full ChangeLog: [https://wordpress.org/plugins/directorist/#developers](https://wordpress.org/plugins/directorist/#developers)
+
+Now let's have a look at some of the features that make this plugin useful for your directory or classified website.
+
+= Beautiful & 100% Responsive Design =
+The design of Directorist plugin is very elegant and beautiful. Our dedicated designer spent countless hours to design the plugin before we developed it. So, the design of directorist plugin is highly premium that you can not find in any other directory plugins.
+
+Besides, being the most beautiful directory plugin, it is also 100% responsive. So, your users can use your directory site from any devices perfectly.
+
+= EASY TO USE =
 Make a powerful and beautiful business directory or classified website with the world-first easiest business directory plugin.
 
 There are many business directory plugins out there but none of them is as easy as this business directory plugin. Anyone can turn his website into a powerful and professional directory website with this plugin without having any programming skill.
 
+= CLEAN & EXPRESSIVE SETTINGS OPTIONS =
 We do not like to scare user with tons of settings and options. We have implemented a very clean and easily-understandable setting panel where a user can easily customize the plugins. This plugin is extremely fast and powerful and it can be extended with add-ons as per user choice.
 
-= Some of the features of Directorist Plugin =
-*   It is very easy to use. Many directorist plugins are very hard to use and have many junky settings. But this plugin emphasizes on the easy of use that anyone can create an amazing classified website or directory listing site in a few minutes.
-*  It supports front-end listing submission.
-*  It provides front-end listing editing feature.
-*  It provides front-end user dashboard, custom registration page etc. 
-*  You can create a membership website where users can submit their own listings from the front end.
-*  It can be extended to increase more functionalities like reviews, rating, related listing, popular listing widgets etc. using extensions.
-*  It is 100% responsive. So, it displays very nicely on any devices irrespective of screen sizes.
-*  It is 100% cross browser compatible. It will display perfectly on any modern browser.
-*  Beautiful home page.
-*  Ability to show popular category of listing on Home page.
-*  Auto suggestion in the search category and places.
-*  Highly optimized codes.
-*  Very fast and it does not slow down your site.
-*  Very lightweight.
-*  Highly secured code.
-*  Super easy to use.
-*  Translation ready.
-*  And many more features.
+= BASIC MONETIZATION =
+You can let user promote their listings to featured listings and charge them for it. You can also charge user when they renew a listing. More monetization features are coming soon.
 
+= FEATURED LISTINGS =
+Featured listings you will be displayed on top of other listings. You may charge a user for it too if you want.
 
-= Free theme for the Plugin! =
-Are you worried about the plugin compatibility to your theme? We have thought about it. No plugin can be 100% compatible with any theme in terms of design. This is why we have crafted a beautiful theme called [Directoria](https://aazztech.com/product/directoria-wordpress-theme/ "Free WordPress theme for Directorist plugin") that is 100% compatible with this plugin. You can build an amazing directory site like this plugin demo site. Download it from here: <https://aazztech.com/product/directoria-wordpress-theme/>
+= LISTING EXPIRATION =
+You can now set a default expiration date for a listing or you can set a listing expiration to forever validity.
+
+= RENEW LISTINGS FEATURES =
+Users can renew their listings now after listings expire
+
+= EASY AND TRANSLATABLE EMAIL NOTIFICATION SYSTEM =
+You can send email notifications to your users in different situations. You can control everything about email notification. You can edit all email templates according to your choice. You build your own email template too.
+
+= CUSTOMIZABLE OPTIONS =
+You can enable and disabled almost all options. Therefore, you get high customizable possibility with this plugin. For example, you can show or hide map on the front end etc. 
+
+= BUILT FOR ANY BUSINESS DIRECTORY OR CLASSIFIED SITE =
+You can make any business directory site using this plugin. You can also make classified websites like a car selling a website or a land selling website etc.
+
+= OPTIMIZED AND FAST =
+Directorist is developed using Object Oriented PHP and following WordPress Best Coding Practice. It has a highly optimized codebase. Therefore, it will run faster.
+
+= COMPATIBLE WITH ANY THEMES =
+You may know it is very difficult to make a pluginâ€™s design compatible with all themes because of the different layouts and markups different themes use. However, it is not a problem with Directorist. We have invested a lot of time on this plugin to make to 95-100% compatible with ANY WORDPRESS THEMES.
+
+= DEDICATED PREMIUM THEME FOR FREE FOR THE PLUGIN! =
+Maybe your theme is 99% compatible with our plugin. However, you want to get beyond that and want 100% compatibility. No problem. We have crafted a premium theme for this plugin and we are giving it for free to our valuable users of this plugin. Now making a modern and professional directory website is just a matter of some clicks.
+
+You can build an amazing directory site like this plugin demo site. Download it from here: [https://aazztech.com/product/directoria-wordpress-theme/](https://aazztech.com/product/directoria-wordpress-theme/)
+
+= EXTENDABLE & DEVELOPER-FRIENDLY =
+You can extend the functionality of this plugin using free & premium extensions. It is also developer-friendly. Any developer can extend this plugin using different actions and filters provided by this plugin.
+
+= BUILT BY A TEAM AND BACKED BY COMPANY =
+Directorist is not developed by a single person. A team of dedicated developers and designers spent countless hours to make this plugin and they are working on it constantly to improve it and to add new features. Therefore, you get the most professional directory plugin from us. As it is backed by a company, you will get premium support now and upcoming years without any worries. 
+
+= OTHER FEATURES =
+* Front-end listing submission ( can be disabled if you wish) 
+* Front-end listing submission ( can be disabled if you wish)
+* Front-end user dashboard ( can be disabled if you wish)
+* Basic Monetization by featured listings
+* Ability to create classified websites as well as directory websites
+* Extremely customizable
+* Create Unlimited listing based on location and category
+* Unlimited Locations, Categories, and Tags
+* Related listings display
+* Popular listings display
+* Extendable with extensions
+* Ability to use your own custom slugs for every listing and its location and categories etc.
+* Google Map
+* Listing Ratings
+* Listing Reviews
+* Settings export and import
+* Extendable settings ( A developer can add his own settings to the settings page of Directorist using custom hooks provided by this plugins )
+* Display Business Hours for a listing using Business Hour Extension
+* Upload multiple Images and display them in a nice responsive slider using Multiple Image Upload extension.
+* And many more features.
 
 == Installation ==
 
@@ -76,6 +127,10 @@ This plugin provides 5 shortcodes. You can see these shortcode names on the sett
 12. Plugin default setting page
 
 == Changelog ==
+
+= 3.1.4 =
+* Added Language .pot file for easy translation to any language
+
 = 3.1.3 =
 * Fixed some minor issues and made the plugin compatible with stripe payment gateway
 

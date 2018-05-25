@@ -6,12 +6,12 @@
             <img src="" alt="">
 
             <div class="extension_detail">
-                <a href="https://aazztech.com/plugins/directorist-stripe" target="_blank" class="ext_title"><h4> Directorist - Stripe Payment Gateway </h4></a>
+                <a href="https://aazztech.com/product/directorist-stripe" target="_blank" class="ext_title"><h4> Directorist - Stripe Payment Gateway </h4></a>
                 <p><?php esc_html_e('You can accept payment via Stripe using this extension', ATBDP_TEXTDOMAIN); ?></p>
 
                 <div class="btn_wrapper">
-                    <a href="https://aazztech.com/plugins/directorist-stripe/#screenshots" target="_blank" class="btn demo"><?php esc_html_e('View demo', ATBDP_TEXTDOMAIN); ?></a>
-                    <a href="https://aazztech.com/plugins/directorist-stripe" target="_blank" class="btn get"><?php esc_html_e('Get extension', ATBDP_TEXTDOMAIN); ?></a>
+                    <a href="https://aazztech.com/product/directorist-stripe/#screenshots" target="_blank" class="btn demo"><?php esc_html_e('View demo', ATBDP_TEXTDOMAIN); ?></a>
+                    <a href="https://aazztech.com/product/directorist-stripe" target="_blank" class="btn get"><?php esc_html_e('Get extension', ATBDP_TEXTDOMAIN); ?></a>
                 </div>
             </div>
         </div>
@@ -21,12 +21,12 @@
             <img src="" alt="">
 
             <div class="extension_detail">
-                <a href="https://aazztech.com/plugins/directorist-paypal" target="_blank" class="ext_title"><h4> Directorist - PayPal Standard Payment Gateway </h4></a>
+                <a href="https://aazztech.com/product/directorist-paypal" target="_blank" class="ext_title"><h4> Directorist - PayPal Standard Payment Gateway </h4></a>
                 <p><?php esc_html_e('You can accept payment via PayPal using this extension', ATBDP_TEXTDOMAIN); ?></p>
 
                 <div class="btn_wrapper">
-                    <a href="https://aazztech.com/plugins/directorist-paypal/#screenshots" target="_blank" class="btn demo"><?php esc_html_e('View demo', ATBDP_TEXTDOMAIN); ?></a>
-                    <a href="https://aazztech.com/plugins/directorist-paypal" target="_blank" class="btn get"><?php esc_html_e('Get extension', ATBDP_TEXTDOMAIN); ?></a>
+                    <a href="https://aazztech.com/product/directorist-paypal/#screenshots" target="_blank" class="btn demo"><?php esc_html_e('View demo', ATBDP_TEXTDOMAIN); ?></a>
+                    <a href="https://aazztech.com/product/directorist-paypal" target="_blank" class="btn get"><?php esc_html_e('Get extension', ATBDP_TEXTDOMAIN); ?></a>
                 </div>
             </div>
         </div>
@@ -40,7 +40,7 @@
                 <p><?php esc_html_e('You can show Business hours / opening hours of a listing by this extension.', ATBDP_TEXTDOMAIN); ?></p>
 
                 <div class="btn_wrapper">
-                    <a href="https://aazztech.com/demos/plugins/directorist-business-directory-plugin/at_biz_dir/delicacy-foods/" target="_blank" class="btn demo"><?php esc_html_e('View Demo', ATBDP_TEXTDOMAIN); ?></a>
+                    <a href="https://aazztech.com/product/directorist-business-hour/#screenshots" target="_blank" class="btn demo"><?php esc_html_e('View Demo', ATBDP_TEXTDOMAIN); ?></a>
                     <a href="https://aazztech.com/product/directorist-business-hour/" target="_blank" class="btn get"><?php esc_html_e('Get extension', ATBDP_TEXTDOMAIN); ?></a>
                 </div>
             </div>
@@ -53,12 +53,12 @@
             <img src="" alt="">
 
             <div class="extension_detail">
-                <a href="https://aazztech.com/plugins/directorist-multiple-image" target="_blank" class="ext_title"><h4> Directorist - Multiple Images/Slider </h4></a>
+                <a href="https://aazztech.com/product/directorist-multiple-image" target="_blank" class="ext_title"><h4> Directorist - Multiple Images/Slider </h4></a>
                 <p><?php esc_html_e('You can enable multiple image uploading feature in your listing adding page using this extension.', ATBDP_TEXTDOMAIN); ?></p>
 
                 <div class="btn_wrapper">
-                    <a href="https://aazztech.com/demos/plugins/directorist-business-directory-plugin/at_biz_dir/delicacy-foods/" target="_blank" class="btn demo"><?php esc_html_e('View demo', ATBDP_TEXTDOMAIN); ?></a>
-                    <a href="https://aazztech.com/plugins/directorist-multiple-image" target="_blank" class="btn get"><?php esc_html_e('Get extension', ATBDP_TEXTDOMAIN); ?></a>
+                    <a href="https://aazztech.com/product/directorist-multiple-image/#screenshots" target="_blank" class="btn demo"><?php esc_html_e('View demo', ATBDP_TEXTDOMAIN); ?></a>
+                    <a href="https://aazztech.com/product/directorist-multiple-image" target="_blank" class="btn get"><?php esc_html_e('Get extension', ATBDP_TEXTDOMAIN); ?></a>
                 </div>
             </div>
         </div>
