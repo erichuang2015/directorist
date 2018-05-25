@@ -55,7 +55,7 @@ $currency = get_directorist_option('g_currency', 'USD');
                                         <label for="price"><?php
                                             /*Translator: % is the name of the currency such eg. USD etc.*/
                                             printf(esc_html__('Price [%s] ( Optional---Leave it blank to hide it)', ATBDP_TEXTDOMAIN), $currency); ?></label>
-                                        <input type="text" id="price" name="price" value="<?= !empty($Price) ? esc_attr($Price): ''; ?>" class="form-control directory_field" placeholder="<?= __('Price of this listing. Eg. 100', ATBDP_TEXTDOMAIN); ?>"/>
+                                        <input type="text" id="price" name="price" value="<?= !empty($price) ? esc_attr($price): ''; ?>" class="form-control directory_field" placeholder="<?= __('Price of this listing. Eg. 100', ATBDP_TEXTDOMAIN); ?>"/>
                                     </div>
                                 <?php } ?>
 
@@ -214,7 +214,7 @@ $currency = get_directorist_option('g_currency', 'USD');
         <?php if (!$disable_map) { ?>
 
         // initialize all vars here to avoid hoisting related misunderstanding.
-        var placeSearch, map, autocomplete, address_input, markers, info_window, $manual_lat, $manual_lng, saved_lat_lng, info_content;
+        let placeSearch, map, autocomplete, address_input, markers, info_window, $manual_lat, $manual_lng, saved_lat_lng, info_content;
          $manual_lat = $('#manual_lat');
          $manual_lng = $('#manual_lng');
          saved_lat_lng = {lat:<?= (!empty($manual_lat)) ? floatval($manual_lat) : '51.5073509' ?>, lng: <?= (!empty($manual_lng)) ? floatval($manual_lng) : '-0.12775829999998223' ?> }; // default is London city

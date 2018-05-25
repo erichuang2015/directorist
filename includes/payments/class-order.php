@@ -72,8 +72,8 @@ class ATBDP_Order {
             'taxonomies'          => array( '' ),
             'hierarchical'        => false,
             'public'              => true,
-            'show_ui'             => true,
-            'show_in_menu'        => 'edit.php?post_type='.ATBDP_POST_TYPE,
+            'show_ui'             => current_user_can( 'manage_atbdp_options' ) ? true : false, // show the menu only to the admin
+            'show_in_menu'        => current_user_can( 'manage_atbdp_options' ) ? 'edit.php?post_type='.ATBDP_POST_TYPE : false,
             'show_in_admin_bar'   => true,
             'show_in_nav_menus'   => true,
             'can_export'          => true,

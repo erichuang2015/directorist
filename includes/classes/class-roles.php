@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class ATBDP_Roles {
 
-    var $version = 1;
+    var $version = 2;
 
     public function __construct()
     {

@@ -3,7 +3,6 @@
 if ( !class_exists('ATBDP_Metabox') ):
 class ATBDP_Metabox {
 
-
     /**
      * Add meta boxes for ATBDP_POST_TYPE and ATBDP_SHORT_CODE_POST_TYPE
      * and Save the meta data
@@ -11,17 +10,11 @@ class ATBDP_Metabox {
     public function __construct() {
         if ( is_admin() ) {
             add_action('add_meta_boxes_'.ATBDP_POST_TYPE,	array($this, 'listing_info_meta'));
-
             // edit_post hooks is better than save_post hook for nice checkbox
             // http://wordpress.stackexchange.com/questions/228322/how-to-set-default-value-for-checkbox-in-wordpress
-
-
             add_action( 'edit_post', array($this, 'save_post_meta'), 10, 2);
             add_action('post_submitbox_misc_actions', array($this, 'post_submitbox_meta'));
-
-
         }
-
      }
 
     /**
@@ -44,19 +37,21 @@ class ATBDP_Metabox {
 
     }
 
-
     /**
-     * @param $post
+     * It displays Listing information meta on Add listing page on the backend
+     * @param WP_Post $post
      */
     public function listing_info( $post ) {
         $lf= get_post_meta($post->ID, '_listing_info', true);
-        $listing_info= (!empty($lf))? aazztech_enc_unserialize($lf) : array();
+        $listing_info = (!empty($lf))? aazztech_enc_unserialize($lf) : array();
+        $listing_info['price'] = get_post_meta($post->ID, '_price', true);
         wp_nonce_field( 'listing_info_action', 'listing_info_nonce' );
         ATBDP()->load_template('add-listing', compact('listing_info') );
     }
 
     /**
-     * @param $post
+     * It displays meta box for uploading image from the backend editor of ATBDP_POST_TYPE
+     * @param WP_Post $post
      */
     public function listing_gallery($post )
     {
@@ -89,27 +84,6 @@ class ATBDP_Metabox {
         $data = compact('f_active', 'never_expire', 'expiry_date', 'featured', 'listing_status', 'default_expire_in_days');
         ATBDP()->load_template('meta-partials/expiration-featured-fields', array('data'=> $data));
     }
-
-
-/*
-|
-|   S
--------
-|
-|   A
-----------
-|
-|   V
--------------
-|
-|   I
-----------------
-|
-|   N
--------------------
-|
-|   G
-----------------------*/
 
     /**
      * Save Meta Data of ATBDP_POST_TYPE

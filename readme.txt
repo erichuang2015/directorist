@@ -3,11 +3,11 @@ Contributors: AazzTech
 Tags: business directory, directory, listings, classifieds, listing, ads
 Requires at least: 4.0
 Tested up to:  4.9.5
-Stable tag: 3.1.4
+Stable tag: 3.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Create a classified website, business directory website like Yelp, foursquare etc with this plugin very easily without getting lost in complexity like in other plugins.
+Create a classified website, business directory website like Yelp, foursquare etc with this plugin very easily without getting lost in complexity like in other plugins. Try it, you will love it.
 
 == Description ==
 
@@ -15,9 +15,9 @@ Create a classified website, business directory website like Yelp, foursquare et
 
 [youtube https://www.youtube.com/watch?v=NqtQCzpYRRI]
 
-The Directorist plugin has just got even better with a new update. Meet New Directorist Version 3.1.4. It is now updated with a lot of new features like featured listings, basic monetization, listing expiration, improved design, email notifications, ability to add price field to a listing, ability to toggle any options and much more. Best directory plugin just got even better than before. Check out the full changelog of the most recent versions 3.1.0, 3.1.1,3.1.2 & 3.1.3 in the following link to know what’s new features we have added to the plugin recently.
+The Directorist plugin has just got even better with a new update. Meet New Directorist. It is now updated with a lot of new features like featured listings, basic monetization, listing expiration, improved design, email notifications, ability to add price field to a listing, ability to toggle any options and much more. Best directory plugin just got even better than before.
 
-Full ChangeLog: [https://wordpress.org/plugins/directorist/#developers](https://wordpress.org/plugins/directorist/#developers)
+Full ChangeLog of recent releases: [https://wordpress.org/plugins/directorist/#developers](https://wordpress.org/plugins/directorist/#developers)
 
 Now let's have a look at some of the features that make this plugin useful for your directory or classified website.
 
@@ -59,7 +59,7 @@ You can make any business directory site using this plugin. You can also make cl
 Directorist is developed using Object Oriented PHP and following WordPress Best Coding Practice. It has a highly optimized codebase. Therefore, it will run faster.
 
 = COMPATIBLE WITH ANY THEMES =
-You may know it is very difficult to make a pluginâ€™s design compatible with all themes because of the different layouts and markups different themes use. However, it is not a problem with Directorist. We have invested a lot of time on this plugin to make to 95-100% compatible with ANY WORDPRESS THEMES.
+You may know it is very difficult to make a plugin's design compatible with all themes because of the different layouts and markups different themes use. However, it is not a problem with Directorist. We have invested a lot of time on this plugin to make to 95-100% compatible with ANY WORDPRESS THEMES.
 
 = DEDICATED PREMIUM THEME FOR FREE FOR THE PLUGIN! =
 Maybe your theme is 99% compatible with our plugin. However, you want to get beyond that and want 100% compatibility. No problem. We have crafted a premium theme for this plugin and we are giving it for free to our valuable users of this plugin. Now making a modern and professional directory website is just a matter of some clicks.
@@ -101,15 +101,22 @@ Directorist is not developed by a single person. A team of dedicated developers 
 
 = Usage =
 
-After successfully installing and activating the plugin, you will find "Directory Listings" menu on the left column of WordPress dashboard. Go to Directory Listings >> Add New Listing to add your listing items. After adding your desired number of listings, go to  Directory Listings >> Directory settings page and add your google map API key and customize other settings. 
+After successfully installing and activating the plugin, you will find "Directory Listings" menu on the left column of WordPress dashboard. Go to Directory Listings >> Directorist settings and make sure you have added all the pages with correct shortcodes to the settings under pages,links&views settings. (Note: if you install the plugin for the first time then the plugin should already create all the pages automatically for you and assign their ids to the settings automatically. In that case, you just need to click save changes) Then you can add google map api key if you want to display map on the listing. Checkout other settings and customize them as  you like. Then save the changes.
 
-This plugin provides 5 shortcodes. You can see these shortcode names on the setting page. 
+Now Go to Directory Listings >> Add New Listing to add your listing items. After adding your desired number of listings, you can check your website. If you have any problem understanding anything, you can always contact us via our website or here on wordpress support forum. We will be happy to help you.
 
+This plugin provides 9 shortcodes. You can see these shortcode names on the directorist setting page > Pages, links & views settings.
+Note: It is best to use it in a page with full-width template if possible for the best output.
 1. Use this shortcode  [search_listing]  on any page to enable users to search all the listing. This shortcode should probably be used on your front page if you are making a directory listing website.
 2. Use this shortcode  [all_listing]  on any page to show all the listings.
 3. Use this shortcode [add_listing] on any page to enable users to submit listing from the front end. 
 4. Use this shortcode  [user_dashboard]  on any page to enable users to see and edit his profile and listing items from the front end. 
 5. Use this shortcode  [custom_registration]  on any page to enable users to register from the front end using custom forms.
+6. Use this shortcode  [search_result]  on any page to display listing search result.
+7. Use this shortcode  [directorist_checkout]  on any page to display directorist checkout functionality (required if you use monetization).
+8. Use this shortcode  [directorist_payment_receipt]  on any page to display directorist payment receipt information (recommended if you use monetization).
+9. Use this shortcode  [transaction_failure]  on any page to display transaction error of directorist (recommended if you use monetization).
+
 
 == Screenshots ==
 
@@ -127,6 +134,10 @@ This plugin provides 5 shortcodes. You can see these shortcode names on the sett
 12. Plugin default setting page
 
 == Changelog ==
+
+= 3.1.5 =
+* Fixed: Editor could not manage listing from the back end
+* Fixed: Pricing was not showing after saving in editing form as well as in the front end
 
 = 3.1.4 =
 * Added Language .pot file for easy translation to any language
@@ -156,7 +167,7 @@ This plugin provides 5 shortcodes. You can see these shortcode names on the sett
 * Improve: Refactor some reusable codes to a function to avoid repetition & improve performance
 * Fix: a bug in the search result page related to post count
 * Improve: Removed some unnecessary old codes related to fetching reviews on search, all listings & dashboard script
-* Feature: Added Quciktags feature on the editor on add listing page (front-end)
+* Feature: Added Quick-tags feature on the editor on add listing page (front-end)
 
 = 3.1.0 =
 * Added Monetization option using featured listing

@@ -72,7 +72,7 @@ if(!class_exists('ATBDP_Custom_Post')):
                 'taxonomies'          => array(),
                 'hierarchical'        => false,
                 'public'              => true,
-                'show_ui'             => current_user_can( 'manage_options' ) ? true : false, // show the menu only to the admin
+                'show_ui'             => current_user_can( 'edit_others_at_biz_dirs' ) ? true : false, // show the menu only to the admin
                 'show_in_menu'        => true,
                 'menu_position'       => 20,
                 'menu_icon'			  => ATBDP_ADMIN_ASSETS.'images/menu_icon.png',
