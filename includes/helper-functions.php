@@ -1322,7 +1322,7 @@ if (!function_exists('currency_has_decimal')){
  * @param bool $echo Whether to Print value or to Return value. Default is printing value.
  * @return mixed
  */
-function atbdp_display_price($price='', $disable_price=false, $currency='USD', $symbol='', $c_position='', $echo=true){
+function atbdp_display_price($price='', $disable_price=false, $currency='', $symbol='', $c_position='', $echo=true){
     if (empty($price) || $disable_price) return null; // vail if the price is empty or price display is disabled.
 
         $before = ''; $after = '';
