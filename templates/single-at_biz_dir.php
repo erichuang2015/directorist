@@ -138,8 +138,8 @@ $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) || !$disable_s_wid
                                  * then do_shortcode() will parse the rest of the shortcodes
                                  * */
                                 global $wp_embed;
-                                $cont = $wp_embed->autoembed($wp_embed->run_shortcode($post->post_content));
-                                echo do_shortcode($cont);
+                                $cont = $wp_embed->autoembed($wp_embed->run_shortcode(wp_kses_post($post->post_content)));
+                                echo wpautop(do_shortcode($cont));
 
                                 ?>
 
