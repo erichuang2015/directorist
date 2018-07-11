@@ -49,6 +49,8 @@ $p_title = get_the_title();
 $featured = get_post_meta(get_the_ID(), '_featured', true);
 // make main column size 12 when sidebar or submit widget is active @todo; later make the listing submit widget as real widget instead of hard code
 $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) || !$disable_s_widget ? 'col-md-8' : 'col-md-12';
+var_dump($hide_contact_info);
+var_dump($disable_contact_info);
 ?>
 
 <section class="directorist directory_wrapper">
@@ -205,7 +207,7 @@ $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) || !$disable_s_wid
 
                         <div class="col-md-7">
                             <?php }
-                            if (!$disable_contact_info || !$hide_contact_info) {
+                            if (!$disable_contact_info && !$hide_contact_info) {
                             ?><!-- Contact Information section-->
                             <div class="directory_contact_area">
                                 <div class="directory_are_title">
