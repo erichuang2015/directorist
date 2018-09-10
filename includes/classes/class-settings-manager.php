@@ -271,7 +271,7 @@ You can use the following keywords/placeholder in any of your email bodies/templ
 KAMAL;
 
 
-        return apply_filters('atbdp_email_new__tmpl_settings_fields', array(
+        return apply_filters('atbdp_email_new_tmpl_settings_fields', array(
                 array(
                     'type' => 'notebox',
                     'name' => 'email_placeholder_info',
@@ -678,7 +678,7 @@ The Administrator of ==SITE_NAME==
     }
 
     /**
-     * Get all the settings fields for the offline new order email template section
+     * Get all the settings fields for the completed new order email template section
      * @since 3.1.0
      * @return array
      */
