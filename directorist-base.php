@@ -456,15 +456,13 @@ final class Directorist_Base {
 
     /**
      * It displays popular listings
-     * @param int $count Number of popular listing to show.
+     * @param int $count [optional] Number of popular listing to show. Default 5.
      * If the count is more than one then it uses it, else the function will use the value from the settings page.
      * Count variable is handy if we want to show different number of popular listings on different pages. For example, on different widgets place
+     * @todo Try to move popular listings related functionalities to a dedicated listing related class that handles popular listings, related listings etc. when have time.
      */
-    public function show_popular_listing($count=0)
+    public function show_popular_listing($count=5)
     {
-
-        $enable_pop_listing = get_directorist_option('enable_pop_listing', 1);
-        if (1 != $enable_pop_listing ) return; // vail if popular listing is not enabled
         $popular_listings = $this->get_popular_listings($count);
 
         if ($popular_listings->have_posts()){ ?>
@@ -516,18 +514,16 @@ final class Directorist_Base {
     /**
      * It gets the popular listings of the given listing/post
      *
-     * @param int $count Number of popular listing to show.  If the count is more than one then it uses it,
+     * @param int $count [optional] Number of popular listing to show.  If the count is more than one then it uses it,
      *                   else the function will use the value from the settings page.
      *                   Count variable is handy if we want to show different number of popular listings on different pages.
-     *                   For example, on different widgets place
+     *                   For example, on different widgets place. Default 5.
      * @return object|WP_Query It returns the popular listings if found.
      */
-    private function get_popular_listings($count=0)
+    private function get_popular_listings($count=5)
     {
         /*Popular post related stuff*/
-        $p_count = get_directorist_option('pop_listing_num', 5);
-        // use $count from args if available, else use the count from the database option
-        $p_count = !empty($count) ? $count : $p_count;
+        $p_count = !empty($count) ? $count : 5;
 
         /**
          * It filters the number of the popular listing to display

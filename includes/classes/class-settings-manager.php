@@ -1283,7 +1283,6 @@ The Administrator of ==SITE_NAME==
     function get_listings_settings_fields(){
         // BACKWARD COMPATIBILITY:  OLD SETTINGS DATA that should be adapted by using them as default value, will be removed in future
         $s_p_cat = atbdp_get_option('show_popular_category', 'atbdp_general', 'yes');
-        $e_p_list = atbdp_get_option('enable_pop_listing', 'atbdp_general', 'yes');
         $e_r_list = atbdp_get_option('enable_rel_listing', 'atbdp_general', 'yes');
 
         return apply_filters('atbdp_listings_settings_fields', array(
@@ -1439,27 +1438,6 @@ The Administrator of ==SITE_NAME==
                         'default' => '10',
                         'validation' => 'numeric|minlength[1]',
                     ),
-
-                    array(
-                        'type' => 'toggle',
-                        'name' => 'enable_pop_listing',
-                        'label' => __('Enable popular listings on Single Listing page', ATBDP_TEXTDOMAIN),
-                        'description' => __('Choose whether you want to display popular listings on Single listing details page or not. Default is YES.', ATBDP_TEXTDOMAIN),
-                        'default' => atbdp_yes_to_bool($e_p_list),
-                    ),
-
-                    array(
-                        'type' => 'slider',
-                        'name' => 'pop_listing_num',
-                        'label' => __('Number of Popular Listings', ATBDP_TEXTDOMAIN),
-                        'description' => __( 'Set how many popular listings you would like to show on your website. Eg. 5. Default is 5.', ATBDP_TEXTDOMAIN),
-                        'min' => '1',
-                        'max' => '30',
-                        'step' => '1',
-                        'default' => '5',
-                        'validation' => 'numeric|minlength[1]',
-                    ),
-
 
                     array(
                         'type' => 'toggle',
