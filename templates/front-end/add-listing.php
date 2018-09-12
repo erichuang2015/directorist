@@ -114,7 +114,7 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                                     <input type="text" name="listing[tagline]" value="<?= !empty($tagline) ? esc_attr($tagline): ''; ?>" class="form-control directory_field" placeholder="<?= __('Your Organization\'s motto or tag-line', ATBDP_TEXTDOMAIN); ?>"/>
                                 </div>
                                 <div class="form-group">
-                                    <label for="atbdp_excerpt"><?php esc_html_e('Short Description/Excerpt:', ATBDP_TEXTDOMAIN) ?></label>
+                                    <label for="atbdp_excerpt"><?php esc_html_e('Short Description/Excerpt(eg. Text shown on Image Hover in grid layout):', ATBDP_TEXTDOMAIN) ?></label>
                                     <!--@todo; later let user decide if he wants to show tinymce or normal textarea-->
                                     <textarea name="listing[excerpt]" id="atbdp_excerpt"  class="form-control directory_field" cols="30" rows="5" placeholder="<?= __('Short Description or Excerpt', ATBDP_TEXTDOMAIN); ?>"> <?= !empty($excerpt) ? esc_textarea( stripslashes($excerpt)) : ''; ?> </textarea>
                                 </div>
