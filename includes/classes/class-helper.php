@@ -259,5 +259,67 @@ class ATBDP_Helper {
 <?php
     }
 
+    /**
+     * It outputs all categories and locations related markup for the listing
+     * @param array $cats [optional] the array of Listing Category Objects
+     * @param array $locs [optional] the array of Listing Location Objects
+     */
+    public function output_listings_all_taxonomy_info($cats=array(), $locs=array())
+    {
+        // get terms from db if not provided
+        $cats = !empty ($cats ) ? $cats : get_the_terms(null, ATBDP_CATEGORY);
+        $locs = !empty ($locs ) ? $locs : get_the_terms(null, ATBDP_LOCATION);
+
+        if (!empty($cats) || !empty($locs)) { ?>
+            <div class="general_info">
+                <ul>
+                    <?php if (!empty($cats) && is_array($cats)){?>
+                        <li>
+                            <ul>
+                                <p class="info_title"><?php _e('Category:', ATBDP_TEXTDOMAIN);?></p>
+                                <?php foreach ($cats as $cat) { ?>
+                                <li>
+                                    <p class="directory_tag">
+                                        <span class="fa <?= esc_attr(get_cat_icon(@$cat->term_id)); ?>" aria-hidden="true"></span>
+                                        <span> <?php if (is_object($cat)) { ?>
+                                                <a href="<?= esc_url(ATBDP_Permalink::get_category_archive($cat)); ?>">
+                                                  <?= esc_html($cat->name); ?>
+                                                 </a>
+                                            <?php } ?>
+                                        </span>
+                                    </p>
+                                </li>
+                            <?php  } ?>
+                            </ul>
+                        </li>
+                    <?php }
+
+                    if (!empty($locs) && is_array($locs)){
+                        $location_count = count($locs);
+                        ?>
+                        <li>
+                            <ul>
+                            <p class="info_title"><?php _e('Location:', ATBDP_TEXTDOMAIN);?></p>
+                                <?php foreach ($locs as $loc) { $location_count--;// reduce count to display comma for the right item?>
+                                    <li>
+                                    <span><?php if (is_object($loc)) { ?>
+                                            <a href="<?= esc_url(ATBDP_Permalink::get_location_archive($loc)); ?>">
+                                                <?= esc_html($loc->name); ?>
+                                            </a>
+                                        <?php } ?>
+                                    </span><?php
+                                        // @todo; discuss with front-end dev if it is good to put comma here directly or he will do?
+                                        if ($location_count >= 1) echo ",";
+                                        ?>
+                                    </li>
+                                <?php  } ?>
+                            </ul>
+                        </li>
+                    <?php } ?>
+                </ul>
+            </div>
+        <?php }
+    }
+
 }
 endif;
