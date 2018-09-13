@@ -2,7 +2,7 @@
 You can use this plugin to create any kind of business directory websites such as restaurant listings, vehicle listings, shop listings etc.
 
 ## Why should you use the directorist - business directory WordPress Plugin?
-Because it is very easy to use and has extremely simple and user-interface with detailed instruction under each settings. Anyone can build a professional site using this plugin without knowing any coding. You will rarely need to ask for help. It it that easy to use this plugin. However, whenever you need any help, you are always there to help you.
+Because it is very easy to use and has extremely simple user-interface with a detailed instruction under each settings. Anyone can build a professional site using this plugin without knowing any coding. You will rarely need to ask for help. It is that easy to use this plugin. However, whenever you need any help, you are always here to help you.
 
 ## You are need of some help?
 [Shoot us a mail here](https://aazztech.com/contact/). We will be happy to help you.
