@@ -60,7 +60,6 @@ class ATBDP_Listing{
         if( is_singular(ATBDP_POST_TYPE ) && in_the_loop() && is_main_query() ) {
             global $post;
             ob_start();
-           // echo 'hello from the function';
             include ATBDP_TEMPLATES_DIR . 'single-at_biz_dir.php';
             return ob_get_clean();
         }

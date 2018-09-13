@@ -288,8 +288,12 @@ final class Directorist_Base {
 
             ) );
         }
-
-        register_widget('BD_Popular_Listing_Widget');
+        if (class_exists('BD_Popular_Listing_Widget')){
+            register_widget('BD_Popular_Listing_Widget');
+        }
+        if (class_exists('ATBDP_Submit_Listing_Widget')){
+            register_widget('ATBDP_Submit_Listing_Widget');
+        }
 
     }
 

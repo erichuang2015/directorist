@@ -182,7 +182,9 @@ $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) || !$disable_s_wid
                     </div>
                     <?php
                     // if business hour is active then add the following markup...
-                    if ( is_business_hour_active() && $enable_bh_on_page && (!is_empty_v($business_hours) || !empty($enable247hour)) ) {
+                    if ( is_business_hour_active()
+                    && $enable_bh_on_page
+                    && (!is_empty_v($business_hours) || !empty($enable247hour)) ) {
                     ?>
                     <div class="row"><!-- we need to add a row when business hour extension is active in order to divide the width in two columns-->
                         <div class="col-md-5">
