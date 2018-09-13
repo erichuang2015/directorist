@@ -19,4 +19,4 @@ Because it is very easy to use and has extremely simple user-interface with a de
 Looking for documentation? [check it here](https://github.com/aazztech/directorist-documentation)
 
 ## Want to contribute?
-Just provide a pull request. We will be happy to get your help. You can also buy premium extensions or share the work with your friends to support this work. Thanks.
+Just provide a pull request. We will be happy to get your help. You can also [buy premium extensions](https://aazztech.com/product/category/extensions/) or share the work with your friends or [leave a positive review](https://wordpress.org/support/plugin/directorist/reviews/?rate=5#new-post) on WordPress org to support this work. Thanks.
