@@ -1250,7 +1250,7 @@ The Administrator of ==SITE_NAME==
                         'min' => '1',
                         'max' => '100',
                         'step' => '1',
-                        'default' => atbdp_get_option('search_posts_num', 'atbdp_general'),
+                        'default' => atbdp_get_option('search_posts_num', 'atbdp_general', 6),
                         'validation' => 'numeric|minlength[1]',
                     ),
 
