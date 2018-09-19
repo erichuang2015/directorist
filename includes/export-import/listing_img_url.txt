@@ -1,0 +1,1 @@
+["http:\/\/plugindevelopment.test\/wp-content\/uploads\/2018\/02\/car.jpg","http:\/\/plugindevelopment.test\/wp-content\/uploads\/2018\/02\/car-2.jpg"]
