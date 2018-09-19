@@ -224,7 +224,8 @@ $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) ? 'col-md-8' : 'co
                                     <?php }?>
 
                                     <?php if (!empty($email)) { ?>
-                                        <li><span class="info_title"><?php _e('Email', ATBDP_TEXTDOMAIN); ?></span><span class="info"><?= esc_html($email); ?></span></li>
+                                        <li><span class="info_title"><?php _e('Email', ATBDP_TEXTDOMAIN); ?></span><span class="info"><a
+                                                        href="mailto:<?= esc_html($email); ?>"><?= esc_html($email); ?></a></span></li>
                                     <?php }?>
 
                                     <?php if (!empty($website)) { ?>
