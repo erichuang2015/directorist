@@ -44,7 +44,7 @@ if (!function_exists('directorist_export_date_options')){
  */
 function directorist_export_page_cb() { // adds menu to "Tools" section linked to directorist_export_page function
 	//$plugin_page = add_management_page('Export to Text', 'Export to Text', 'export', basename(__FILE__), 'directorist_export_page'); //Sets and saves plugin page in WP admin
-    $plugin_page = add_submenu_page('edit.php?post_type=at_biz_dir', __('Directorist Export', 'directorist'), __('Directorist Export', 'directorist'), 'export', 'directorist-export', 'directorist_export_page');
+    $plugin_page = add_submenu_page('edit.php?post_type=at_biz_dir', __('Directorist Export', ATBDP_TEXTDOMAIN), __('Directorist Export', ATBDP_TEXTDOMAIN), 'export', 'directorist-export', 'directorist_export_page');
 	add_action( 'load-'.$plugin_page, 'directorist_exim_add_js' ); //triggers directorist_exim_add_js function just on plugin page
 }
 
@@ -64,18 +64,18 @@ function directorist_exim_add_js() { //properly adds JS file to page
 	wp_enqueue_script( 'jquery-ui-sortable' );
 }
 
-require_once( 'directorist-export-import_helpers.php' ); //loads file with functions for help
-require_once( 'directorist-export-xml-generator.php' ); //loads file with functions for help
-require_once( 'directorist-importer.php' ); //loads the importer
+require_once dirname( __FILE__ ) . '/directorist-export-import_helpers.php'; //loads file with functions for help
+require_once dirname( __FILE__ ) . '/directorist-export-xml-generator.php'; //loads file with functions for help
+require_once dirname( __FILE__ ) . '/directorist-importer.php'; //loads the importer
 
 if(!empty($_POST['download'])) {
 	
-	add_action('wp_loaded', 'export_to_text_download', 1);
+	add_action('wp_loaded', 'directorist_export_to_download', 1);
 
     /**
      *
      */
-    function export_to_text_download() {
+    function directorist_export_to_download() {
 
 		/*$sitename = sanitize_key( get_bloginfo( 'name' ) );
 		if ( ! empty($sitename) ) $sitename .= '.';
@@ -89,7 +89,7 @@ if(!empty($_POST['download'])) {
 		die();
 	}
 	
-	//export_to_text_download();
+	//directorist_export_to_download();
 }
 
 /**
@@ -198,7 +198,7 @@ function directorist_export_page() { // Sre2t_manage function used to display Ex
 	                	
 						<?php
                         // Show available custom and the built in taxonomy selection
-						$taxonomies = array(__('Directory Category', 'directorist')=>ATBDP_CATEGORY, __('Directory Location', 'directorist')=>ATBDP_LOCATION, __('Directory Tags', 'directorist')=>ATBDP_TAGS);
+						$taxonomies = array(__('Directory Category', ATBDP_TEXTDOMAIN)=>ATBDP_CATEGORY, __('Directory Location', ATBDP_TEXTDOMAIN)=>ATBDP_LOCATION, __('Directory Tags', ATBDP_TEXTDOMAIN)=>ATBDP_TAGS);
 						foreach ($taxonomies as $taxonomy ) { ?>
 							<div class="option_box">
 								<label for="ptype" class="full_label"><?php echo str_replace('_', ' ', $taxonomy); ?>: </label>
@@ -485,95 +485,4 @@ function directorist_export_ajax() { //Function used for generating results for 
 	
 	die(); //Functions echoing for AJAX must die
 }
-/*
- * /Applications/MAMP/htdocs/plugindevelopment/wp-content/plugins/directorist-export-import/directorist-export-import.php:271:
-array (size=10)
-  'action' => string 'directorist_export_ajax' (length=23)
-  'sdate' => string 'all' (length=3)
-  'edate' => string 'all' (length=3)
-  'author_inex' => string '' (length=0)
-  'author' =>
-    array (size=1)
-      0 => string 'e2t_all' (length=7)
-  'ptype' =>
-    array (size=1)
-      0 => string 'at_biz_dir' (length=10)
-  'taxonomy' =>
-    array (size=3)
-      'at_biz_dir-category' =>
-        array (size=2)
-          0 => string 'e2t_all' (length=7)
-          'inex' => string 'IN' (length=2)
-      'at_biz_dir-location' =>
-        array (size=2)
-          0 => string 'e2t_all' (length=7)
-          'inex' => string 'IN' (length=2)
-      'at_biz_dir-tags' =>
-        array (size=2)
-          0 => string 'e2t_all' (length=7)
-          'inex' => string 'IN' (length=2)
-  'post_status' =>
-    array (size=1)
-      0 => string 'publish' (length=7)
-  'data_filter' =>
-    array (size=14)
-      0 => string 'ID' (length=2)
-      1 => string 'Title' (length=5)
-      2 => string 'Date' (length=4)
-      3 => string 'Post Type' (length=9)
-      4 => string 'Categories' (length=10)
-      5 => string 'Tags' (length=4)
-      6 => string 'Custom Taxonomies' (length=17)
-      7 => string 'Permlink' (length=8)
-      8 => string 'Content' (length=7)
-      9 => string 'Excerpt' (length=7)
-      10 => string 'Author' (length=6)
-      11 => string 'Author Email' (length=12)
-      12 => string 'Custom Fields' (length=13)
-      13 => string 'Comments' (length=8)
-  'download' => string '0' (length=1)
-array (size=10)
-  'action' => string 'directorist_export_ajax' (length=23)
-  'sdate' => string 'all' (length=3)
-  'edate' => string 'all' (length=3)
-  'author_inex' => string '' (length=0)
-  'author' =>
-    array (size=1)
-      0 => string 'e2t_all' (length=7)
-  'ptype' =>
-    array (size=1)
-      0 => string 'at_biz_dir' (length=10)
-  'taxonomy' =>
-    array (size=3)
-      'at_biz_dir-category' =>
-        array (size=2)
-          0 => string 'e2t_all' (length=7)
-          'inex' => string 'IN' (length=2)
-      'at_biz_dir-location' =>
-        array (size=2)
-          0 => string 'e2t_all' (length=7)
-          'inex' => string 'IN' (length=2)
-      'at_biz_dir-tags' =>
-        array (size=2)
-          0 => string 'e2t_all' (length=7)
-          'inex' => string 'IN' (length=2)
-  'post_status' =>
-    array (size=1)
-      0 => string 'publish' (length=7)
-  'data_filter' =>
-    array (size=14)
-      0 => string 'ID' (length=2)
-      1 => string 'Title' (length=5)
-      2 => string 'Date' (length=4)
-      3 => string 'Post Type' (length=9)
-      4 => string 'Categories' (length=10)
-      5 => string 'Tags' (length=4)
-      6 => string 'Custom Taxonomies' (length=17)
-      7 => string 'Permlink' (length=8)
-      8 => string 'Content' (length=7)
-      9 => string 'Excerpt' (length=7)
-      10 => string 'Author' (length=6)
-      11 => string 'Author Email' (length=12)
-      12 => string 'Custom Fields' (length=13)
-      13 => string 'Comments' (length=8)
-  'download' => string '0' (length=1)*/
+

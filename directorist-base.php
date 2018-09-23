@@ -332,6 +332,9 @@ final class Directorist_Base {
         /*Load payment related stuff*/
         require_once ATBDP_INC_DIR . 'custom-actions.php';
         require_once ATBDP_INC_DIR . 'custom-filters.php';
+        /*Load export & Import */
+        require_once ATBDP_INC_DIR . 'export-import/directorist-export-import.php';
+
     }
 
     public function load_textdomain()
