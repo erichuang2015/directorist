@@ -37,6 +37,9 @@ if ( class_exists( 'WP_Importer' ) ) {
         var $tags = array();
         var $base_url = '';
 
+        // Storing Parsed Data
+        var $parsed_data = array();
+
         // mappings from old information to new
         var $processed_authors = array();
         var $author_mapping = array();
@@ -57,23 +60,28 @@ if ( class_exists( 'WP_Importer' ) ) {
          * Manages the three separate stages of the WXR import process
          */
         function dispatch() {
-            $this->header();
+            $this->header(); // show page title and importer update notice. there is nothing to check in it.
 
-            $step = empty( $_GET['step'] ) ? 0 : (int) $_GET['step'];
+            $step = empty( $_GET['step'] ) ? 0 : (int) $_GET['step']; // set default step
             switch ( $step ) {
                 case 0:
                     $this->greet();
                     break;
                 case 1:
-                    check_admin_referer( 'import-upload' );
+                    check_admin_referer( 'import-upload' ); // check security nonce
+                    /**
+                     * Handles the WXR upload and initial parsing of the file to prepare for
+                     * displaying author import options
+                     */
+                    // Uploaded xml file succeeded, authors found? then show pre-import options
                     if ( $this->handle_upload() )
-                        $this->import_options();
+                        $this->import_options(); // it just displays a form Display pre-import options, author importing/mapping and option to fetch attachments
                     break;
                 case 2:
-                    check_admin_referer( 'import-wordpress' );
+                    check_admin_referer( 'import-wordpress' ); // check security nonce
                     $this->fetch_attachments = ( ! empty( $_POST['fetch_attachments'] ) && $this->allow_fetch_attachments() );
-                    $this->id = (int) $_POST['import_id'];
-                    $file = get_attached_file( $this->id );
+                    $this->id = (int) $_POST['import_id']; // it basically $this->id sent from the import form in the second step
+                    $file = get_attached_file( $this->id ); // get the uploaded xml/csv etc file. in this case, an xml file
                     set_time_limit(0);
                     $this->import( $file );
                     break;
@@ -90,12 +98,24 @@ if ( class_exists( 'WP_Importer' ) ) {
         function import( $file ) {
             add_filter( 'import_post_meta_key', array( $this, 'is_valid_meta_key' ) );
             add_filter( 'http_request_timeout', array( &$this, 'bump_request_timeout' ) );
-
+            /*Parse the WXR file and prepare us for the task of processing parsed data*/
             $this->import_start( $file );
-
+            /**
+             * Map old author logins to local user IDs based on decisions made
+             * in import options form. Can map to an existing user, create a new user
+             * or falls back to the current user in case of error with either of the previous
+             */
             $this->get_author_mapping();
 
             wp_suspend_cache_invalidation( true );
+            /**
+             * Create new posts based on import information
+             *
+             * Posts marked as having a parent which doesn't exist will become top level items.
+             * Doesn't create a new post if: the post type doesn't exist, the given post ID
+             * is already noted as imported or a post with the same title and date already exists.
+             * Note that new/updated terms, comments and meta are imported for the last of the above.
+             */
             $this->process_posts();
             wp_suspend_cache_invalidation( false );
 
@@ -120,29 +140,29 @@ if ( class_exists( 'WP_Importer' ) ) {
                 die();
             }
 
-            $import_data = $this->parse( $file );
+            $this->parsed_data = $this->parse( $file );
 
-            if ( is_wp_error( $import_data ) ) {
+            if ( is_wp_error( $this->parsed_data ) ) {
                 echo '<p><strong>' . __( 'Sorry, there has been an error.', ATBDP_TEXTDOMAIN ) . '</strong><br />';
-                echo esc_html( $import_data->get_error_message() ) . '</p>';
+                echo esc_html( $this->parsed_data->get_error_message() ) . '</p>';
                 $this->footer();
                 die();
             }
-            file_put_contents(__DIR__.'/imported_data.txt', json_encode($import_data));
-            file_put_contents(__DIR__.'/listing_img_url.txt', json_encode($import_data['posts'][0]['listing_img_url']));
+            file_put_contents(__DIR__.'/imported_data.txt', json_encode($this->parsed_data));
+            file_put_contents(__DIR__.'/listing_img_url.txt', json_encode($this->parsed_data['posts'][0]['listing_img_url']));
             //die();
-            $this->version = $import_data['version'];
-            $this->get_authors_from_import( $import_data );
-            $this->posts = $import_data['posts'];
-            $this->terms = $import_data['terms'];
-            $this->categories = $import_data['categories'];
-            $this->tags = $import_data['tags'];
-            $this->base_url = esc_url( $import_data['base_url'] );
+            $this->version = $this->parsed_data['version'];
+            $this->get_authors_from_import( $this->parsed_data );
+            $this->posts = $this->parsed_data['posts'];
+            $this->terms = $this->parsed_data['terms'];
+            $this->categories = $this->parsed_data['categories'];
+            $this->tags = $this->parsed_data['tags'];
+            $this->base_url = esc_url( $this->parsed_data['base_url'] );
 
             wp_defer_term_counting( true );
             wp_defer_comment_counting( true );
 
-            do_action( 'import_start' );
+            do_action('import_start');
         }
 
         /**
@@ -173,8 +193,9 @@ if ( class_exists( 'WP_Importer' ) ) {
          * @return bool False if error uploading or invalid file, true otherwise
          */
         function handle_upload() {
-            $file = wp_import_handle_upload();
+            $file = wp_import_handle_upload(); // upload the xml file & get Uploaded file's details on success, error message on failure
 
+            // error check
             if ( isset( $file['error'] ) ) {
                 echo '<p><strong>' . __( 'Sorry, there has been an error.', ATBDP_TEXTDOMAIN ) . '</strong><br />';
                 echo esc_html( $file['error'] ) . '</p>';
@@ -187,21 +208,29 @@ if ( class_exists( 'WP_Importer' ) ) {
             }
 
             $this->id = (int) $file['id'];
-            $import_data = $this->parse( $file['file'] );
-            if ( is_wp_error( $import_data ) ) {
+            $this->parsed_data = $this->parse( $file['file'] );
+            //var_dump($import_data['posts'][0]['listing_img_url']);
+            //var_dump($this->parsed_data);
+            //die();
+            // Check if we have error parsing imported file and extract data
+            if ( is_wp_error( $this->parsed_data ) ) {
                 echo '<p><strong>' . __( 'Sorry, there has been an error.', ATBDP_TEXTDOMAIN ) . '</strong><br />';
-                echo esc_html( $import_data->get_error_message() ) . '</p>';
+                echo esc_html( $this->parsed_data->get_error_message() ) . '</p>';
                 return false;
             }
 
-            $this->version = $import_data['version'];
+            $this->version = $this->parsed_data['version'];
             if ( $this->version > $this->max_wxr_version ) {
                 echo '<div class="error"><p><strong>';
-                printf( __( 'This WXR file (version %s) may not be supported by this version of the importer. Please consider updating.', ATBDP_TEXTDOMAIN ), esc_html($import_data['version']) );
+                printf( __( 'This WXR file (version %s) may not be supported by this version of the importer. Please consider updating.', ATBDP_TEXTDOMAIN ), esc_html($this->parsed_data['version']) );
                 echo '</strong></p></div>';
             }
 
-            $this->get_authors_from_import( $import_data );
+            $this->get_authors_from_import( $this->parsed_data ); //Retrieve authors from parsed WXR parsed import data. we could also use the following lines here instead of this function if we wanted simplicity.
+            /*
+             * if ( ! empty( $import_data['authors'] ) )
+             *      $this->authors = $import_data['authors'];
+            */
 
             return true;
         }
@@ -237,7 +266,7 @@ if ( class_exists( 'WP_Importer' ) ) {
         }
 
         /**
-         * Display pre-import options, author importing/mapping and option to
+         * Display a form with pre-import options, author importing/mapping and option to
          * fetch attachments
          */
         function import_options() {
@@ -253,6 +282,9 @@ if ( class_exists( 'WP_Importer' ) ) {
                     <?php if ( $this->allow_create_users() ) : ?>
                         <p><?php printf( __( 'If a new user is created by WordPress, a new password will be randomly generated and the new user&#8217;s role will be set as %s. Manually changing the new user&#8217;s details will be necessary.', ATBDP_TEXTDOMAIN ), esc_html( get_option('default_role') ) ); ?></p>
                     <?php endif; ?>
+
+                
+                    // list previously enqueued user names in unordered list
                     <ol id="authors">
                         <?php foreach ( $this->authors as $author ) : ?>
                             <li><?php $this->author_select( $j++, $author ); ?></li>
@@ -385,7 +417,7 @@ if ( class_exists( 'WP_Importer' ) ) {
 
             foreach ( $this->posts as $post ) {
                 $post = apply_filters( 'wp_import_post_data_raw', $post );
-
+                /*skip to the next iteration if post type does not exist in the DB. eg. no post type registered = no import should*/
                 if ( ! post_type_exists( $post['post_type'] ) ) {
                     printf( __( 'Failed to import &#8220;%s&#8221;: Invalid post type %s', ATBDP_TEXTDOMAIN ),
                         esc_html($post['post_title']), esc_html($post['post_type']) );
@@ -394,18 +426,16 @@ if ( class_exists( 'WP_Importer' ) ) {
                     continue;
                 }
 
-                if ( isset( $this->processed_posts[$post['post_id']] ) && ! empty( $post['post_id'] ) )
-                    continue;  // skip to next if the processed posts id exist
+                // skip to next if the processed posts id exist
+                // or skip to next if post status is auto draft
+                // or skip to next if post type is nav_menu_item
+                if ( (isset( $this->processed_posts[$post['post_id']] ) && ! empty( $post['post_id'] ))
+                    || ( $post['status'] == 'auto-draft' )
+                    || ( 'nav_menu_item' == $post['post_type'] )
+                ) continue;
 
-                if ( $post['status'] == 'auto-draft' )
-                    continue; // skip to next if post status is auto draft
-
-                if ( 'nav_menu_item' == $post['post_type'] ) {
-                    continue; // skip to next if post type is nav_menu_item
-                }
-
+                // get the post type object and check if a post exists with the current iterated post title and post date
                 $post_type_object = get_post_type_object( $post['post_type'] );
-
                 $post_exists = post_exists( $post['post_title'], '', $post['post_date'] );
 
                 /**
@@ -428,6 +458,7 @@ if ( class_exists( 'WP_Importer' ) ) {
                     $comment_post_ID = $post_id = $post_exists;
                     $this->processed_posts[ intval( $post['post_id'] ) ] = intval( $post_exists );
                 } else {
+                    // do the current post has a parent? directorist listing does not have post parent. keeping the lines for now.
                     $post_parent = (int) $post['post_parent'];
                     if ( $post_parent ) {
                         // if we already know the parent, map it to the new local ID
@@ -440,13 +471,13 @@ if ( class_exists( 'WP_Importer' ) ) {
                         }
                     }
 
-                    // map the post author
+                    // map the post author and ge the author id
                     $author = sanitize_user( $post['post_author'], true );
                     if ( isset( $this->author_mapping[$author] ) )
                         $author = $this->author_mapping[$author];
                     else
                         $author = (int) get_current_user_id();
-
+                    // prepare the post array to be inserted to the database.
                     $postdata = array(
                         'import_id' => $post['post_id'],
                         'post_author' => $author,
@@ -487,12 +518,29 @@ if ( class_exists( 'WP_Importer' ) ) {
                             }
                         }
 
-                        $comment_post_ID = $post_id = $this->process_attachment( $postdata, $remote_url );
+                        $post_id = $this->process_attachment( $postdata, $remote_url );
                     } else {
-                        $comment_post_ID = $post_id = wp_insert_post( $postdata, true );
+
+                        $post_id = wp_insert_post( $postdata, true );
+
+                        // we have to process images here.
+                        // get all images attached to this post.
+                        $image_urls = array();
+                        $image_urls = (array) $post['listing_img_url'];
+                        // fetch image from url, insert the attachment to db, store the attachment ids and url to the post meta
+                        if ( isset( $post['listing_img_url'] ) ) {
+                            $image_urls = array();
+                            $image_urls = (array) $post['listing_img_url'];
+
+                            foreach ( $image_urls as $image_url ) {
+                                $gallery_image_ids[] = directorist_get_attachment_id_from_url( $image_url, $post_id );
+                            }
+                            $product->set_gallery_image_ids( $gallery_image_ids );
+                        }
+
                         do_action( 'wp_import_insert_post', $post_id, $original_post_ID, $postdata, $post );
                     }
-
+                    // skip to the next post if the current post failed to be inserted
                     if ( is_wp_error( $post_id ) ) {
                         printf( __( 'Failed to import %s &#8220;%s&#8221;', ATBDP_TEXTDOMAIN ),
                             $post_type_object->labels->singular_name, esc_html($post['post_title']) );
@@ -502,19 +550,14 @@ if ( class_exists( 'WP_Importer' ) ) {
                         continue;
                     }
 
-                    if ( $post['is_sticky'] == 1 )
-                        stick_post( $post_id );
                 }
 
                 // map pre-import ID to local ID
                 $this->processed_posts[intval($post['post_id'])] = (int) $post_id;
 
-                if ( ! isset( $post['terms'] ) )
-                    $post['terms'] = array();
-
-                $post['terms'] = apply_filters( 'wp_import_post_terms', $post['terms'], $post_id, $post );
-
                 // add categories, tags and other terms
+                if ( ! isset( $post['terms'] ) )  $post['terms'] = array();
+                $post['terms'] = apply_filters( 'wp_import_post_terms', $post['terms'], $post_id, $post );
                 if ( ! empty( $post['terms'] ) ) {
                     $terms_to_set = array();
                     foreach ( $post['terms'] as $term ) {
@@ -546,61 +589,9 @@ if ( class_exists( 'WP_Importer' ) ) {
                     unset( $post['terms'], $terms_to_set );
                 }
 
-                if ( ! isset( $post['comments'] ) )
-                    $post['comments'] = array();
-
-                $post['comments'] = apply_filters( 'wp_import_post_comments', $post['comments'], $post_id, $post );
-
-                // add/update comments
-                if ( ! empty( $post['comments'] ) ) {
-                    $num_comments = 0;
-                    $inserted_comments = array();
-                    foreach ( $post['comments'] as $comment ) {
-                        $comment_id	= $comment['comment_id'];
-                        $newcomments[$comment_id]['comment_post_ID']      = $comment_post_ID;
-                        $newcomments[$comment_id]['comment_author']       = $comment['comment_author'];
-                        $newcomments[$comment_id]['comment_author_email'] = $comment['comment_author_email'];
-                        $newcomments[$comment_id]['comment_author_IP']    = $comment['comment_author_IP'];
-                        $newcomments[$comment_id]['comment_author_url']   = $comment['comment_author_url'];
-                        $newcomments[$comment_id]['comment_date']         = $comment['comment_date'];
-                        $newcomments[$comment_id]['comment_date_gmt']     = $comment['comment_date_gmt'];
-                        $newcomments[$comment_id]['comment_content']      = $comment['comment_content'];
-                        $newcomments[$comment_id]['comment_approved']     = $comment['comment_approved'];
-                        $newcomments[$comment_id]['comment_type']         = $comment['comment_type'];
-                        $newcomments[$comment_id]['comment_parent'] 	  = $comment['comment_parent'];
-                        $newcomments[$comment_id]['commentmeta']          = isset( $comment['commentmeta'] ) ? $comment['commentmeta'] : array();
-                        if ( isset( $this->processed_authors[$comment['comment_user_id']] ) )
-                            $newcomments[$comment_id]['user_id'] = $this->processed_authors[$comment['comment_user_id']];
-                    }
-                    ksort( $newcomments );
-
-                    foreach ( $newcomments as $key => $comment ) {
-                        // if this is a new post we can skip the comment_exists() check
-                        if ( ! $post_exists || ! comment_exists( $comment['comment_author'], $comment['comment_date'] ) ) {
-                            if ( isset( $inserted_comments[$comment['comment_parent']] ) )
-                                $comment['comment_parent'] = $inserted_comments[$comment['comment_parent']];
-                            $comment = wp_slash( $comment );
-                            $comment = wp_filter_comment( $comment );
-                            $inserted_comments[$key] = wp_insert_comment( $comment );
-                            do_action( 'wp_import_insert_comment', $inserted_comments[$key], $comment, $comment_post_ID, $post );
-
-                            foreach( $comment['commentmeta'] as $meta ) {
-                                $value = maybe_unserialize( $meta['value'] );
-                                add_comment_meta( $inserted_comments[$key], $meta['key'], $value );
-                            }
-
-                            $num_comments++;
-                        }
-                    }
-                    unset( $newcomments, $inserted_comments, $post['comments'] );
-                }
-
-                if ( ! isset( $post['postmeta'] ) )
-                    $post['postmeta'] = array();
-
-                $post['postmeta'] = apply_filters( 'wp_import_post_meta', $post['postmeta'], $post_id, $post );
-
                 // add/update post meta
+                if ( ! isset( $post['postmeta'] ) ) $post['postmeta'] = array();
+                $post['postmeta'] = apply_filters( 'wp_import_post_meta', $post['postmeta'], $post_id, $post );
                 if ( ! empty( $post['postmeta'] ) ) {
                     foreach ( $post['postmeta'] as $meta ) {
                         $key = apply_filters( 'import_post_meta_key', $meta['key'], $post_id, $post );
@@ -627,7 +618,7 @@ if ( class_exists( 'WP_Importer' ) ) {
                         }
                     }
                 }
-            }
+            } // end foreach $posts loop
 
             unset( $this->posts );
         }
@@ -816,7 +807,7 @@ if ( class_exists( 'WP_Importer' ) ) {
         // Display import page title
         function header() {
             echo '<div class="wrap">';
-            echo '<h2>' . __( 'Import WordPress', ATBDP_TEXTDOMAIN ) . '</h2>';
+            echo '<h2>' . __( 'Import Directorist Data', ATBDP_TEXTDOMAIN ) . '</h2>';
 
             $updates = get_plugin_updates();
             $basename = plugin_basename(__FILE__);
@@ -907,8 +898,6 @@ if ( class_exists( 'WP_Importer' ) ) {
 } // class_exists( 'WP_Importer' )
 
 function directorist_importer_init() {
-    //load_plugin_textdomain( ATBDP_TEXTDOMAIN );
-
     /**
      * WordPress Importer object for registering the import callback
      * @global WP_Import $wp_import

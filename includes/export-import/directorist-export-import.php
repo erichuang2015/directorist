@@ -97,7 +97,7 @@ if(!empty($_POST['download'])) {
  */
 function directorist_export_page() { // Sre2t_manage function used to display Export To Text page
 		if ( !current_user_can('export') )
-			wp_die(__('You do not have sufficient permissions to export the content of this site.'));
+			wp_die(__('You do not have sufficient permissions to export the content of this site.', ATBDP_TEXTDOMAIN));
 	
 		global $wpdb;
 		
@@ -105,20 +105,20 @@ function directorist_export_page() { // Sre2t_manage function used to display Ex
 		?>
 		<div class="directorist-export-import">
         <div class="wrap">
-            <h2>Directorist Export</h2>
-            <h3>Welcome to Directorist Exporter</h3>
+            <h2><?php esc_html_e('Directorist Exporter', ATBDP_TEXTDOMAIN); ?></h2>
+            <h3><?php esc_html_e('Welcome to Directorist Exporter', ATBDP_TEXTDOMAIN); ?></h3>
 
             <div id="main">
                 
-	            <p>A simple plugin to export WordPress post data into a tab-separated text file format (TSV). When you click the button below Export to Text will render a text box from which you can copy and paste your data into a text editor or Excel. If you need to re-import posts from a text file, please consider using CSV Importer plugin.</p>
+	            <p><?php esc_html_e('A simple plugin to export WordPress post data into a tab-separated text file format (TSV). When you click the button below Export to Text will render a text box from which you can copy and paste your data into a text editor or Excel. If you need to re-import posts from a text file, please consider using CSV Importer plugin.', ATBDP_TEXTDOMAIN); ?></p>
 	            
 	            <form id="directorist-export-import-form" action="" method="post"><!--Form posts to "directorist-export-import_dl_txt.php" responsible for file download-->
-	                <h3>Filters</h3>
+	                <h3><?php esc_html_e('Filters', ATBDP_TEXTDOMAIN); ?></h3>
 	                <div id="options_holder">
 	                	<div class="option_box option_box_short">
-	                		<label id="sdate" class="short_label" for="sdate">Start Date</label>
+	                		<label id="sdate" class="short_label" for="sdate"><?php esc_html_e('Start Date', ATBDP_TEXTDOMAIN); ?></label>
 	                        <select name="sdate" id="sdate">
-	                        	<option value="all">All Dates</option>
+	                        	<option value="all"><?php esc_html_e('All Dates', ATBDP_TEXTDOMAIN); ?></option>
 	                        	<?php
 								$dateoptions = directorist_export_date_options(ATBDP_POST_TYPE);
                                 echo $dateoptions;
@@ -127,9 +127,9 @@ function directorist_export_page() { // Sre2t_manage function used to display Ex
 	                        </select>                 		
 	                	</div>
 	                	<div class="option_box option_box_short">
-	                		<label for="edate" class="short_label">End Date</label>
+	                		<label for="edate" class="short_label"><?php esc_html_e('End Date', ATBDP_TEXTDOMAIN); ?></label>
 	                        <select name="edate" id="edate">
-	                             <option value="all">All Dates</option>
+	                             <option value="all"><?php esc_html_e('All Dates', ATBDP_TEXTDOMAIN); ?></option>
 								 <?php
 	                             echo $dateoptions;
 	                             ?>
@@ -138,15 +138,15 @@ function directorist_export_page() { // Sre2t_manage function used to display Ex
 	                	<div class="option_box option_box_submit submit">
 			                <input type="hidden" name="download" value="<?php echo get_home_path(); ?>" />
 			                   
-							<a href="#" class="button-secondary">Generate preview (max 10)</a> <!--link connected to js responsible for AJAX call-->
+							<a href="#" class="button-secondary"><?php esc_html_e('Generate Preview (10 max)', ATBDP_TEXTDOMAIN); ?></a> <!--link connected to js responsible for AJAX call-->
 							<input class="button button-primary" type="submit" value="Download as XML file" name="submit"> <!--Posts data to "directorist-export-import_dl_txt.php" file-->
 	                	</div>               	
 	                	<div class="clearboth"></div>
 	                	<div class="option_box">
-	                		<label for="author" class="full_label">Authors:</label>
+	                		<label for="author" class="full_label"><?php esc_html_e('Authors:', ATBDP_TEXTDOMAIN); ?></label>
 							
-							<label title="Include"><input type="radio" name="author_inex" value="" checked="checked"> <span>Include</span></label>
-							<label title="Exclude"><input type="radio" name="author_inex" value="-"> <span>Exclude</span></label>
+							<label title="Include"><input type="radio" name="author_inex" value="" checked="checked"> <span><?php esc_html_e('Include', ATBDP_TEXTDOMAIN); ?></span></label>
+							<label title="Exclude"><input type="radio" name="author_inex" value="-"> <span><?php esc_html_e('Exclude', ATBDP_TEXTDOMAIN); ?></span></label>
 							
 	                    	<div class="checkbox_box">
 	                            <ul>
@@ -175,7 +175,7 @@ function directorist_export_page() { // Sre2t_manage function used to display Ex
 	                    	</div>                                  		
 	                	</div>
 	                	<div class="option_box">
-	                		<label for="ptype" class="full_label">Post Types:</label>
+	                		<label for="ptype" class="full_label"><?php esc_html_e('Post type(s):', ATBDP_TEXTDOMAIN); ?></label>
 	                    	<div class="checkbox_box">
 	                            <ul>
 	                                <li><label><input type="checkbox" name="ptype[]" value="at_biz_dir" checked="checked" /> Directory Listings</label></li>
@@ -183,7 +183,7 @@ function directorist_export_page() { // Sre2t_manage function used to display Ex
 	                        </div>
 	                	</div>
 	                	<div class="option_box">
-	                		<label for="ptype" class="full_label">Statuses:</label>
+	                		<label for="ptype" class="full_label"><?php esc_html_e('Statuses', ATBDP_TEXTDOMAIN); ?></label>
 	                    	<div class="checkbox_box">
 	                            <ul>
 	                            	<li><label><input type="checkbox" name="post_status[]" value="publish" checked="checked"/> Publish</label></li>
@@ -215,7 +215,7 @@ function directorist_export_page() { // Sre2t_manage function used to display Ex
 						<!--Select and reorder data to generate-->
                         <div class="clearboth"></div>
 	                	<div class="option_box" id="last_option_box">
-                            <label for="ptype" class="full_label">Select and reorder the fields you would like to to generate:</label>
+                            <label for="ptype" class="full_label"><?php esc_html_e('Select and reorder the fields you would like to to generate:', ATBDP_TEXTDOMAIN); ?></label>
                             <div class="checkbox_box">
                                 <ul class="sortable">
 	                            	<li><label><input type="checkbox" name="data_filter[]" value="ID" checked="checked"/> ID</label></li>
@@ -243,7 +243,11 @@ function directorist_export_page() { // Sre2t_manage function used to display Ex
 	            
 	            <div id="directorist-export-import-results-holder">
 					<div id="directorist-export-import-results-close-holder"><a href="#" id="directorist-export-import-results-close">Close</a></div>
-	            	<div id="directorist-export-import-results" ><strong>Just click on "Generate for quick copying" and then click on this box to select and copy the text.<br/>Then paste it (Paste Special works best) into a new Excel document.</strong></div>
+	            	<div id="directorist-export-import-results" >
+                        <strong>
+                            <?php esc_html_e('Just click on "Generate for quick copying" and then click on this box to select and copy the text. Then paste it (Paste Special works best) into a new Excel document.', ATBDP_TEXTDOMAIN); ?>
+                        </strong>
+                    </div>
 	            </div>
                 
                 <div class="clearboth"></div>
