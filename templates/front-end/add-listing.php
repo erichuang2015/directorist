@@ -343,8 +343,13 @@ $disable_contact_info = get_directorist_option('disable_contact_info');
                     <!--Image Uploader-->
                     <div id="_listing_gallery">
                         <?php  ATBDP()->load_template('media-upload', array('attachment_ids'=> $attachment_ids)); ?>
-
                     </div>
+                    <?php
+                    /**
+                     * It fires before rendering submit listing button on the front end.
+                     */
+                    do_action('atbdp_before_submit_listing_frontend');
+                    ?>
                     <div class="btn_wrap list_submit">
                         <button type="submit" class="btn btn-primary listing_submit_btn"><?= !empty($p_id) ? __( 'Update Listing', ATBDP_TEXTDOMAIN) : __( 'Submit listing', ATBDP_TEXTDOMAIN); ?></button>
                     </div>

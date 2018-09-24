@@ -3,7 +3,7 @@ Contributors: AazzTech
 Tags: business directory, directory, listings, classifieds, listing, ads
 Requires at least: 4.0
 Tested up to:  4.9.5
-Stable tag: 3.1.5
+Stable tag: 3.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,8 +14,8 @@ Create a classified website, business directory website like Yelp, foursquare et
 [Live Demo](https://aazztech.com/demos/plugins/directorist-business-directory-plugin) | [Free Directory Theme](https://aazztech.com/product/directoria-wordpress-theme/) | [Video Overview](https://www.youtube.com/watch?v=NqtQCzpYRRI)
 
 [youtube https://www.youtube.com/watch?v=NqtQCzpYRRI]
-
-The Directorist plugin has just got even better with a new update. Meet New Directorist. It is now updated with a lot of new features like featured listings, basic monetization, listing expiration, improved design, email notifications, ability to add price field to a listing, ability to toggle any options and much more. Best directory plugin just got even better than before.
+Create any types of simple or complex classified business directory websites using the Directorist.
+It is the easiest business directory plugin out there. You can create beautiful-looking directory websites with a few clicks. It is updated more often and you get premium supports for free. Best directory plugin just got even better than before.
 
 Full ChangeLog of recent releases: [https://wordpress.org/plugins/directorist/#developers](https://wordpress.org/plugins/directorist/#developers)
 
@@ -134,6 +134,9 @@ Note: It is best to use it in a page with full-width template if possible for th
 12. Plugin default setting page
 
 == Changelog ==
+
+= 3.2.5 =
+* Made it compatible with the Directorist Google Recaptcha Extension
 
 = 3.1.5 =
 * Fixed: Editor could not manage listing from the back end

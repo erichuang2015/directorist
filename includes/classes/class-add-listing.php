@@ -66,6 +66,11 @@ if (!class_exists('ATBDP_Add_Listing')):
         public function add_listing_to_db() {
             // has the listing for been submitted ?
             if ( !empty( $_POST['add_listing_form'] ) ) {
+                /**
+                 * It fires before processing a submitted listing from the front end
+                 * @param array $_POST the array containing the submitted listing data.
+                 * */
+                do_action('atbdp_before_processing_submitted_listing_frontend', $_POST);
                 // add listing form has been submitted
                 if (ATBDP()->helper->verify_nonce($this->nonce, $this->nonce_action )) {
                     // we have data and passed the security
