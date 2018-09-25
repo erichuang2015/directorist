@@ -2,11 +2,14 @@
 $lf= get_post_meta($post->ID, '_listing_info', true);
 $price= get_post_meta($post->ID, '_price', true);
 $listing_info = (!empty($lf))? aazztech_enc_unserialize($lf) : array();
-$attachment_ids= (!empty($listing_info['attachment_id'])) ? $listing_info['attachment_id'] : array();
-
+//$attachment_ids= (!empty($listing_info['attachment_id'])) ? $listing_info['attachment_id'] : array();
+$l_imgs = get_post_meta($post->ID, 'listing_img', true); // unserialization will happen behind the scene
+$attachment_ids= (!empty($l_imgs)) ? $l_imgs : array();
+//var_dump($attachment_ids);
 $image_links = array(); // define a link placeholder variable
 foreach ($attachment_ids as $id){
     $image_links[$id]= wp_get_attachment_image_src($id, 'full')[0]; // store the attachment id and url
+    //@todo; instead of getting a full size image, define a an image size and tehn fetch that size and let the user change that image size via a hook.
 }
 
 

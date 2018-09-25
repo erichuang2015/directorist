@@ -82,7 +82,7 @@ if ( class_exists( 'WP_Importer' ) ) {
                     $this->fetch_attachments = ( ! empty( $_POST['fetch_attachments'] ) && $this->allow_fetch_attachments() );
                     $this->id = (int) $_POST['import_id']; // it basically $this->id sent from the import form in the second step
                     $file = get_attached_file( $this->id ); // get the uploaded xml/csv etc file. in this case, an xml file
-                    set_time_limit(0);
+                    set_time_limit(600); // import process takes long time, so increase the time.
                     $this->import( $file );
                     break;
             }
@@ -451,12 +451,12 @@ if ( class_exists( 'WP_Importer' ) ) {
                  * @param int   $post_exists  Post ID, or 0 if post did not exist.
                  * @param array $post         The post array to be inserted.
                  */
-                //$post_exists = apply_filters( 'wp_import_existing_post', $post_exists, $post );
+                $post_exists = apply_filters( 'wp_import_existing_post', $post_exists, $post );
 
                 if ( $post_exists && get_post_type( $post_exists ) == $post['post_type'] ) {
                     printf( __('%s &#8220;%s&#8221; already exists.', ATBDP_TEXTDOMAIN), $post_type_object->labels->singular_name, esc_html($post['post_title']) );
                     echo '<br />';
-                    $comment_post_ID = $post_id = $post_exists;
+                    $post_id = $post_exists;
                     $this->processed_posts[ intval( $post['post_id'] ) ] = intval( $post_exists );
                 } else {
                     // do the current post has a parent? directorist listing does not have post parent. keeping the lines for now.
@@ -527,11 +527,23 @@ if ( class_exists( 'WP_Importer' ) ) {
                         // we have to process images here.
                         // get all images attached to this post.
                         $image_urls = (array) $post['listing_img_url'];
+                        // test data
+                        file_put_contents(
+                                __DIR__.'/image_links_inside_loop.txt',
+                                    json_encode($image_urls).PHP_EOL ,
+                                    FILE_APPEND | LOCK_EX
+                        );
                         // fetch image from url, insert the attachment to db, store the attachment ids and url to the post meta
                         if ( !empty( $image_urls ) && is_array($image_urls) ) {
+                            $attachment_ids = array();
                             foreach ( $image_urls as $image_url ) {
                                 $attachment_ids[] = directorist_get_attachment_id_from_url( $image_url, $post_id );
                             }
+                            file_put_contents(
+                                __DIR__.'/attachment_ids_inside_loop.txt',
+                                json_encode($attachment_ids).PHP_EOL ,
+                                FILE_APPEND | LOCK_EX
+                            );
                             // update the post meta with attachment ids
                             update_post_meta($post_id, 'listing_img', $attachment_ids);
                         }
@@ -879,12 +891,12 @@ if ( class_exists( 'WP_Importer' ) ) {
         }
 
         /**
-         * Added to http_request_timeout filter to force timeout at 60 seconds during import
-         * @return int 60
+         * Added to http_request_timeout filter to force timeout at 120 seconds during import
+         * @return int 600
          * @todo; $val is never used in the base  class as well as here. what is the use of it then? remove? or use it
          */
         function bump_request_timeout( $val ) {
-            return 60;
+            return 600;
         }
 
         // return the difference in length between two strings
@@ -894,6 +906,28 @@ if ( class_exists( 'WP_Importer' ) ) {
     }
 
 } // class_exists( 'WP_Importer' )
+
+
+
+
+
+
+//adjustments to wp-includes/http.php timeout values to workaround slow server responses
+/*@todo; later give user option to increase this time as long as they want so that their import does not fail if the listing number is huge. It can be removed once batch uploading feature is implemented in future.*/
+add_filter('http_request_args', 'directorist_http_request_args', 100, 1);
+function directorist_http_request_args($r) //called on line 237
+{
+    $r['timeout'] = 600;
+    return $r;
+}
+/*Increase the curl timeout value to prevent curl time out error when downloading many attachment during importing listings. */
+add_action('http_api_curl', 'directorist_http_api_curl', 100, 1);
+function directorist_http_api_curl($handle) //called on line 1315
+{
+    curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, 600 );
+    curl_setopt( $handle, CURLOPT_TIMEOUT, 600 );
+}
+
 
 function directorist_importer_init() {
     /**
