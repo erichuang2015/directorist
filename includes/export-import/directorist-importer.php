@@ -148,8 +148,9 @@ if ( class_exists( 'WP_Importer' ) ) {
                 $this->footer();
                 die();
             }
-            file_put_contents(__DIR__.'/imported_data.txt', json_encode($this->parsed_data));
-            file_put_contents(__DIR__.'/listing_img_url.txt', json_encode($this->parsed_data['posts'][0]['listing_img_url']));
+            // for debugging only @todo; remove debugging comments later
+            //file_put_contents(__DIR__.'/imported_data.txt', json_encode($this->parsed_data));
+            //file_put_contents(__DIR__.'/listing_img_url.txt', json_encode($this->parsed_data['posts'][0]['listing_img_url']));
             //die();
             $this->version = $this->parsed_data['version'];
             $this->get_authors_from_import( $this->parsed_data );
@@ -284,7 +285,7 @@ if ( class_exists( 'WP_Importer' ) ) {
                     <?php endif; ?>
 
                 
-                    // list previously enqueued user names in unordered list
+                    <!--list previously enqueued user names in unordered list-->
                     <ol id="authors">
                         <?php foreach ( $this->authors as $author ) : ?>
                             <li><?php $this->author_select( $j++, $author ); ?></li>
@@ -525,17 +526,14 @@ if ( class_exists( 'WP_Importer' ) ) {
 
                         // we have to process images here.
                         // get all images attached to this post.
-                        $image_urls = array();
                         $image_urls = (array) $post['listing_img_url'];
                         // fetch image from url, insert the attachment to db, store the attachment ids and url to the post meta
-                        if ( isset( $post['listing_img_url'] ) ) {
-                            $image_urls = array();
-                            $image_urls = (array) $post['listing_img_url'];
-
+                        if ( !empty( $image_urls ) && is_array($image_urls) ) {
                             foreach ( $image_urls as $image_url ) {
-                                $gallery_image_ids[] = directorist_get_attachment_id_from_url( $image_url, $post_id );
+                                $attachment_ids[] = directorist_get_attachment_id_from_url( $image_url, $post_id );
                             }
-                            $product->set_gallery_image_ids( $gallery_image_ids );
+                            // update the post meta with attachment ids
+                            update_post_meta($post_id, 'listing_img', $attachment_ids);
                         }
 
                         do_action( 'wp_import_insert_post', $post_id, $original_post_ID, $postdata, $post );

@@ -103,8 +103,27 @@ function directorist_exim_implode_wrapped($before, $after, $array, $glue = '') {
 
 
 /**
- * Get attachment ID.
+ * Returns image mime types users are allowed to upload via the API.
  *
+ * @since  3.3.5
+ * @return array
+ */
+function directorist_allowed_image_mime_types() {
+    return apply_filters(
+        'directorist_allowed_image_mime_types', array(
+            'jpg|jpeg|jpe' => 'image/jpeg',
+            'gif'          => 'image/gif',
+            'png'          => 'image/png',
+            'bmp'          => 'image/bmp',
+            'tiff|tif'     => 'image/tiff',
+            'ico'          => 'image/x-icon',
+        )
+    );
+}
+
+/**
+ * Get attachment ID.
+ * @since 3.3.5
  * @param  string $url        Attachment URL.
  * @param  int    $listing_id Listing ID.
  * @return int
@@ -235,7 +254,7 @@ function directorist_upload_image_from_url( $image_url ) {
     }
 
     // Ensure we have a file name and type.
-    $wp_filetype = wp_check_filetype( $file_name, wc_rest_allowed_image_mime_types() );
+    $wp_filetype = wp_check_filetype( $file_name, directorist_allowed_image_mime_types() );
 
     if ( ! $wp_filetype['type'] ) {
         $headers = wp_remote_retrieve_headers( $response );
@@ -250,7 +269,7 @@ function directorist_upload_image_from_url( $image_url ) {
         unset( $headers );
 
         // Recheck filetype.
-        $wp_filetype = wp_check_filetype( $file_name, wc_rest_allowed_image_mime_types() );
+        $wp_filetype = wp_check_filetype( $file_name, directorist_allowed_image_mime_types() );
 
         if ( ! $wp_filetype['type'] ) {
             return new WP_Error( 'directorist_import_invalid_image_type', __( 'Invalid image type.', ATBDP_TEXTDOMAIN ), array( 'status' => 400 ) );
@@ -282,7 +301,7 @@ function directorist_upload_image_from_url( $image_url ) {
 /**
  * Insert uploaded image as attachment.
  *
- * @since 3.2.5
+ * @since 3.3.5
  * @param array $upload Upload information from wp_upload_bits.
  * @param int   $id [optional] Listing Post ID. Default to 0.
  * @return int Attachment ID
@@ -319,5 +338,5 @@ function directorist_insert_uploaded_image_as_attachment( $upload, $id = 0 ) {
         wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $upload['file'] ) );
     }
 
-    return $attachment_id;
+    return $attachment_id; // we could later return the attachment $id and url in an array here instead of just an id.
 }
