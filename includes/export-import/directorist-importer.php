@@ -528,22 +528,23 @@ if ( class_exists( 'WP_Importer' ) ) {
                         // get all images attached to this post.
                         $image_urls = (array) $post['listing_img_url'];
                         // test data
-                        file_put_contents(
+                        /*file_put_contents(
                                 __DIR__.'/image_links_inside_loop.txt',
                                     json_encode($image_urls).PHP_EOL ,
                                     FILE_APPEND | LOCK_EX
-                        );
+                        );*/
                         // fetch image from url, insert the attachment to db, store the attachment ids and url to the post meta
                         if ( !empty( $image_urls ) && is_array($image_urls) ) {
                             $attachment_ids = array();
                             foreach ( $image_urls as $image_url ) {
                                 $attachment_ids[] = directorist_get_attachment_id_from_url( $image_url, $post_id );
                             }
-                            file_put_contents(
+                            /*Testing
+                             * file_put_contents(
                                 __DIR__.'/attachment_ids_inside_loop.txt',
                                 json_encode($attachment_ids).PHP_EOL ,
                                 FILE_APPEND | LOCK_EX
-                            );
+                            );*/
                             // update the post meta with attachment ids
                             update_post_meta($post_id, 'listing_img', $attachment_ids);
                         }

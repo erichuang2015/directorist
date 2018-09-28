@@ -281,7 +281,7 @@ function directorist_exp_to_xml(){
 function directorist_export_ajax() { //Function used for generating results for display in PRE tag and saving as TXT
 	
 	//prepere query and post data
-	var_dump($_POST);
+	//var_dump($_POST);
 	//die();
 	// sets correct values for start and end date + adds WP "post_where" filter
     // @improve date filter, see includes/export.php file for inspiration

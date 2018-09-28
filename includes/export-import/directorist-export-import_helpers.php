@@ -34,7 +34,7 @@ function directorist_exim_custom_taxonomies_terms_links() {
 	// get post type taxonomies
 	$taxonomies = get_object_taxonomies(ATBDP_POST_TYPE);
 	ob_start();
-	var_dump($taxonomies);
+	//var_dump($taxonomies);
 	/*
 	 * array (size=3)
   0 => string 'at_biz_dir-location' (length=19)

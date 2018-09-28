@@ -152,7 +152,6 @@ class ATBDP_Shortcode {
 
     public function user_dashboard()
     {
-
         ob_start();
         // show user dashboard if the user is logged in, else kick him out of this page or show a message
         if (is_user_logged_in()){
@@ -160,10 +159,7 @@ class ATBDP_Shortcode {
              ATBDP()->user->user_dashboard();
         }else{
             // user not logged in;
-            $error_message = sprintf(__('You need to be logged in to view the content of this page. You can login %s.', ATBDP_TEXTDOMAIN), "<a href='".wp_login_url()."'> ". __('Here', ATBDP_TEXTDOMAIN)."</a>");
-
-
-             ?>
+            $error_message = sprintf(__('You need to be logged in to view the content of this page. You can login %s.', ATBDP_TEXTDOMAIN), "<a href='".wp_login_url()."'> ". __('Here', ATBDP_TEXTDOMAIN)."</a>"); ?>
             <section class="directory_wrapper single_area">
                 <div class="<?php echo is_directoria_active() ? 'container': 'container-fluid'; ?>">
                     <div class="row">
@@ -173,11 +169,8 @@ class ATBDP_Shortcode {
                     </div>
             </section>
 <?php
-
         }
-
         return ob_get_clean();
-
     }
     public function search_listing($atts, $content = null) {
         ob_start();

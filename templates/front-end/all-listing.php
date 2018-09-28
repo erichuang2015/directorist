@@ -39,28 +39,30 @@ $is_disable_price = get_directorist_option('disable_list_price');
                 <?php if ( $all_listings->have_posts() ) {
                     while ( $all_listings->have_posts() ) { $all_listings->the_post(); ?>
                         <?php
-                        $info = ATBDP()->metabox->get_listing_info(get_the_ID()); // get all post meta and extract it.
-                        extract($info);
                         // get only one parent or high level term object
                         $top_category = ATBDP()->taxonomy->get_one_high_level_term(get_the_ID(), ATBDP_CATEGORY);
                         $deepest_location = ATBDP()->taxonomy->get_one_deepest_level_term(get_the_ID(), ATBDP_LOCATION);
                         $featured = get_post_meta(get_the_ID(), '_featured', true);
                         $price = get_post_meta(get_the_ID(), '_price', true);
+                        $listing_img = get_post_meta(get_the_ID(), '_listing_img', true);
+                        $excerpt = get_post_meta(get_the_ID(), '_excerpt', true);
+                        $tagline = get_post_meta(get_the_ID(), '_tagline', true);
 
                         ?>
 
                         <div class="col-md-4 col-sm-6">
                             <div class="single_directory_post">
                                 <article class="<?php echo ($featured) ? 'directorist-featured-listings' : ''; ?>">
-                                    <figure>
-                                        <div class="post_img_wrapper">
-                                            <?= (!empty($attachment_id[0])) ? '<img src="'.esc_url(wp_get_attachment_image_url($attachment_id[0],  array(432,400))).'" alt="listing image">' : '' ?>
-                                        </div>
-
-                                        <figcaption>
-                                            <p><?= !empty($excerpt) ? esc_html(stripslashes($excerpt)) : ''; ?></p>
-                                        </figcaption>
-                                    </figure>
+                                    <?php if (!is_empty_v($listing_img)){ ?>
+                                        <figure>
+                                            <div class="post_img_wrapper">
+                                                <?= (!empty($listing_img[0])) ? '<img src="'.esc_url(wp_get_attachment_image_url($listing_img[0],  array(340,227))).'" alt="listing image">' : '' ?>
+                                            </div>
+                                            <figcaption>
+                                                <p><?= !empty($excerpt) ? esc_html(stripslashes($excerpt)) : ''; ?></p>
+                                            </figcaption>
+                                        </figure> <!--ends figure-->
+                                    <?php } ?>
 
                                     <div class="article_content">
                                         <div class="content_upper">

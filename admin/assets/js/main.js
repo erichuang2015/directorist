@@ -22,7 +22,7 @@
 
 
     // enable sorting if only the container has any social or skill field
-    var $s_wrap = $("#social_info_sortable_container"); // cache it
+    const $s_wrap = $("#social_info_sortable_container"); // cache it
     if( $s_wrap.length ) {
         $s_wrap.sortable(
             {
@@ -35,15 +35,15 @@
     // SOCIAL SECTION
     // Rearrange the IDS and Add new social field
     $("#addNewSocial").on('click', function(){
-        var currentItems = $('.atbdp_social_field_wrapper').length;
-        var ID = "id="+currentItems; // eg. 'id=3'
-        var iconBindingElement = jQuery('#addNewSocial');
+        const currentItems = $('.atbdp_social_field_wrapper').length;
+        const ID = "id="+currentItems; // eg. 'id=3'
+        const iconBindingElement = jQuery('#addNewSocial');
         // arrange names ID in order before adding new elements
         $('.atbdp_social_field_wrapper').each(function( index , element) {
-            var e = $(element);
+            const e = $(element);
             e.attr('id','socialID-'+index);
-            e.find('select').attr('name', 'listing[social]['+index+'][id]');
-            e.find('.atbdp_social_input').attr('name', 'listing[social]['+index+'][url]');
+            e.find('select').attr('name', 'social['+index+'][id]');
+            e.find('.atbdp_social_input').attr('name', 'social['+index+'][url]');
             e.find('.removeSocialField').attr('data-id',index);
         });
         // now add the new elements. we could do it here without using ajax but it would require more markup here.
@@ -55,7 +55,7 @@
 
     // remove the social field and then reset the ids while maintaining position
     $(document).on('click', '.removeSocialField', function(e){
-        var id = $(this).data("id"),
+        const id = $(this).data("id"),
             elementToRemove = $('div#socialID-'+id);
         event.preventDefault();
         /* Act on the event */
@@ -74,10 +74,10 @@
                         elementToRemove.remove();
                         // reorder the index
                         $('.atbdp_social_field_wrapper').each(function( index , element) {
-                            var e = $(element);
+                            const e = $(element);
                             e.attr('id','socialID-'+index);
-                            e.find('select').attr('name', 'listing[social]['+index+'][id]');
-                            e.find('.atbdp_social_input').attr('name', 'listing[social]['+index+'][url]');
+                            e.find('select').attr('name', 'social['+index+'][id]');
+                            e.find('.atbdp_social_input').attr('name', 'social['+index+'][url]');
                             e.find('.removeSocialField').attr('data-id',index);
                         });
                     });
@@ -197,7 +197,7 @@ jQuery(function($){
                         // we have got an image attachment so lets proceed.
                         // target the input field and then assign the current id of the attachment to an array.
                         data += '<div class="single_attachment">';
-                        data += '<input class="listing_image_attachment" name="listing[attachment_id][]" type="hidden" value="'+this.id+'">';
+                        data += '<input class="listing_image_attachment" name="listing_img[]" type="hidden" value="'+this.id+'">';
                         data += '<img style="width: 100%; height: 100%;" src="'+this.url+'" alt="Listing Image" /> <span class="remove_image dashicons dashicons-dismiss" title="Remove it"></span></div>';
                     }
 
@@ -211,13 +211,13 @@ jQuery(function($){
                     // we have got an image attachment so lets proceed.
                     // target the input field and then assign the current id of the attachment to an array.
                     data += '<div class="single_attachment">';
-                    data += '<input class="listing_image_attachment" name="listing[attachment_id][]" type="hidden" value="'+selection.id+'">';
+                    data += '<input class="listing_image_attachment" name="listing_img[]" type="hidden" value="'+selection.id+'">';
                     data += '<img style="width: 100%; height: 100%;" src="' + selection.url + '" alt="Listing Image" /> <span class="remove_image  dashicons dashicons-dismiss" title="Remove it"></span></div>';
                 }
             }
 
 
-            // If MI extension is active then append images to the listng, else only add one image replacing previus upload
+            // If MI extension is active then append images to the listing, else only add one image replacing previous upload
             if(multiple_image){
                 imgContainer.append(data);
             }else {

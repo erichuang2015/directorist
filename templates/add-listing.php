@@ -4,10 +4,10 @@ if (!empty($args['listing_info'])) { extract($args['listing_info']); }
 
 //@TODO: I will have to add a text area to get the content for the info window of the map later
 $t = get_the_title();
-$t = !empty($t)? $t : __('No Title', ATBDP_TEXTDOMAIN);
+$t = !empty($t)? $t : __('No Title', ATBDP_TEXTDOMAIN); //@todo; user should be
 $tg = !empty($tagline)? esc_html($tagline) : '';
 $ad = !empty($address)? esc_html($address) : '';
-$image = (!empty($attachment_id[0])) ? "<img src='". esc_url(wp_get_attachment_image_url($attachment_id[0], 'thumbnail'))."'>": '';
+$image = (!empty($listing_img[0])) ? "<img src='". esc_url(wp_get_attachment_image_url($listing_img[0], 'thumbnail'))."'>": '';
 $info_content = "<div class='map_info_window'> <h3>{$t}</h3>";
 $info_content .= "<p> {$tg}</p>";
 $info_content .= $image ; // add the image if available
@@ -43,11 +43,11 @@ $currency = get_directorist_option('g_currency', 'USD');
                                 <!--@todo; add toggle for the moto and excerpt later. -->
                                 <div class="form-group">
                                     <label for="atbdp_tagline"><?php esc_html_e('Tag-line/Motto', ATBDP_TEXTDOMAIN) ?></label>
-                                    <input type="text" id="atbdp_tagline" name="listing[tagline]" value="<?= !empty($tagline) ? esc_attr($tagline): ''; ?>" class="form-control directory_field" placeholder="<?= __('Your Organization\'s motto or tag-line', ATBDP_TEXTDOMAIN); ?>"/>
+                                    <input type="text" id="atbdp_tagline" name="tagline" value="<?= !empty($tagline) ? esc_attr($tagline): ''; ?>" class="form-control directory_field" placeholder="<?= __('Your Organization\'s motto or tag-line', ATBDP_TEXTDOMAIN); ?>"/>
                                 </div>
                                 <div class="form-group">
                                     <label for="atbdp_excerpt"><?php esc_html_e('Short Description/Excerpt(eg. Text shown on Image Hover in grid layout):', ATBDP_TEXTDOMAIN) ?></label>
-                                    <textarea name="listing[excerpt]" id="atbdp_excerpt"  class="form-control directory_field" cols="30" rows="5" placeholder="<?= __('Short Description or Excerpt', ATBDP_TEXTDOMAIN); ?>"><?= !empty($excerpt) ?esc_textarea( stripslashes($excerpt)): ''; ?></textarea>
+                                    <textarea name="excerpt" id="atbdp_excerpt"  class="form-control directory_field" cols="30" rows="5" placeholder="<?= __('Short Description or Excerpt', ATBDP_TEXTDOMAIN); ?>"><?= !empty($excerpt) ?esc_textarea( stripslashes($excerpt)): ''; ?></textarea>
                                 </div>
                                 <?php if (!$disable_price){ ?>
                                     <div class="form-group">
@@ -74,7 +74,7 @@ $currency = get_directorist_option('g_currency', 'USD');
                             <div class="col-sm-12">
                                 <h3 class="directorist_contact_form_title module_title"><?php esc_html_e('Contact Information', ATBDP_TEXTDOMAIN); ?></h3>
                                 <div class="form-check">
-                                    <input type="checkbox" name="listing[hide_contact_info]" class="form-check-input" id="hide_contact_info" value="1" <?php if(!empty($hide_contact_info) ) {checked($hide_contact_info); } ?> >
+                                    <input type="checkbox" name="hide_contact_info" class="form-check-input" id="hide_contact_info" value="1" <?php if(!empty($hide_contact_info) ) {checked($hide_contact_info); } ?> >
                                     <label class="form-check-label" for="hide_contact_info"><?php esc_html_e('Check it to hide Contact Information for this listing', ATBDP_TEXTDOMAIN); ?></label>
 
                                 </div>
@@ -82,21 +82,21 @@ $currency = get_directorist_option('g_currency', 'USD');
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <label for="address"><?php esc_html_e('Address:', ATBDP_TEXTDOMAIN); ?></label>
-                                    <input type="text" name="listing[address]" id="address" value="<?= !empty($address) ? esc_attr($address): ''; ?>" class="form-control directory_field" placeholder="<?php esc_html_e('Listing address eg. Houghton Street London WC2A 2AE UK', ATBDP_TEXTDOMAIN); ?>"/>
+                                    <input type="text" name="address" id="address" value="<?= !empty($address) ? esc_attr($address): ''; ?>" class="form-control directory_field" placeholder="<?php esc_html_e('Listing address eg. Houghton Street London WC2A 2AE UK', ATBDP_TEXTDOMAIN); ?>"/>
                                 </div>
                             </div>
                             <!--phone-->
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="atbdp_phone_number"><?php esc_html_e('Phone Number:', ATBDP_TEXTDOMAIN); ?></label>
-                                    <input type="tel" name="listing[phone][]" id="atbdp_phone_number" value="<?= !empty($phone[0]) ? esc_attr($phone[0]): ''; ?>" class="form-control directory_field" placeholder="<?php esc_attr_e('Phone Number', ATBDP_TEXTDOMAIN); ?>"/>
+                                    <input type="tel" name="phone" id="atbdp_phone_number" value="<?= !empty($phone) ? esc_attr($phone): ''; ?>" class="form-control directory_field" placeholder="<?php esc_attr_e('Phone Number', ATBDP_TEXTDOMAIN); ?>"/>
                                 </div>
 
                             </div>
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="atbdp_email"><?php esc_html_e('Email:', ATBDP_TEXTDOMAIN); ?></label>
-                                    <input type="email" name="listing[email]" id="atbdp_email" value="<?= !empty( $email ) ? esc_attr($email) : ''; ?>" class="form-control directory_field" placeholder="<?php esc_attr_e('Enter Email', ATBDP_TEXTDOMAIN); ?>"/>
+                                    <input type="email" name="email" id="atbdp_email" value="<?= !empty( $email ) ? esc_attr($email) : ''; ?>" class="form-control directory_field" placeholder="<?php esc_attr_e('Enter Email', ATBDP_TEXTDOMAIN); ?>"/>
                                 </div>
                             </div>
 
@@ -104,7 +104,7 @@ $currency = get_directorist_option('g_currency', 'USD');
                                 <div class="form-group">
                                     <label for="atbdp_website"><?php esc_html_e('Website:', ATBDP_TEXTDOMAIN); ?></label>
 
-                                    <input type="text" id="atbdp_website" name="listing[website]" value="<?= !empty( $website ) ? esc_url($website) : ''; ?>" class="form-control directory_field" placeholder="<?php esc_attr_e('Listing Website eg. http://example.com', ATBDP_TEXTDOMAIN); ?>"/>
+                                    <input type="text" id="atbdp_website" name="website" value="<?= !empty( $website ) ? esc_url($website) : ''; ?>" class="form-control directory_field" placeholder="<?php esc_attr_e('Listing Website eg. http://example.com', ATBDP_TEXTDOMAIN); ?>"/>
                                 </div>
                             </div>
                         </div> <!--ends .row-->
@@ -141,7 +141,7 @@ $currency = get_directorist_option('g_currency', 'USD');
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="cor-wrap map_cor">
-                                    <input type="checkbox" name="listing[manual_coordinate]" value="1"
+                                    <input type="checkbox" name="manual_coordinate" value="1"
                                            id="manual_coordinate" <?= (!empty($manual_coordinate)) ? 'checked' : ''; ?> >
                                     <label for="manual_coordinate"> <?php _e('Enter Coordinates ( latitude and longitude) Manually ? or set the marker on the map anywhere by clicking on the map', ATBDP_TEXTDOMAIN); ?> </label>
                                 </div>
@@ -152,7 +152,7 @@ $currency = get_directorist_option('g_currency', 'USD');
                                 <div class="col-md-5 col-sm-12 v_middle">
                                     <div class="form-group">
                                         <label for="manual_lat"> <?php _e('Latitude', ATBDP_TEXTDOMAIN); ?>  </label>
-                                        <input type="text" name="listing[manual_lat]" id="manual_lat"
+                                        <input type="text" name="manual_lat" id="manual_lat"
                                                value="<?= (!empty($manual_lat)) ? $manual_lat : '' ?>"
                                                class="form-control directory_field"
                                                placeholder="<?php esc_attr_e('Enter Latitude eg. 24.89904', ATBDP_TEXTDOMAIN); ?>"/>
@@ -161,7 +161,7 @@ $currency = get_directorist_option('g_currency', 'USD');
                                 <div class="col-md-5 col-sm-12 v_middle">
                                     <div class="form-group">
                                         <label for="manual_lng"> <?php _e('Longitude', ATBDP_TEXTDOMAIN); ?> </label>
-                                        <input type="text" name="listing[manual_lng]" id="manual_lng"
+                                        <input type="text" name="manual_lng" id="manual_lng"
                                                value="<?= (!empty($manual_lng)) ? $manual_lng : '' ?>"
                                                class="form-control directory_field"
                                                placeholder="<?php esc_attr_e('Enter Longitude eg. 91.87198', ATBDP_TEXTDOMAIN); ?>"/>
@@ -197,7 +197,7 @@ $currency = get_directorist_option('g_currency', 'USD');
                          * @param array $listing_info Information of the current listing
                          * @since 1.1.1
                          **/
-                        do_action('atbdp_edit_after_googlemap_preview', 'add_listing_page_backend', $args['listing_info']);
+                        do_action('atbdp_edit_after_googlemap_preview', 'add_listing_page_backend', $args['listing_info'], get_the_ID());
                         ?>
                 </div><!--ends add_listing_form_wrapper-->
 

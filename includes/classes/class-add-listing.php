@@ -75,20 +75,37 @@ if (!class_exists('ATBDP_Add_Listing')):
                 if (ATBDP()->helper->verify_nonce($this->nonce, $this->nonce_action )) {
                     // we have data and passed the security
                     // we not need to sanitize post vars to be saved to the database,
-                    // because wp_insert_post() does this inside that like : $postarr = sanitize_post($postarr, 'db');;
-                    $title= !empty($_POST['listing_title']) ? sanitize_text_field($_POST['listing_title']) : '';
-                    $price= !empty($_POST['price']) ? sanitize_text_field($_POST['price']) : '';
-                    $content = !empty($_POST['listing_content']) ? wp_kses($_POST['listing_content'], wp_kses_allowed_html('post')) : '';
-                    $info= (!empty($_POST['listing'])) ? aazztech_enc_serialize($_POST['listing']) : aazztech_enc_serialize( array() );
+                    // because wp_insert_post() does this inside that like : $postarr = sanitize_post($postarr, 'db');
+                    $metas = array();
+                    $p = $_POST; // save some character
+                    $content = !empty($p['listing_content']) ? wp_kses($p['listing_content'], wp_kses_allowed_html('post')) : '';
+                    $title= !empty($p['listing_title']) ? sanitize_text_field($p['listing_title']) : '';/*@todo; in future, do not let the user add a post without a title. Return here with an error shown to the user*/
+
+                    $metas['_price']             = !empty($p['price'])? (float) $p['price'] : 0;
+                    $metas['_tagline']           = !empty($p['tagline'])? sanitize_text_field($p['tagline']) : '';
+                    $metas['_excerpt']           = !empty($p['excerpt'])? sanitize_text_field($p['excerpt']) : '';
+                    $metas['_address']           = !empty($p['address'])? sanitize_text_field($p['address']) : '';
+                    $metas['_phone']             = !empty($p['phone'])? sanitize_text_field($p['phone']) : '';
+                    $metas['_email']             = !empty($p['email'])? sanitize_text_field($p['email']) : '';
+                    $metas['_website']           = !empty($p['website'])? sanitize_text_field($p['website']) : '';
+                    $metas['_social']            = !empty($p['social']) ? atbdp_sanitize_array($p['social']) : array(); // we are expecting array value
+                    $metas['_manual_lat']        = !empty($p['manual_lat'])? sanitize_text_field($p['manual_lat']) : '';
+                    $metas['_manual_lng']        = !empty($p['manual_lng'])? sanitize_text_field($p['manual_lng']) : '';
+                    $metas['_listing_img']       = !empty($p['listing_img'])? atbdp_sanitize_array($p['listing_img']) : array();
+                    $metas['_hide_contact_info']       = !empty($p['hide_contact_info'])? sanitize_text_field($p['hide_contact_info']) : 0;
+                    /**
+                     * It applies a filter to the meta values that are going to be saved with the listing submitted from the front end
+                     * @param array $metas the array of meta keys and meta values
+                    */
+                    $metas = apply_filters('atbdp_listing_meta_user_submission', $metas);
                     $args = array(
                         'post_content' => $content,
                         'post_title' => $title,
                         'post_type' => ATBDP_POST_TYPE,
                         'tax_input' =>!empty($_POST['tax_input'])? atbdp_sanitize_array( $_POST['tax_input'] ) : array(),
-                        'meta_input'=>  array('_listing_info'=>$info,'_price'=>$price),
+                        'meta_input'=>  $metas,
 
                     );
-
 
                     // is it update post ? @todo; change listing_id to atbdp_listing_id later for consistency with rewrite tags
                     if (!empty($_POST['listing_id'])){
