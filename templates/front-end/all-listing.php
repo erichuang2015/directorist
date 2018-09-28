@@ -89,12 +89,6 @@ $is_disable_price = get_directorist_option('disable_list_price');
                                              */
                                             do_action('atbdp_after_listing_price');
 
-                                            /**
-                                             * Fires after the title and sub title of the listing is rendered
-                                             *
-                                             *
-                                             * @since 1.0.0
-                                             */
 
                                             do_action('atbdp_after_listing_tagline');
 
