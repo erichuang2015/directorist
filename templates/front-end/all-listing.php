@@ -39,9 +39,12 @@ $is_disable_price = get_directorist_option('disable_list_price');
                 <?php if ( $all_listings->have_posts() ) {
                     while ( $all_listings->have_posts() ) { $all_listings->the_post(); ?>
                         <?php
+                        // @todo;cleanup
                         // get only one parent or high level term object
-                        $top_category = ATBDP()->taxonomy->get_one_high_level_term(get_the_ID(), ATBDP_CATEGORY);
-                        $deepest_location = ATBDP()->taxonomy->get_one_deepest_level_term(get_the_ID(), ATBDP_LOCATION);
+                        //$top_category = ATBDP()->taxonomy->get_one_high_level_term(get_the_ID(), ATBDP_CATEGORY);
+                        //$deepest_location = ATBDP()->taxonomy->get_one_deepest_level_term(get_the_ID(), ATBDP_LOCATION);
+                        $cats =  get_the_terms(get_the_ID(), ATBDP_CATEGORY);
+                        $locs =  get_the_terms(get_the_ID(), ATBDP_LOCATION);
                         $featured = get_post_meta(get_the_ID(), '_featured', true);
                         $price = get_post_meta(get_the_ID(), '_price', true);
                         $listing_img = get_post_meta(get_the_ID(), '_listing_img', true);
@@ -101,7 +104,7 @@ $is_disable_price = get_directorist_option('disable_list_price');
                                         </div>
                                         <?php
                                         //show category and location info
-                                        ATBDP()->helper->output_listings_taxonomy_info($top_category, $deepest_location);
+                                        ATBDP()->helper->output_listings_all_taxonomy_info($cats, $locs);
                                         // show read more link/btn
                                         ATBDP()->helper->listing_read_more_link();
                                         ?>

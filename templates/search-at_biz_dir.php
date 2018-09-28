@@ -62,17 +62,22 @@ $is_disable_price = get_directorist_option('disable_list_price');
                         while ( $listings->have_posts() ) {
                             $listings->the_post();
                             $l_ID = get_the_ID(); // cache it, save several functions calls.
-                            $info = ATBDP()->metabox->get_listing_info($l_ID); // get all post meta and extract it.
-                            extract($info);
+                            /*
+                             * @todo;cleanup
+                             * $info = ATBDP()->metabox->get_listing_info($l_ID); // get all post meta and extract it.
+                            extract($info);*/
                             // get only one parent or high level term object
-                            $top_category = ATBDP()->taxonomy->get_one_high_level_term($l_ID, ATBDP_CATEGORY);
-                            $deepest_location = ATBDP()->taxonomy->get_one_deepest_level_term($l_ID, ATBDP_LOCATION);
+                            //$top_category = ATBDP()->taxonomy->get_one_high_level_term($l_ID, ATBDP_CATEGORY);
+                            //$deepest_location = ATBDP()->taxonomy->get_one_deepest_level_term($l_ID, ATBDP_LOCATION);
                             $cats =  get_the_terms($l_ID, ATBDP_CATEGORY);
                             $locs =  get_the_terms($l_ID, ATBDP_LOCATION);
 
                             $featured = get_post_meta($l_ID, '_featured', true);
                             $price = get_post_meta($l_ID, '_price', true);
                             /*@todo; As listings on search page and the all listing page, and user dashboard is nearly the same, so try to refactor them to a function later using some condition to show some extra fields on the listing on user dashboard*/
+                            $listing_img = get_post_meta(get_the_ID(), '_listing_img', true);
+                            $excerpt = get_post_meta(get_the_ID(), '_excerpt', true);
+                            $tagline = get_post_meta(get_the_ID(), '_tagline', true);
                             ?>
 
                             <div class="col-md-4 col-sm-6">
@@ -80,7 +85,7 @@ $is_disable_price = get_directorist_option('disable_list_price');
                                     <article class="<?php echo ($featured) ? 'directorist-featured-listings' : ''; ?>">
                                         <figure>
                                             <div class="post_img_wrapper">
-                                                <?= (!empty($attachment_id[0])) ? '<img src="'.esc_url(wp_get_attachment_image_url($attachment_id[0],  array(432,400))).'" alt="listing image">' : '' ?>
+                                                <?= (!empty($listing_img[0])) ? '<img src="'.esc_url(wp_get_attachment_image_url($listing_img[0],  array(432,400))).'" alt="listing image">' : '' ?>
                                             </div>
 
                                             <figcaption>
