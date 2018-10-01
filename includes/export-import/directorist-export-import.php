@@ -141,101 +141,6 @@ function directorist_export_page() { // Sre2t_manage function used to display Ex
 							<a href="#" class="button-secondary"><?php esc_html_e('Generate Preview (10 max)', ATBDP_TEXTDOMAIN); ?></a> <!--link connected to js responsible for AJAX call-->
 							<input class="button button-primary" type="submit" value="Download as XML file" name="submit"> <!--Posts data to "directorist-export-import_dl_txt.php" file-->
 	                	</div>               	
-	                	<div class="clearboth"></div>
-	                	<div class="option_box">
-	                		<label for="author" class="full_label"><?php esc_html_e('Authors:', ATBDP_TEXTDOMAIN); ?></label>
-							
-							<label title="Include"><input type="radio" name="author_inex" value="" checked="checked"> <span><?php esc_html_e('Include', ATBDP_TEXTDOMAIN); ?></span></label>
-							<label title="Exclude"><input type="radio" name="author_inex" value="-"> <span><?php esc_html_e('Exclude', ATBDP_TEXTDOMAIN); ?></span></label>
-							
-	                    	<div class="checkbox_box">
-	                            <ul>
-	                                <li class="e2t_all"><label><input type="checkbox" name="author[]" value="e2t_all" checked="checked" /> All</label></li>
-		                            <?php
-                                    // get the id and the name of all author who created directorist listings and order them by their name
-		                            $authors = $wpdb->get_results( "
-                                                    SELECT DISTINCT u.ID, u.display_name 
-                                                    FROM $wpdb->users AS u 
-                                                    INNER JOIN $wpdb->posts AS p 
-                                                    WHERE u.ID = p.post_author 
-                                                    AND post_type = 'at_biz_dir' 
-                                                    ORDER BY u.display_name"
-                                    );
-
-                                    if (!empty($authors) && is_array($authors)){
-                                        foreach ( $authors as $author ) { ?>
-                                            <li><label><input type="checkbox" name="author[]" value="<?php echo $author->ID; ?>" /> <?php echo $author->display_name; ?></label></li>
-                                            <?php
-                                        }
-                                    }
-
-		                            ?>
-	                            </ul>
-
-	                    	</div>                                  		
-	                	</div>
-	                	<div class="option_box">
-	                		<label for="ptype" class="full_label"><?php esc_html_e('Post type(s):', ATBDP_TEXTDOMAIN); ?></label>
-	                    	<div class="checkbox_box">
-	                            <ul>
-	                                <li><label><input type="checkbox" name="ptype[]" value="at_biz_dir" checked="checked" /> Directory Listings</label></li>
-	                        	</ul>
-	                        </div>
-	                	</div>
-	                	<div class="option_box">
-	                		<label for="ptype" class="full_label"><?php esc_html_e('Statuses', ATBDP_TEXTDOMAIN); ?></label>
-	                    	<div class="checkbox_box">
-	                            <ul>
-	                            	<li><label><input type="checkbox" name="post_status[]" value="publish" checked="checked"/> Publish</label></li>
-	                            	<li><label><input type="checkbox" name="post_status[]" value="pending" /> Pending</label></li>        
-	                            	<li><label><input type="checkbox" name="post_status[]" value="draft" /> Draft</label></li>        
-	                            	<li><label><input type="checkbox" name="post_status[]" value="future" /> Future</label></li>        
-	                            	<li><label><input type="checkbox" name="post_status[]" value="private" /> Private</label></li>        
-	                            	<li><label><input type="checkbox" name="post_status[]" value="trash" /> Trash</label></li>        
-								</ul>
-							</div>
-	                	</div>
-	                	
-						<?php
-                        // Show available custom and the built in taxonomy selection
-						$taxonomies = array(__('Directory Category', ATBDP_TEXTDOMAIN)=>ATBDP_CATEGORY, __('Directory Location', ATBDP_TEXTDOMAIN)=>ATBDP_LOCATION, __('Directory Tags', ATBDP_TEXTDOMAIN)=>ATBDP_TAGS);
-						foreach ($taxonomies as $taxonomy ) { ?>
-							<div class="option_box">
-								<label for="ptype" class="full_label"><?php echo str_replace('_', ' ', $taxonomy); ?>: </label>
-								
-								<label title="Include"><input type="radio" name="taxonomy[<?php echo $taxonomy; ?>][inex]" value="IN" checked="checked"> <span>Include</span></label>
-								<label title="Exclude"><input type="radio" name="taxonomy[<?php echo $taxonomy; ?>][inex]" value="NOT IN"> <span>Exclude</span></label>
-								
-								<?php echo directorist_exim_get_categories_checkboxes($taxonomy);?>
-							</div>
-						<?php
-						}
-						?>
-
-						<!--Select and reorder data to generate-->
-                        <div class="clearboth"></div>
-	                	<div class="option_box" id="last_option_box">
-                            <label for="ptype" class="full_label"><?php esc_html_e('Select and reorder the fields you would like to to generate:', ATBDP_TEXTDOMAIN); ?></label>
-                            <div class="checkbox_box">
-                                <ul class="sortable">
-	                            	<li><label><input type="checkbox" name="data_filter[]" value="ID" checked="checked"/> ID</label></li>
-	                            	<li><label><input type="checkbox" name="data_filter[]" value="Title" checked="checked"/> Title</label></li>
-	                            	<li><label><input type="checkbox" name="data_filter[]" value="Date" checked="checked"/> Date</label></li>
-	                            	<li><label><input type="checkbox" name="data_filter[]" value="Post Type" checked="checked"/> Post Type</label></li>
-	                            	<li><label><input type="checkbox" name="data_filter[]" value="Categories" checked="checked"/> Categories</label></li>
-	                            	<li><label><input type="checkbox" name="data_filter[]" value="Tags" checked="checked"/> Tags</label></li>
-	                            	<li><label><input type="checkbox" name="data_filter[]" value="Custom Taxonomies" checked="checked"/> Custom Taxonomies</label></li>
-	                            	<li><label><input type="checkbox" name="data_filter[]" value="Permlink" checked="checked"/> Permlink</label></li>
-	                            	<li><label><input type="checkbox" name="data_filter[]" value="Content" checked="checked"/> Content</label></li>
-									<li><label><input type="checkbox" name="data_filter[]" value="Excerpt" checked="checked"/> Excerpt</label></li>
-	                            	<li><label><input type="checkbox" name="data_filter[]" value="Author" checked="checked"/> Author</label></li>
-	                            	<li><label><input type="checkbox" name="data_filter[]" value="Author Email" checked="checked"/> Author Email</label></li>
-	                            	<li><label><input type="checkbox" name="data_filter[]" value="Custom Fields" checked="checked"/> Custom Fields</label></li>
-	                            	<li><label><input type="checkbox" name="data_filter[]" value="Comments" checked="checked"/> Comments</label></li>
-								</ul>
-							</div>
-	                	</div>					                	
-	                	
 	                </div>
 	                	
 	            </form>
@@ -265,15 +170,20 @@ add_action( 'wp_ajax_directorist_export_ajax', 'directorist_exp_to_xml' ); //add
  *
  */
 function directorist_exp_to_xml(){
+    // save few chars
+    $r= $_REQUEST;
     $args = array(
         'content' => 'at_biz_dir',
-        'author' => false,
+        'author' => !empty($r['author']) ? sanitize_text_field($r['author']) : false,
         'category' => false,
-        'start_date' => false,
-        'end_date' => false,
+        'start_date' => !empty($r['sdate']) ? sanitize_text_field($r['sdate']) : false,
+        'end_date' => !empty($r['edate']) ? sanitize_text_field($r['edate']) : false,
         'status' => false,
     );
-    //var_dump($_REQUEST);
+/*@todo;cleanup later
+ var_dump('dumping the request var');
+    var_dump($r);
+    //die();*/
     export_directorist($args);
     //echo 'to xml';
     die();

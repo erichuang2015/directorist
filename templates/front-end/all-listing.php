@@ -43,13 +43,13 @@ $is_disable_price = get_directorist_option('disable_list_price');
                         // get only one parent or high level term object
                         //$top_category = ATBDP()->taxonomy->get_one_high_level_term(get_the_ID(), ATBDP_CATEGORY);
                         //$deepest_location = ATBDP()->taxonomy->get_one_deepest_level_term(get_the_ID(), ATBDP_LOCATION);
-                        $cats =  get_the_terms(get_the_ID(), ATBDP_CATEGORY);
-                        $locs =  get_the_terms(get_the_ID(), ATBDP_LOCATION);
-                        $featured = get_post_meta(get_the_ID(), '_featured', true);
-                        $price = get_post_meta(get_the_ID(), '_price', true);
+                        $cats       =  get_the_terms(get_the_ID(), ATBDP_CATEGORY);
+                        $locs       =  get_the_terms(get_the_ID(), ATBDP_LOCATION);
+                        $featured   = get_post_meta(get_the_ID(), '_featured', true);
+                        $price      = get_post_meta(get_the_ID(), '_price', true);
                         $listing_img = get_post_meta(get_the_ID(), '_listing_img', true);
-                        $excerpt = get_post_meta(get_the_ID(), '_excerpt', true);
-                        $tagline = get_post_meta(get_the_ID(), '_tagline', true);
+                        $excerpt    = get_post_meta(get_the_ID(), '_excerpt', true);
+                        $tagline    = get_post_meta(get_the_ID(), '_tagline', true);
 
                         ?>
 

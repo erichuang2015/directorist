@@ -110,15 +110,19 @@ function export_directorist( $args = array() ) {
     if ( $args['author'] )
         $where .= $wpdb->prepare( " AND {$wpdb->posts}.post_author = %d", $args['author'] );
     // limit by start date
-    if ( $args['start_date'] )
+    if ( $args['start_date'] && 'all' !== $args['start_date'] )
         $where .= $wpdb->prepare( " AND {$wpdb->posts}.post_date >= %s", date( 'Y-m-d', strtotime($args['start_date']) ) );
     // limit by end date
-    if ( $args['end_date'] )
+    if ( $args['end_date'] && 'all' !== $args['end_date'])
         $where .= $wpdb->prepare( " AND {$wpdb->posts}.post_date < %s", date( 'Y-m-d', strtotime('+1 month', strtotime($args['end_date'])) ) );
 
 
     // Grab a snapshot of post IDs, just in case it changes during the export.
     $post_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} $join WHERE $where" );
+/* @todo;cleanup later
+var_dump('dumping post ids', $post_ids);
+    var_dump('dumping the where clause', $where);
+    die();*/
 
     /**
      * Wrap given string in XML CDATA tag.
@@ -323,12 +327,11 @@ echo '<?xml version="1.0" encoding="' . get_bloginfo('charset') . "\" ?>\n";
             <wp:is_sticky><?php echo intval( $is_sticky ); ?></wp:is_sticky>
             <?php
             // get listing attachments
-            $lf = aazztech_enc_unserialize(get_post_meta($post->ID, '_listing_info', true));
-            $listing_img = get_post_meta($post->ID, 'listing_img', true);
-            $attachment_ids = !empty($listing_img) ? $listing_img : array();
-            if ( !empty($attachment_ids) ) {
-                foreach ($attachment_ids as $attachment_id) { ?>
-            <wp:listing_img_url><?php echo wxr_cdata( wp_get_attachment_url( $attachment_id ) ); ?></wp:listing_img_url>
+            $listing_img = get_post_meta($post->ID, '_listing_img', true);
+            $listing_imgs = !empty($listing_img) ? $listing_img : array();
+            if ( !empty($listing_imgs) ) {
+                foreach ($listing_imgs as $attachment_img_id) { ?>
+            <wp:listing_img_url><?php echo wxr_cdata( wp_get_attachment_url( $attachment_img_id ) ); ?></wp:listing_img_url>
             <?php }
             } ?>
 
@@ -350,15 +353,10 @@ echo '<?xml version="1.0" encoding="' . get_bloginfo('charset') . "\" ?>\n";
                  */
                 if ( apply_filters( 'wxr_export_skip_postmeta', false, $meta->meta_key, $meta ) ){ continue; }
 
-                if ('_listing_info' == $meta->meta_key){
-                    $list_info_metas = aazztech_enc_unserialize($meta->meta_value);
-                    foreach ($list_info_metas as $list_info_key => $list_info_value) { ?>
-                <wp:postmeta>
-                    <wp:meta_key><?php echo wxr_cdata( $list_info_key ); ?></wp:meta_key>
-                    <wp:meta_value><?php echo wxr_cdata( maybe_serialize($list_info_value) ); ?></wp:meta_value>
-                </wp:postmeta>
-                   <?php }  continue; // go to next iteration without further processing.
-                } ?>
+                if ('_listing_img' == $meta->meta_key){
+                     continue; // go to next iteration without further processing. because we have already handled listing image metas
+                }
+                ?>
                 <wp:postmeta>
                     <wp:meta_key><?php echo wxr_cdata( $meta->meta_key ); ?></wp:meta_key>
                     <wp:meta_value><?php echo wxr_cdata( $meta->meta_value ); ?></wp:meta_value>

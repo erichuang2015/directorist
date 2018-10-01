@@ -26,7 +26,7 @@ $listing_info['website ']           = get_post_meta($post->ID, '_website', true)
 $listing_info['social']             = get_post_meta($post->ID, '_social', true);
 $listing_info['manual_lat']         = get_post_meta($post->ID, '_manual_lat', true);
 $listing_info['manual_lng']         = get_post_meta($post->ID, '_manual_lng', true);
-$listing_info['listing_img']       = get_post_meta($post->ID, '_listing_img', true);
+$listing_info['listing_img']        = get_post_meta($post->ID, '_listing_img', true);
 $listing_info['hide_contact_info']  = get_post_meta($post->ID, '_hide_contact_info', true);
 $listing_info['expiry_date']        = get_post_meta($post->ID, '_expiry_date', true);
 extract($listing_info);
@@ -40,13 +40,13 @@ foreach ($listing_imgs as $id){
 
 /*Code for Business Hour Extensions*/
 /*@todo; Make business hour settings compatible to our new settings panel. It is good to prefix all settings of extensions with their prefix*/
-$enable_bh_on_page = get_directorist_option('enable_bh_on_page', 0 ); // yes or no
-$text247 = get_directorist_option('text247',  __('Open 24/7', ATBDP_TEXTDOMAIN)); // text for 24/7 type listing
-$business_hour_title = get_directorist_option('business_hour_title',  __('Business Hour', ATBDP_TEXTDOMAIN)); // text Business Hour Title
-$bdbh               = get_post_meta($post->ID, '_bdbh', true);
-$bdbh_ops      = get_post_meta($post->ID, '_bdbh_settings', true);
-$business_hours = !empty($bdbh) ? atbdp_sanitize_array($bdbh) : array(); // arrays of days and times if exist
-$bdbh_settings = !empty($bdbh_ops) ? extract(atbdp_sanitize_array($bdbh_ops)) : array();
+$enable_bh_on_page      = get_directorist_option('enable_bh_on_page', 0 ); // yes or no
+$text247                = get_directorist_option('text247',  __('Open 24/7', ATBDP_TEXTDOMAIN)); // text for 24/7 type listing
+$business_hour_title    = get_directorist_option('business_hour_title',  __('Business Hour', ATBDP_TEXTDOMAIN)); // text Business Hour Title
+$bdbh                   = get_post_meta($post->ID, '_bdbh', true);
+$bdbh_ops               = get_post_meta($post->ID, '_bdbh_settings', true);
+$business_hours         = !empty($bdbh) ? atbdp_sanitize_array($bdbh) : array(); // arrays of days and times if exist
+$bdbh_settings          = !empty($bdbh_ops) ? extract(atbdp_sanitize_array($bdbh_ops)) : array();
 /*Code for Business Hour Extensions*/
 
 
@@ -63,7 +63,7 @@ $image = (!empty($attachment_id[0])) ? "<img src='". esc_url(wp_get_attachment_i
 $info_content = "<div class='map_info_window'> <h3>{$t}</h3>";
 $info_content .= "<p> {$tg} </p>";
 $info_content .= $image ; // add the image if available
-$info_content .= "<address> {$ad} </address>";
+$info_content .= "<address>{$ad}</address>";
 $info_content .= "<a href='http://www.google.com/maps/place/{$manual_lat},{$manual_lng}' target='_blank'> ".__('View On Google Maps', ATBDP_TEXTDOMAIN)."</a></div>";
 /*END INFO WINDOW CONTENT*/
 $map_zoom_level = get_directorist_option('map_zoom_level', 16);
@@ -125,19 +125,14 @@ $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) ? 'col-md-8' : 'co
                              *
                              * @since 1.0.0
                              */
-
                             do_action('atbdp_after_listing_tagline');
-
-
                             ?>
-
 
                             <ul class="directory_tags">
                                 <?php
                                 $cats = get_the_terms($post->ID, ATBDP_CATEGORY);
                                 if (!empty($cats)) {
                                     foreach ($cats as $cat) {
-
                                         ?>
                                         <li>
                                             <p class="directory_tag">
@@ -152,7 +147,6 @@ $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) ? 'col-md-8' : 'co
                                     <?php  }
                                 }
                                 ?>
-
                             </ul>
 
                             <div class="about_detail">
@@ -167,9 +161,7 @@ $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) ? 'col-md-8' : 'co
                                 global $wp_embed;
                                 $cont = $wp_embed->autoembed($wp_embed->run_shortcode(wp_kses_post($post->post_content)));
                                 echo wpautop(do_shortcode($cont));
-
                                 ?>
-
                             </div>
                         <?php if (!$disable_sharing) { ?>
                             <div class="director_social_wrap">
@@ -301,10 +293,8 @@ $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) ? 'col-md-8' : 'co
                      * @param object|WP_post $post The current post object which is our listing post
                      * @param array $listing_info The meta information of the current listing
                      */
-
                     do_action('atbdp_after_map', $post, $listing_info);
                     ?>
-
 
                     <?php
 
@@ -317,7 +307,6 @@ $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) ? 'col-md-8' : 'co
                      * @param object|WP_post $post The current post object which is our listing post
                      * @param array $listing_info The meta information of the current listing
                      */
-
                     do_action('atbdp_after_single_listing', $post, $listing_info);
                     ?>
                 </div>
@@ -358,8 +347,6 @@ $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) ? 'col-md-8' : 'co
             marker.addListener('click', function() {
                 info_window.open(map, marker);
             });
-
-
         }
 
 
@@ -370,7 +357,6 @@ $main_col_size = is_active_sidebar( 'right-sidebar-listing' ) ? 'col-md-8' : 'co
             $(this).html(link);
         });
         <?php } ?>
-
     }); // ends jquery ready function.
 
 
